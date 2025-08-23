@@ -1,2 +1,5 @@
-/node_modules
-/.qodo
+node_modules
+.qodo
+/src/generated/prisma
+
+/src/generated/prisma

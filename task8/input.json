@@ -1,0 +1,22 @@
+{
+  "updates": [
+    {
+      "supplierId": "client-J88Q4",
+      "productId": "item-oldW-",
+      "stock": 50,
+      "updatedAt": "2025-08-22T11:17:08.438Z"
+    },
+    {
+      "supplierId": "client3gENT",
+      "productId": "item-1YVRp",
+      "stock": 20,
+      "updatedAt": "2025-08-22T11:17:08.438Z"
+    },
+    {
+      "supplierId": "client-H1TK1",
+      "productId": "item-CC3dP",
+      "stock": 0,
+      "updatedAt": "2025-08-22T11:17:08.438Z"
+    }
+  ]
+}

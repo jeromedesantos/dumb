@@ -1,0 +1,26 @@
+{
+	"info": {
+		"_postman_id": "afe076a9-e131-418e-98fb-04b77395163d",
+		"name": "task7",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20536559"
+	},
+	"item": [
+		{
+			"name": "cekUser",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "transferPoin",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
