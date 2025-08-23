@@ -1,0 +1,23 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <title>Home</title>
+  </head>
+  <body>
+    <form action="/" method="POST">
+      {{! identiti server, pakai name }}
+      {{! bukan id, karena untuk dom }}
+      <input type="text" name="name" id="name" />
+      <input type="password" name="password" id="password" />
+      <button type="submit" name="action" value="submit">Submit</button>
+      <button type="submit" name="action" value="delete">Delete</button>
+    </form>
+    <hr />
+    <h2>Akun terdaftar</h2>
+    {{#each rows}}
+      <p>{{this.name_project}}</p>
+    {{/each}}
+  </body>
+</html>

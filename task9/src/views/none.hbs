@@ -1,0 +1,51 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../assets/css/reset.css" />
+    <link rel="stylesheet" href="../assets/css/cdn.css" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+
+    <script src="../assets/js/script.js" defer></script>
+    <title>404 Page</title>
+  </head>
+  <body>
+    <!-- scroll atas -->
+    <div id="header"></div>
+    <div class="add bi bi-plus"></div>
+    <!-- bagian menu -->
+    <div class="menubar">
+      <nav>
+        <img src="../assets/img/logo.png" alt="logo" />
+      </nav>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <form action="/logout" method="POST">
+        <button type="submit" class="log">{{#if
+            userData
+          }}Logout{{else}}Login{{/if}}</button>
+      </form>
+    </div>
+    <div class="menu-mini">
+      <form action="/logout" method="POST">
+        <p id="miniLog" role="button" tabindex="0">{{#if
+            userData
+          }}Logout{{else}}Login{{/if}}</p>
+      </form>
+    </div>
+    <div class="pages">
+      <h1 class="none">Halaman tidak ada</h1>
+    </div>
+  </body>
+</html>

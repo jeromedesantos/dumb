@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="src/js/script.js" defer></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="icon" type="image/x-icon" href="src/img/favicon.png" />
+    <link rel="stylesheet" href="src/css/output.css" />
+    <title>Portfolio</title>
+  </head>
+  <body class="font-ubuntu flex justify-center bg-slate-300">
+    <div
+      class="fixed w-full top-0 py-4 flex items-center justify-between px-[10%] bg-slate-50 shadow-xl z-10 gap-10"
+    >
+      <img
+        class="object-cover object-center h-8"
+        src="src/img/logo.png"
+        alt="logo"
+      />
+
+      <i class="toggle md:invisible fa-solid fa-bars text-2xl"></i>
+    </div>
+
+    <nav
+      class="nav md:opacity-100 md:flex-row md:top-2 md:right-20 md:py-0 md:bg-none md:shadow-none md:gap-10 md:items-center md:z-20 justify-between flex flex-col gap-5 fixed -top-35 right-0 bg-slate-50 px-10 pt-10 py-5 shadow-xl rounded-b-2xl transition-all duration-300 opacity-0"
+    >
+      <div class="flex flex-col gap-2 md:flex-row md:gap-10">
+        <a class="transtion-all duration-300 hover:text-slate-600" href="#"
+          >Home</a
+        >
+        <a class="transtion-all duration-300 hover:text-slate-600" href="#"
+          >My Project</a
+        >
+      </div>
+      <button
+        class="cursor-pointer bg-black text-white border-black border-2 transition-all duration-300 rounded-full py-2 px-5 hover:bg-slate-50 hover:text-black"
+      >
+        Contact Me
+      </button>
+    </nav>
+
+    <div
+      class="bg-slate-50 flex gap-4 flex-col max-w-100 md:flex-row md:max-w-220 rounded-2xl shadow-xl mt-30 transition-all duration-500"
+    >
+      <div class="p-10 flex flex-col gap-5 flex-2">
+        <h1 class="text-2xl font-bold">Hi Welcome to my hut</h1>
+        <p class="text-justify">
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint
+          officiis pariatur iusto reiciendis amet maxime totam? Doloribus rerum
+          pariatur earum nostrum illo amet harum, mollitia magni voluptate vero
+          inventore eos. Commodi qui dolorum, earum tempora ea quod doloremque
+          consectetur sit modi fugiat itaque quis neque fugit. Sint aliquam vero
+          ipsam placeat. Sapiente, nesciunt dolore porro necessitatibus quis
+          doloribus quam tempora.
+        </p>
+        <div class="flex flex-col gap-2 items-center md:flex-row">
+          <button
+            class="cursor-pointer bg-black text-white border-black border-2 transition-all duration-300 rounded-full py-2 px-5 hover:bg-slate-50 hover:text-black"
+          >
+            contact
+          </button>
+          <section
+            class="flex gap-2 justify-center items-center py-1 px-5 transtion-all duration-300 hover:text-slate-600 cursor-pointer"
+          >
+            <span>download CV</span>
+            <i class="fa-solid fa-download"></i>
+          </section>
+        </div>
+        <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+          <a
+            href="#"
+            class="grid place-items-center w-10 h-10 text-slate-50 bg-black rounded-full border-black border-2 transition-all duration-300 hover:bg-slate-50 hover:text-black"
+            ><i class="fa-brands fa-linkedin-in"></i
+          ></a>
+
+          <a
+            href="#"
+            class="grid place-items-center w-10 h-10 text-slate-50 bg-black border-box rounded-full border-black border-2 transition-all duration-300 hover:bg-slate-50 hover:text-black"
+            ><i class="fa-brands fa-instagram"></i
+          ></a>
+          <a
+            href="#"
+            class="grid place-items-center w-10 h-10 text-slate-50 bg-black border-box rounded-full border-black border-2 transition-all duration-300 hover:bg-slate-50 hover:text-black"
+            ><i class="fa-brands fa-facebook-f"></i
+          ></a>
+
+          <a
+            href="#"
+            class="grid place-items-center w-10 h-10 text-slate-50 bg-black border-box rounded-full border-black border-2 transition-all duration-300 hover:bg-slate-50 hover:text-black"
+            ><i class="fa-brands fa-x-twitter"></i
+          ></a>
+        </div>
+      </div>
+      <div class="p-10">
+        <div
+          class="cursor-pointer bg-slate-50 flex flex-col items-center rounded-2xl overflow-hidden shadow-xl group"
+        >
+          <img
+            src="src/img/profile.jpg"
+            class="object-cover object-center h-70 transition-all duration-300 group-hover:scale-102"
+            alt="Profile picture"
+          />
+          <section
+            class="border-box px-2 py-4 bg-slate-50 z-10 w-full flex flex-col items-center transition-all duration-300 group-hover:bg-slate-200"
+          >
+            <h2 class="font-bold text-2xl text-center">Jeremy Santoso</h2>
+            <p class="text-center">Fullstack Developer</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

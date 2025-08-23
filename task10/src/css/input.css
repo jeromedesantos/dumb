@@ -1,0 +1,43 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playwrite+AU+NSW:wght@100..400&display=swap");
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-inter: "Inter", sans-serif;
+  --font-play: "Playwrite AU NSW", cursive;
+  --color-primary: #14b8a6;
+  --color-primary-light: #2dd4bf;
+  --color-secondary: #64748b;
+  --color-secondary-light: #94a3b8;
+  --color-dark: #0f172a;
+}
+
+@layer base {
+  * {
+    @apply transition duration-300 ease-in-out;
+  }
+}
+
+@layer components {
+  .animate-loop-scroll {
+    animation: var(--animate-loop-scroll);
+  }
+  .hamburger-line {
+    @apply w-[30px] h-[4px] my-2 block bg-dark rounded-full dark:bg-white;
+  }
+  .hamburger-active > span:nth-child(1) {
+    @apply -mb-0.5 rotate-45;
+  }
+  .hamburger-active > span:nth-child(2) {
+    @apply scale-0 opacity-0;
+  }
+  .hamburger-active > span:nth-child(3) {
+    @apply -mt-0.5 -rotate-45;
+  }
+  #dark-toggle:checked ~ label div.toggle-circle {
+    @apply translate-x-3;
+  }
+}
