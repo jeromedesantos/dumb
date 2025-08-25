@@ -17,9 +17,9 @@ export function auth(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export function admin(req: Request, res: Response, next: NextFunction) {
+export function supplier(req: Request, res: Response, next: NextFunction) {
   const { role } = (req as any).user;
-  if (role !== "admin") {
+  if (role !== "supplier") {
     throw appError("Unauthorized", 401);
   }
   next();

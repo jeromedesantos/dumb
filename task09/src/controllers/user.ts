@@ -40,7 +40,7 @@ export async function loginUser(
         status: "Success",
         message: "Login success!",
         data: sanitizeUser,
-        token,
+        // token,
       });
   } catch (err) {
     next(err);

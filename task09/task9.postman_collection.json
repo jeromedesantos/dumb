@@ -120,8 +120,17 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Kimi\",\r\n        \"email\": \"kimi@gmail.com\",",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/user/usr25-q1SAy",
+					"raw": "http://localhost:3000/api/v1/user/usr25-3R32I",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -131,7 +140,7 @@
 						"api",
 						"v1",
 						"user",
-						"usr25-q1SAy"
+						"usr25-3R32I"
 					]
 				}
 			},
