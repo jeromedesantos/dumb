@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @db.VarChar(36) // UUID format lebih umum untuk ID
+  name      String   @db.VarChar(100)    // Nama dibatasi 100 karakter
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)    // Bisa ditambah validasi hash di backend
+  role      String   @db.VarChar(50) 
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id        String   @id @db.VarChar(36) // UUID format
+  name      String   @db.VarChar(100)    // Nama produk dibatasi
+  price     Decimal  @db.Decimal(10, 2)  // Lebih presisi daripada Float
+  stock     Int                          // Gudang / Inventory
+  createdAt DateTime @default(now())
+}
