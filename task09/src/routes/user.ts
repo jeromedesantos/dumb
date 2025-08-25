@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { auth, nonAuth } from "../middlewares/auth";
+import { validateUser } from "../middlewares/validate";
 import {
   loginUser,
   logoutUser,
@@ -14,11 +15,11 @@ const router = Router();
 
 router.post("/login", nonAuth, loginUser);
 router.post("/logout", auth, logoutUser);
-router.post("/register", nonAuth, createUser);
+router.post("/register", nonAuth, validateUser, createUser);
 
 router.get("/user", auth, readUsers);
 router.get("/user/:id", auth, readUser);
-router.put("/user/:id", auth, updateUser);
+router.put("/user/:id", auth, validateUser, updateUser);
 router.delete("/user/:id", auth, deleteUser);
 
 export default router;

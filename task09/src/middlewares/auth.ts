@@ -17,6 +17,14 @@ export function auth(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+export function admin(req: Request, res: Response, next: NextFunction) {
+  const { role } = (req as any).user;
+  if (role !== "admin") {
+    throw appError("Unauthorized", 401);
+  }
+  next();
+}
+
 export function nonAuth(req: Request, res: Response, next: NextFunction) {
   try {
     const { token } = req.cookies;

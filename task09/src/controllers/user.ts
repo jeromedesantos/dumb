@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { prisma } from "../connections/client";
 import { nanoid } from "nanoid";
+import { prisma } from "../connections/client";
 import { appError } from "../utils/error";
 import { hashPassword, comparePassword } from "../utils/bcrypt";
 import { signToken } from "../utils/jwt";
