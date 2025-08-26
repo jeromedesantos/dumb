@@ -207,6 +207,13 @@ export async function deleteUser(
         throw appError("File cannot remove", 500);
       }
     });
+    // fs promise
+    // try {
+    //   await unlink(path.join(filePath));
+    // } catch (fileErr: any) {
+    //   // Optional: log or tag the error for traceability
+    //   return next(appError("Failed to remove profile image", 500));
+    // }
     res.status(200).json({
       status: "Success",
       message: "Delete user success!",

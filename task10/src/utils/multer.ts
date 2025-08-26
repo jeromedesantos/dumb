@@ -12,11 +12,11 @@ const storage = multer.diskStorage({
 
 export const upload = multer({
   storage,
-  // limits: { fileSize: 2 * 1024 * 1024 },
+  // limits: { fileSize: 2 * 1024 },
   fileFilter: (req, file, cb) => {
     const ext = extname(file.originalname);
     if (ext !== ".jpg" && ext !== ".png" && ext !== ".jpeg") {
-      return cb(appError("Invalid file type", 400));
+      return cb(appError("Invalid file type: must jpg, jpeg, & png,", 400));
     }
     cb(null, true);
   },

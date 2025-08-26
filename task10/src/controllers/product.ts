@@ -71,7 +71,7 @@ export async function createProduct(
       message: "Create product success!",
       data: createdProduct,
     });
-  } catch (err) {
+  } catch (err: any) {
     next(err);
   }
 }

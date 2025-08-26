@@ -1,8 +1,7 @@
-## TASK 09:
+## TASK 10:
 
-- Gunakan Hashing dengan bcrypt untuk menyimpan password supplier
-- Gunakan Encryption untuk mengenkripsi data sensitif
-- Buat endpoint /suppliers/login dengan JWT Authentication
-- Buat endpoint /suppliers/products yang hanya bisa diakses oleh supplier yang sudah login
-- Buat endpoint /products/add dengan validasi input (misalnya harga tidak boleh negatif dan nama produk minimal 3 karakter)
-- Implementasikan middleware Authorization agar hanya supplier tertentu yang bisa mengupdate produk tertentu
+- Buat endpoint /products/upload-image untuk upload gambar produk dengan validasi ukuran dan tipe file
+- Buat endpoint /upload-profile-picture untuk upload file gambar dengan validasi ukuran dan tipe file
+- Implementasi session-based login supplier dan simpan token login di cookies
+- Tambahkan middleware CORS untuk mengizinkan akses hanya dari origin tertentu
+- Implementasikan Rate Limiting untuk membatasi jumlah request dari IP yang sama

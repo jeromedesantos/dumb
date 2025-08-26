@@ -1,0 +1,60 @@
+{
+	"info": {
+		"_postman_id": "afe076a9-e131-418e-98fb-04b77395163d",
+		"name": "task07",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20536559"
+	},
+	"item": [
+		{
+			"name": "cekUser",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users/points",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"points"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transferPoin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"senderId\": 1, \r\n    \"receiverId\": 2, \r\n    \"amount\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/transfer-points",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"transfer-points"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

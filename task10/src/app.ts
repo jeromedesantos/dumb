@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(corsMiddleware);
 
-// app.use(limiter);
+app.use(limiter);
 app.use("/api/v1", user);
 app.use("/api/v1", product);
 app.use("*catchall", error);
