@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { upload } from "../utils/multer";
 import { auth, nonAuth } from "../middlewares/auth";
-import { existingUser } from "../middlewares/existing";
-import { isFileErr, isFile, saveFile } from "../middlewares/file";
+import { isUserDeleted, isUserExist } from "../middlewares/existing";
+import { isFileErr, isFile, saveFileUser } from "../middlewares/file";
 import { validateUser } from "../middlewares/validate";
 import {
   loginUser,
@@ -11,6 +11,7 @@ import {
   readUsers,
   readUser,
   updateUser,
+  restoreUser,
   deleteUser,
 } from "../controllers/user";
 
@@ -24,7 +25,7 @@ router.post(
   upload.single("profile"),
   isFileErr,
   isFile,
-  saveFile,
+  saveFileUser,
   validateUser,
   createUser
 );
@@ -33,13 +34,14 @@ router.get("/user/:id", auth, readUser);
 router.put(
   "/user/:id",
   auth,
-  existingUser,
+  isUserDeleted,
   upload.single("profile"),
   isFileErr,
-  saveFile,
+  saveFileUser,
   validateUser,
   updateUser
 );
-router.delete("/user/:id", auth, existingUser, deleteUser);
+router.patch("/user/:id", auth, isUserExist, restoreUser);
+router.delete("/user/:id", auth, isUserDeleted, deleteUser);
 
 export default router;

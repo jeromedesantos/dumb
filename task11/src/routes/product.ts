@@ -1,14 +1,15 @@
 import { Router } from "express";
 import { upload } from "../utils/multer";
 import { auth } from "../middlewares/auth";
-import { existingProduct } from "../middlewares/existing";
-import { isFileErr, isFile, saveFile } from "../middlewares/file";
+import { isProductDeleted, isProductExist } from "../middlewares/existing";
+import { isFileErr, isFile, saveFileProduct } from "../middlewares/file";
 import { validateProduct } from "../middlewares/validate";
 import {
   readProducts,
   readProduct,
   createProduct,
   updateProduct,
+  restoreProduct,
   deleteProduct,
 } from "../controllers/product";
 
@@ -22,7 +23,7 @@ router.post(
   upload.single("image"),
   isFileErr,
   isFile,
-  saveFile,
+  saveFileProduct,
   validateProduct,
   createProduct
 );
@@ -31,11 +32,12 @@ router.put(
   auth,
   upload.single("image"),
   isFileErr,
-  saveFile,
+  saveFileProduct,
   validateProduct,
-  existingProduct,
+  isProductDeleted,
   updateProduct
 );
-router.delete("/product/:id", auth, existingProduct, deleteProduct);
+router.patch("/product/:id", auth, isProductExist, restoreProduct);
+router.delete("/product/:id", auth, isProductDeleted, deleteProduct);
 
 export default router;

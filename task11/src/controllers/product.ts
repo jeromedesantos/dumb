@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { resolve } from "path";
-import { unlink } from "fs";
+import { renameSync, unlink } from "fs";
 import { prisma } from "../connections/client";
 import { generateKey } from "../utils/nanoid";
 import { appError } from "../utils/error";
@@ -96,6 +96,19 @@ export async function updateProduct(
     const { file } = req as any;
     const { name, price, stock } = req.body;
     const existingProduct = (req as any).product;
+    if (file) {
+      const filePath = resolve(
+        "src",
+        "uploads",
+        "product",
+        existingProduct.image
+      );
+      unlink(filePath, (err) => {
+        if (err) {
+          throw appError("File cannot remove!", 500);
+        }
+      });
+    }
     const updatedProduct = await prisma.product.update({
       data: {
         image: file ?? existingProduct.image,
@@ -106,20 +119,50 @@ export async function updateProduct(
       },
       where: {
         id,
-        deletedAt: null,
       },
     });
-    if (file) {
-      const filePath = resolve("src", "uploads", existingProduct.image);
-      unlink(filePath, (err) => {
-        if (err) {
-          throw appError("File cannot remove!", 500);
-        }
-      });
-    }
     res.status(200).json({
       status: "Success",
       message: `Update product ${updatedProduct.name} success!`,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+}
+
+export async function restoreProduct(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    const restoredProduct = await prisma.product.update({
+      data: {
+        deletedAt: null,
+      },
+      where: {
+        id,
+      },
+    });
+    if (restoredProduct) {
+      const oldPath = resolve(
+        "src",
+        "uploads",
+        "product",
+        "temp_" + restoredProduct.image
+      );
+      const newPath = resolve(
+        "src",
+        "uploads",
+        "product",
+        restoredProduct.image
+      );
+      renameSync(oldPath, newPath);
+    }
+    res.status(200).json({
+      status: "Success",
+      message: `Restore product ${restoredProduct.name} success!`,
     });
   } catch (err: any) {
     next(err);
@@ -139,9 +182,16 @@ export async function deleteProduct(
       },
       where: {
         id,
-        deletedAt: null,
       },
     });
+    const oldPath = resolve("src", "uploads", "product", deletedProduct.image);
+    const newPath = resolve(
+      "src",
+      "uploads",
+      "product",
+      "temp_" + deletedProduct.image
+    );
+    renameSync(oldPath, newPath);
     res.status(200).json({
       status: "Success",
       message: `Delete product ${deletedProduct.name} success!`,

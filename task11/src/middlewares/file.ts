@@ -22,12 +22,28 @@ export function isFile(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export function saveFile(req: Request, res: Response, next: NextFunction) {
+export function saveFileUser(req: Request, res: Response, next: NextFunction) {
   const file = req.file?.originalname as string;
   if (file) {
     const fileName = Date.now() + "-" + file;
     const fileBuffer = req.file?.buffer as any;
-    const filePath = resolve("src", "uploads", fileName);
+    const filePath = resolve("src", "uploads", "user", fileName);
+    writeFileSync(filePath, fileBuffer);
+    (req as any).file = fileName;
+  }
+  next();
+}
+
+export function saveFileProduct(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const file = req.file?.originalname as string;
+  if (file) {
+    const fileName = Date.now() + "-" + file;
+    const fileBuffer = req.file?.buffer as any;
+    const filePath = resolve("src", "uploads", "product", fileName);
     writeFileSync(filePath, fileBuffer);
     (req as any).file = fileName;
   }

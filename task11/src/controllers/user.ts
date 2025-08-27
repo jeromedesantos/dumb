@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { unlink } from "fs";
+import { renameSync, unlink } from "fs";
 import { resolve } from "path";
 import { prisma } from "../connections/client";
 import { generateKey } from "../utils/nanoid";
@@ -181,6 +181,14 @@ export async function updateUser(
     const { name, email, role, password } = req.body;
     const existingUser = (req as any).user;
     const hashedPassword = await hashPassword(password);
+    if (file) {
+      const filePath = resolve("src", "uploads", "user", existingUser.profile);
+      unlink(filePath, (err) => {
+        if (err) {
+          throw appError("File cannot remove!", 500);
+        }
+      });
+    }
     const updatedUser = await prisma.user.update({
       data: {
         profile: file ?? existingUser.profile,
@@ -191,22 +199,47 @@ export async function updateUser(
       },
       where: {
         id,
-        deletedAt: null,
       },
     });
-    if (file) {
-      const filePath = resolve("src", "uploads", existingUser.profile);
-      unlink(filePath, (err) => {
-        if (err) {
-          throw appError("File cannot remove!", 500);
-        }
-      });
-    }
     res.status(200).json({
       status: "200 OK",
       message: `Update user ${updatedUser.name} success!`,
     });
   } catch (err: any) {
+    next(err);
+  }
+}
+
+export async function restoreUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    const restoredUser = await prisma.user.update({
+      data: {
+        deletedAt: null,
+      },
+      where: {
+        id,
+      },
+    });
+    if (restoredUser) {
+      const oldPath = resolve(
+        "src",
+        "uploads",
+        "product",
+        "temp_" + restoredUser.profile
+      );
+      const newPath = resolve("src", "uploads", "user", restoredUser.profile);
+      renameSync(oldPath, newPath);
+    }
+    res.status(200).json({
+      status: "Success",
+      message: `Restore user ${restoredUser.name} success!`,
+    });
+  } catch (err) {
     next(err);
   }
 }
@@ -224,7 +257,6 @@ export async function deleteUser(
       },
       where: {
         id,
-        deletedAt: null,
       },
     });
     res.status(200).json({
