@@ -1,0 +1,42 @@
+import { Request, Response, NextFunction } from "express";
+import { prisma } from "../connections/client";
+import { appError } from "../utils/error";
+
+export async function existingUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { id } = req.params;
+  const user = await prisma.user.findUnique({
+    where: { id },
+  });
+  if (user === null) {
+    throw appError("User Not Found!", 404);
+  }
+  if (user.deletedAt !== null) {
+    throw appError("User has been deleted!", 400);
+  }
+  (req as any).user = user;
+  next();
+}
+
+export async function existingProduct(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+    if (product === null) {
+      throw appError("Product Not Found!", 404);
+    }
+    (req as any).product = product;
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
