@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import { userSchema, productSchema, orderSchema } from "../utils/joi";
 import { appError } from "../utils/error";
-import { userSchema, productSchema } from "../utils/joi";
 
 export function validateUser(req: Request, res: Response, next: NextFunction) {
   const { error } = userSchema.validate(req.body);
@@ -16,6 +16,14 @@ export function validateProduct(
   next: NextFunction
 ) {
   const { error } = productSchema.validate(req.body);
+  if (error) {
+    throw appError(error.message, 400);
+  }
+  next();
+}
+
+export function validateOrder(req: Request, res: Response, next: NextFunction) {
+  const { error } = orderSchema.validate(req.body);
   if (error) {
     throw appError(error.message, 400);
   }

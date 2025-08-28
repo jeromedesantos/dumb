@@ -5,7 +5,6 @@ import { appError } from "../utils/error";
 export function auth(req: Request, res: Response, next: NextFunction) {
   try {
     const { token } = req.cookies;
-    // const token = req.headers.authorization?.split(" ")[1];
     if (token === undefined) {
       throw appError("Unauthorized", 401);
     }
@@ -13,14 +12,14 @@ export function auth(req: Request, res: Response, next: NextFunction) {
     (req as any).user = decoded as any;
     next();
   } catch (err) {
-    throw appError("Invalid Token", 401);
+    throw appError("You must Login to access!", 401);
   }
 }
 
 export function admin(req: Request, res: Response, next: NextFunction) {
   const { role } = (req as any).user;
   if (role !== "admin") {
-    throw appError("Unauthorized", 401);
+    throw appError("Only admin can access this route!", 401);
   }
   next();
 }
@@ -28,10 +27,9 @@ export function admin(req: Request, res: Response, next: NextFunction) {
 export function nonAuth(req: Request, res: Response, next: NextFunction) {
   console.log("cookies", req.cookies);
   const { token } = req.cookies;
-  // const token = req.headers.authorization?.split(" ")[1];
   if (token) {
     console.log("ayook");
-    throw appError("You are already logged in", 400);
+    throw appError("You're already logged in", 400);
   }
   next();
 }

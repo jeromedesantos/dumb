@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { auth } from "../middlewares/auth";
-import { isOrderDeleted, isOrderExist } from "../middlewares/existing";
+import { auth, admin } from "../middlewares/auth";
+import { isModelExist } from "../middlewares/existing";
 import { validateOrder } from "../middlewares/validate";
 import {
   readOrders,
@@ -13,11 +13,24 @@ import {
 
 const router = Router();
 
-router.get("/order", auth, readOrders);
-router.get("/order/:id", auth, readOrder);
+router.get("/order", auth, admin, readOrders);
+router.get("/order/:id", auth, admin, readOrder);
 router.post("/order", auth, validateOrder, createOrder);
-router.put("/order/:id", auth, validateOrder, isOrderDeleted, updateOrder);
-router.patch("/order/:id", auth, isOrderExist, restoreOrder);
-router.delete("/order/:id", auth, isOrderDeleted, deleteOrder);
+router.put(
+  "/order/:id",
+  auth,
+  admin,
+  validateOrder,
+  isModelExist("order"),
+  updateOrder
+);
+router.patch(
+  "/order/:id",
+  auth,
+  admin,
+  isModelExist("order", false),
+  restoreOrder
+);
+router.delete("/order/:id", auth, admin, isModelExist("order"), deleteOrder);
 
 export default router;

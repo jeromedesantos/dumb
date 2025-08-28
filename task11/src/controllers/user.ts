@@ -21,7 +21,7 @@ export async function loginUser(
       throw appError("Invalid email", 401);
     }
     const isPasswordValid = await comparePassword(password, user.password);
-    if (isPasswordValid === false) {
+    if (user && isPasswordValid === false) {
       throw appError("Invalid password", 401);
     }
     const token = signToken({
@@ -58,7 +58,7 @@ export function logoutUser(req: Request, res: Response, next: NextFunction) {
       .status(200)
       .json({
         status: "Success",
-        message: "Logout successful..",
+        message: "Logout successful!",
       });
   } catch (err) {
     next(err);
@@ -85,6 +85,9 @@ export async function readUsers(
         email: true,
         point: true,
         role: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
       },
       where: {
         deletedAt: null,
@@ -120,6 +123,9 @@ export async function readUser(
         email: true,
         point: true,
         role: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
       },
       where: {
         id,
@@ -179,7 +185,7 @@ export async function updateUser(
     const { id } = req.params;
     const { file } = req as any;
     const { name, email, role, password } = req.body;
-    const existingUser = (req as any).user;
+    const existingUser = (req as any).model;
     const hashedPassword = await hashPassword(password);
     if (file) {
       const filePath = resolve("src", "uploads", "user", existingUser.profile);
@@ -196,6 +202,7 @@ export async function updateUser(
         email,
         role,
         password: hashedPassword,
+        updatedAt: new Date(),
       },
       where: {
         id,
@@ -205,7 +212,7 @@ export async function updateUser(
       status: "200 OK",
       message: `Update user ${updatedUser.name} success!`,
     });
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 }
@@ -263,7 +270,7 @@ export async function deleteUser(
       status: "Success",
       message: `Delete user ${deletedUser.name} success!`,
     });
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 }

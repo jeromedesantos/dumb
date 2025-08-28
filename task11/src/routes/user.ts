@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { upload } from "../utils/multer";
-import { auth, nonAuth } from "../middlewares/auth";
-import { isUserDeleted, isUserExist } from "../middlewares/existing";
+import { auth, nonAuth, admin } from "../middlewares/auth";
+import { isModelExist } from "../middlewares/existing";
 import { isFile, saveFileUser } from "../middlewares/file";
 import { validateUser } from "../middlewares/validate";
 import {
@@ -24,8 +24,8 @@ router.post(
   nonAuth,
   upload.single("profile"),
   isFile,
-  saveFileUser,
   validateUser,
+  saveFileUser,
   createUser
 );
 router.get("/user", auth, readUsers);
@@ -33,13 +33,19 @@ router.get("/user/:id", auth, readUser);
 router.put(
   "/user/:id",
   auth,
-  isUserDeleted,
+  isModelExist("user"),
   upload.single("profile"),
-  saveFileUser,
   validateUser,
+  saveFileUser,
   updateUser
 );
-router.patch("/user/:id", auth, isUserExist, restoreUser);
-router.delete("/user/:id", auth, isUserDeleted, deleteUser);
+router.patch(
+  "/user/:id",
+  auth,
+  admin,
+  isModelExist("user", false),
+  restoreUser
+);
+router.delete("/user/:id", auth, isModelExist("user"), deleteUser);
 
 export default router;

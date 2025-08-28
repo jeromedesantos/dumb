@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { upload } from "../utils/multer";
-import { auth } from "../middlewares/auth";
-import { isProductDeleted, isProductExist } from "../middlewares/existing";
+import { auth, admin } from "../middlewares/auth";
+import { isModelExist } from "../middlewares/existing";
 import { isFile, saveFileProduct } from "../middlewares/file";
 import { validateProduct } from "../middlewares/validate";
 import {
@@ -22,20 +22,26 @@ router.post(
   auth,
   upload.single("image"),
   isFile,
-  saveFileProduct,
   validateProduct,
+  saveFileProduct,
   createProduct
 );
 router.put(
   "/product/:id",
   auth,
+  isModelExist("product"),
   upload.single("image"),
-  saveFileProduct,
   validateProduct,
-  isProductDeleted,
+  saveFileProduct,
   updateProduct
 );
-router.patch("/product/:id", auth, isProductExist, restoreProduct);
-router.delete("/product/:id", auth, isProductDeleted, deleteProduct);
+router.patch(
+  "/product/:id",
+  auth,
+  admin,
+  isModelExist("product", false),
+  restoreProduct
+);
+router.delete("/product/:id", auth, isModelExist("product"), deleteProduct);
 
 export default router;

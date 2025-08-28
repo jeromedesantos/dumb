@@ -70,7 +70,7 @@ export async function createProduct(
     const { name, price, stock } = req.body;
     const createdProduct = await prisma.product.create({
       data: {
-        id: generateKey("itm"),
+        id: generateKey("prd"),
         image: file,
         name,
         price: Number(price),
@@ -81,7 +81,7 @@ export async function createProduct(
       status: "Success",
       message: `Create product ${createdProduct.name} success!`,
     });
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 }
@@ -95,7 +95,7 @@ export async function updateProduct(
     const { id } = req.params;
     const { file } = req as any;
     const { name, price, stock } = req.body;
-    const existingProduct = (req as any).product;
+    const existingProduct = (req as any).model;
     if (file) {
       const filePath = resolve(
         "src",
@@ -125,7 +125,7 @@ export async function updateProduct(
       status: "Success",
       message: `Update product ${updatedProduct.name} success!`,
     });
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 }
@@ -164,7 +164,7 @@ export async function restoreProduct(
       status: "Success",
       message: `Restore product ${restoredProduct.name} success!`,
     });
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 }
@@ -196,7 +196,7 @@ export async function deleteProduct(
       status: "Success",
       message: `Delete product ${deletedProduct.name} success!`,
     });
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 }

@@ -5,7 +5,7 @@ config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-export interface UserPayload {
+interface UserPayload {
   id: string;
   role: string;
 }
