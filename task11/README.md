@@ -1,4 +1,4 @@
-## TASK 10: 💻 Mini Online Store API (Tema nya bebas)
+## TASK 10: 💻 Mini Online Store API
 
 #### 1. Register & Login - task09
 
@@ -22,7 +22,7 @@
 
 #### 4. Transfer Antar Point Pengguna - task07
 
-- how to get point: transaksi Rp 10.000 -> 10 (conversi 1 point = Rp 1.000)
+- how to get point: transaksi Rp 10.000 jadi 10 (conversi 1 point = Rp 1.000)
 - Validasi saldo poin
 - Menggunakan Prisma transaction
 - Validasi error handling
