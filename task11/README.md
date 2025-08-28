@@ -1,8 +1,6 @@
 ## TASK 10:
 
-#### 🗂 Judul: Mini Online Store API (Tema nya bebas)
-
-#### 🕒 Durasi: 3 hari pengerjaan mini project
+#### Mini Online Store API (Tema nya bebas)
 
 #### 💻 Fitur:
 
