@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { auth, admin } from "../middlewares/auth";
 import { isModelExist } from "../middlewares/existing";
-import { validateOrder } from "../middlewares/validate";
+import { validateOrder, validateUpdateOrder } from "../middlewares/validate";
 import {
   readOrders,
   readOrder,
@@ -20,12 +20,12 @@ router.put(
   "/order/:id",
   auth,
   admin,
-  validateOrder,
+  validateUpdateOrder,
   isModelExist("order"),
   updateOrder
 );
 router.patch(
-  "/order/:id",
+  "/order/:id/restore",
   auth,
   admin,
   isModelExist("order", false),

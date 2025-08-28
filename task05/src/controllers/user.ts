@@ -60,50 +60,6 @@ export async function readUsersSummary(req: Request, res: Response) {
   }
 }
 
-export async function readPostSummary(req: Request, res: Response) {
-  try {
-    const { sortBy, maxComment, order, limit, offset } = req.query;
-
-    const allowedSort = ["post_id", "title", "total_comments"];
-    const allowedOrder = ["asc", "desc"];
-
-    const sortBySafe = allowedSort.includes(String(sortBy))
-      ? sortBy
-      : "post_id";
-    const orderSafe = allowedOrder.includes(String(order)) ? order : "asc";
-    const maxCommentSafe = !isNaN(Number(maxComment)) ? Number(maxComment) : 0;
-    const limitSafe = !isNaN(Number(limit)) ? Number(limit) : 10;
-    const offsetSafe = !isNaN(Number(offset)) ? Number(offset) : 0;
-
-    const rawPosts = `
-      SELECT 
-        p."post_id", 
-        p."title", 
-        COUNT(c."comment_id") AS "total_comments" 
-      FROM "Post" p 
-      LEFT JOIN "Comment" c ON c."post_id" = p."post_id" 
-      GROUP BY p."post_id", p."title" 
-      HAVING COUNT(c."comment_id") < ${maxCommentSafe}
-      ORDER BY ${sortBySafe} ${orderSafe}
-      LIMIT ${limitSafe} OFFSET ${offsetSafe};
-    `;
-
-    const summary = await prisma.$queryRawUnsafe(rawPosts);
-
-    res.status(200).json({
-      status: "200 OK",
-      message: "Fetch summary success!",
-      summary,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status: "500 Internal Server Error",
-      message: "Failed to fetch post!",
-    });
-  }
-}
-
 export async function readUser(req: Request, res: Response) {
   try {
     const id = parseInt(req.params.id);

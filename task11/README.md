@@ -1,14 +1,14 @@
 ## TASK 10:
 
-https://docs.google.com/forms/d/e/1FAIpQLSdSqFx6TdvqO9Qf7ggcRk3EUOOFpqVWJA-1dc5U6vncQicQJA/viewform
+#### 🗂 Judul:
 
-🗂 Judul:
 Mini Online Store API (Tema nya bebas)
 
-🕒 Durasi:
+#### 🕒 Durasi:
+
 3 hari pengerjaan mini project
 
-Fitur:
+#### Fitur:
 
 1. Register & Login -> task09 (DONE)
 
@@ -22,7 +22,7 @@ Fitur:
 - User dapat melihat semua Produk
 - Filtering, Sorting, Pagination
 
-3. Order -> task05
+3. Order -> task05 (DONE)
 
 - User bisa order produk
 - User melihat order miliknya
@@ -30,7 +30,7 @@ Fitur:
 - Group order by user ID
 - Filtering, Sorting, Pagination
 
-4. Transfer Antar Point Pengguna -> task07
+4. Transfer Antar Point Pengguna -> task07 (DONE)
 
 - how to get point: transaksi Rp 10.000 -> 10 (conversi 1 point = Rp 1.000)
 - Validasi saldo poin
@@ -52,3 +52,8 @@ Fitur:
 
 - Save semua endpoint projeck ini pada postman
 - export collection/folder tersebut lalu taruh di GitHub bareng dengan projek nya
+
+#### Penjelasan Fitur
+
+- Update Stock [Update Stock](updStock.md).
+- Update Point [Update Point](updPoint.md).

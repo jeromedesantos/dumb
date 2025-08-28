@@ -73,36 +73,46 @@ export async function createOrder(
 ) {
   try {
     const { userId, productId, qty } = req.body;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (user === null) {
+      throw appError("User not Found", 404);
+    }
     const product = await prisma.product.findUnique({
       where: { id: productId },
     });
     if (product === null) {
       throw appError("Product not Found", 404);
     }
-    if (product && product.stock < qty) {
-      throw appError("Insufficient stock!", 400);
-    }
-    const total = (product.price as any) * qty;
     const createdOrder = await prisma.$transaction(async (tx) => {
-      if (total > 10000) {
-        await tx.user.update({
-          where: { id: userId },
-          data: { point: { increment: 10 } },
+      try {
+        if (product && product.stock < qty) {
+          throw appError("Insufficient stock!", 400);
+        }
+        await tx.product.update({
+          where: { id: productId },
+          data: { stock: { decrement: qty } },
         });
+        const total = (product.price as any) * qty;
+        if (total > 10000) {
+          await tx.user.update({
+            where: { id: userId },
+            data: { point: { increment: 10 } },
+          });
+        }
+        return await tx.order.create({
+          data: {
+            id: generateKey("ord"),
+            userId,
+            productId,
+            qty,
+            total,
+          },
+        });
+      } catch (err: any) {
+        throw appError(err.message, 500);
       }
-      await tx.product.update({
-        where: { id: productId },
-        data: { stock: { decrement: qty } },
-      });
-      return await tx.order.create({
-        data: {
-          id: generateKey("ord"),
-          userId,
-          productId,
-          qty,
-          total,
-        },
-      });
     });
     res.status(201).json({
       status: "Success",
@@ -119,7 +129,7 @@ export async function updateOrder(
   next: NextFunction
 ) {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const { qty } = req.body;
     const oldOrder = await prisma.order.findUnique({
       where: { id },
@@ -133,51 +143,62 @@ export async function updateOrder(
     if (product === null) {
       throw appError("Product not Found", 404);
     }
-    const diff = qty - oldOrder.qty;
-    if (product.stock < diff) {
-      throw appError("Insufficient stock!", 400);
+    const user = await prisma.user.findUnique({
+      where: { id: oldOrder.userId },
+    });
+    if (user === null) {
+      throw appError("User not Found", 404);
     }
-    const total = (product.price as any) * qty;
     const updatedOrder = await prisma.$transaction(async (tx) => {
-      if (diff > 0) {
-        await tx.product.update({
-          where: { id: oldOrder.productId },
-          data: {
-            stock: {
-              decrement: diff,
+      try {
+        const diffQty = qty - oldOrder.qty;
+        if (product.stock < diffQty) {
+          throw appError("Insufficient stock!", 400);
+        }
+        if (diffQty > 0) {
+          await tx.product.update({
+            where: { id: oldOrder.productId },
+            data: {
+              stock: {
+                decrement: diffQty,
+              },
             },
+          });
+        } else if (diffQty < 0) {
+          await tx.product.update({
+            where: { id: oldOrder.productId },
+            data: {
+              stock: {
+                increment: Math.abs(diffQty),
+              },
+            },
+          });
+        }
+        const total = (product.price as any) * qty;
+        const oldEligible = (oldOrder.total as any) >= 10000;
+        const newEligible = total >= 10000;
+        if (!oldEligible && newEligible) {
+          await tx.user.update({
+            where: { id: oldOrder.userId },
+            data: { point: { increment: 10 } },
+          });
+        } else if (oldEligible && !newEligible) {
+          await tx.user.update({
+            where: { id: oldOrder.userId },
+            data: { point: { decrement: 10 } },
+          });
+        }
+        return await tx.order.update({
+          where: { id },
+          data: {
+            qty,
+            total,
+            updatedAt: new Date(),
           },
         });
-      } else if (diff < 0) {
-        await tx.product.update({
-          where: { id: oldOrder.productId },
-          data: {
-            stock: {
-              increment: Math.abs(diff),
-            },
-          },
-        });
+      } catch (err: any) {
+        throw appError(err.message, 500);
       }
-      if ((oldOrder.total as any) > 10000) {
-        await tx.user.update({
-          where: { id: oldOrder.userId },
-          data: { point: { decrement: 10 } },
-        });
-      }
-      if (total > 10000) {
-        await tx.user.update({
-          where: { id: oldOrder.userId },
-          data: { point: { increment: 10 } },
-        });
-      }
-      return await tx.order.update({
-        where: { id },
-        data: {
-          qty,
-          total,
-          updatedAt: new Date(),
-        },
-      });
     });
     res.status(200).json({
       status: "Success",
@@ -231,28 +252,38 @@ export async function deleteOrder(
     if (product === null) {
       throw appError("Product not Found", 404);
     }
+    const user = await prisma.user.findUnique({
+      where: { id: oldOrder.userId },
+    });
+    if (user === null) {
+      throw appError("User not Found", 404);
+    }
     const deletedOrder = await prisma.$transaction(async (tx) => {
-      if ((oldOrder.total as any) > 10000) {
-        await tx.user.update({
-          where: { id: oldOrder.userId },
-          data: { point: { decrement: 10 } },
+      try {
+        if ((oldOrder.total as any) > 10000) {
+          await tx.user.update({
+            where: { id: oldOrder.userId },
+            data: { point: { decrement: 10 } },
+          });
+        }
+        await tx.product.update({
+          where: { id: oldOrder.productId },
+          data: { stock: { increment: oldOrder.qty } },
         });
+        return await tx.order.update({
+          where: { id },
+          data: {
+            qty: 0,
+            total: 0,
+            deletedAt: new Date(),
+          },
+        });
+      } catch (err: any) {
+        throw appError(err.message, 500);
       }
-      await tx.product.update({
-        where: { id: oldOrder.productId },
-        data: { stock: { increment: oldOrder.qty } },
-      });
-      return await tx.order.update({
-        where: { id },
-        data: {
-          qty: 0,
-          total: 0,
-          deletedAt: new Date(),
-        },
-      });
     });
     res.status(200).json({
-      status: "200 OK",
+      status: "Success",
       message: `Delete order [${deletedOrder.id}] success!`,
     });
   } catch (err) {

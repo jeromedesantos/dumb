@@ -16,5 +16,11 @@ export const productSchema = Joi.object({
 });
 
 export const orderSchema = Joi.object({
+  userId: Joi.string().min(0).max(255).required(),
+  productId: Joi.string().min(0).max(255).required(),
+  qty: Joi.number().min(0).max(1000000).required(),
+});
+
+export const updateOrderSchema = Joi.object({
   qty: Joi.number().min(0).max(1000000).required(),
 });

@@ -36,7 +36,7 @@ router.put(
   updateProduct
 );
 router.patch(
-  "/product/:id",
+  "/product/:id/restore",
   auth,
   admin,
   isModelExist("product", false),

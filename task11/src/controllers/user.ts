@@ -65,6 +65,47 @@ export function logoutUser(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+export async function readUsersSummary(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {
+      sortBy = "u.id",
+      order = "desc",
+      offset = 0,
+      limit = 10,
+    } = req.query;
+    const rawUsers = `
+      SELECT
+        u."id" AS "userId",
+        u."name",
+        COUNT(o."id")::int AS "totalOrders",
+        SUM(o."qty" * p.price)::numeric AS "totalSpent"
+      FROM
+        "Order" o
+      INNER JOIN
+        "User" u ON o."userId" = u."id"
+      INNER JOIN
+        "Product" p ON o."productId" = p."id"
+      GROUP BY
+        u."id", u."name"
+      ORDER BY
+         ${sortBy} ${order}
+      LIMIT ${Number(limit)} OFFSET ${Number(offset)};
+    `;
+    const summary = await prisma.$queryRawUnsafe(rawUsers);
+    res.status(200).json({
+      status: "Success",
+      message: "Fetch summary success!",
+      data: summary,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function readUsers(
   req: Request,
   res: Response,

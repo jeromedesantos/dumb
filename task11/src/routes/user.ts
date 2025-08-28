@@ -8,6 +8,7 @@ import {
   loginUser,
   logoutUser,
   createUser,
+  readUsersSummary,
   readUsers,
   readUser,
   updateUser,
@@ -28,6 +29,7 @@ router.post(
   saveFileUser,
   createUser
 );
+router.get("/user/summary", auth, readUsersSummary);
 router.get("/user", auth, readUsers);
 router.get("/user/:id", auth, readUser);
 router.put(
@@ -40,7 +42,7 @@ router.put(
   updateUser
 );
 router.patch(
-  "/user/:id",
+  "/user/:id/restore",
   auth,
   admin,
   isModelExist("user", false),
