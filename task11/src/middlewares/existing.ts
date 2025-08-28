@@ -49,14 +49,18 @@ export async function isUserExist(
   res: Response,
   next: NextFunction
 ) {
-  const { id } = req.params;
-  const user = await prisma.user.findUnique({
-    where: { id },
-  });
-  if (user === null) {
-    throw appError("User Not Found!", 404);
+  try {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+    if (user === null) {
+      throw appError("User Not Found!", 404);
+    }
+    next();
+  } catch (err) {
+    next(err);
   }
-  next();
 }
 
 export async function isProductExist(

@@ -3,18 +3,6 @@ import { resolve } from "path";
 import { writeFileSync } from "fs";
 import { appError } from "../utils/error";
 
-export function isFileErr(
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  if (err.code === "LIMIT_FILE_SIZE") {
-    throw appError("file bigger than 2 KB", 413);
-  }
-  next();
-}
-
 export function isFile(req: Request, res: Response, next: NextFunction) {
   if (req.file === undefined) {
     throw appError("No file uploaded", 400);

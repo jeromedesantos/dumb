@@ -2,7 +2,7 @@ import { Router } from "express";
 import { upload } from "../utils/multer";
 import { auth } from "../middlewares/auth";
 import { isProductDeleted, isProductExist } from "../middlewares/existing";
-import { isFileErr, isFile, saveFileProduct } from "../middlewares/file";
+import { isFile, saveFileProduct } from "../middlewares/file";
 import { validateProduct } from "../middlewares/validate";
 import {
   readProducts,
@@ -21,7 +21,6 @@ router.post(
   "/product",
   auth,
   upload.single("image"),
-  isFileErr,
   isFile,
   saveFileProduct,
   validateProduct,
@@ -31,7 +30,6 @@ router.put(
   "/product/:id",
   auth,
   upload.single("image"),
-  isFileErr,
   saveFileProduct,
   validateProduct,
   isProductDeleted,

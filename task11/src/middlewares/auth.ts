@@ -26,14 +26,12 @@ export function admin(req: Request, res: Response, next: NextFunction) {
 }
 
 export function nonAuth(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { token } = req.cookies;
-    // const token = req.headers.authorization?.split(" ")[1];
-    if (token !== undefined) {
-      throw appError("You are already logged in", 400);
-    }
-    next();
-  } catch (err) {
-    next(err);
+  console.log("cookies", req.cookies);
+  const { token } = req.cookies;
+  // const token = req.headers.authorization?.split(" ")[1];
+  if (token) {
+    console.log("ayook");
+    throw appError("You are already logged in", 400);
   }
+  next();
 }

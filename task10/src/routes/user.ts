@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { auth, nonAuth } from "../middlewares/auth";
-import { validateFile, validateUser } from "../middlewares/validate";
+import { validateUser } from "../middlewares/validate";
 import {
   loginUser,
   logoutUser,
@@ -20,7 +20,6 @@ router.post(
   "/register",
   nonAuth,
   upload.single("profile"),
-  validateFile,
   validateUser,
   createUser
 );
@@ -31,7 +30,6 @@ router.put(
   "/user/:id",
   auth,
   upload.single("profile"),
-  validateFile,
   validateUser,
   updateUser
 );

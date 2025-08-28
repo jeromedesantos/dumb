@@ -2,14 +2,6 @@ import multer from "multer";
 import { resolve, extname } from "path";
 import { appError } from "../utils/error";
 
-// const filePath = resolve("src", "uploads");
-// const storage = multer.diskStorage({
-//   destination: filePath,
-//   filename: (req, file, cb) => {
-//     cb(null, `${Date.now()}-${file.originalname}`);
-//   },
-// });
-
 const storage = multer.memoryStorage();
 export const upload = multer({
   storage,

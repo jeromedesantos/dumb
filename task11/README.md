@@ -10,13 +10,13 @@ Mini Online Store API (Tema nya bebas)
 
 Fitur:
 
-1. Register & Login -> task09
+1. Register & Login -> task09 (DONE)
 
 - Hashing password (bcrypt)
 - Auth menggunakan JWT
 - Role-based authorization (admin / user)
 
-2. Produk -> task05
+2. Produk -> task05 (DONE)
 
 - Admin bisa Create, Read dan Update Produk
 - User dapat melihat semua Produk
@@ -32,17 +32,17 @@ Fitur:
 
 4. Transfer Antar Point Pengguna -> task07
 
-- how to get point: transaksi Rp 10.000 -> 10 (conversi 1 porint = Rp 1.000)
+- how to get point: transaksi Rp 10.000 -> 10 (conversi 1 point = Rp 1.000)
 - Validasi saldo poin
 - Menggunakan Prisma transaction
 - Validasi error handling
 
-5. Upload Foto -> task10
+5. Upload Foto -> task10 (DONE)
 
 - Upload gambar profil menggunakan multer
 - Upload gambar produk menggunakan multer
 
-6. Soft Delete Produk
+6. Soft Delete Produk (DONE)
 
 - Tambahkan field deletedAt (nullable DateTime) / status(nullable boolean) di tabel Product (pilih salah satu)
 - Saat produk dihapus, ubah deletedAt jadi waktu sekarang

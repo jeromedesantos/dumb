@@ -33,7 +33,7 @@ CREATE TABLE "task11"."Order" (
     "id" VARCHAR(36) NOT NULL,
     "userId" VARCHAR(36) NOT NULL,
     "productId" VARCHAR(36) NOT NULL,
-    "quantity" INTEGER NOT NULL DEFAULT 0,
+    "qty" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
     "deletedAt" TIMESTAMP(3),
