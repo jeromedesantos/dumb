@@ -2,7 +2,7 @@ import { Router } from "express";
 import { upload } from "../utils/multer";
 import { auth, admin } from "../middlewares/auth";
 import { isModelExist } from "../middlewares/existing";
-import { isFile, saveFileProduct } from "../middlewares/file";
+import { isFile, saveFile } from "../middlewares/file";
 import { validateProduct } from "../middlewares/validate";
 import {
   readProducts,
@@ -21,9 +21,9 @@ router.post(
   "/product",
   auth,
   upload.single("image"),
-  isFile,
   validateProduct,
-  saveFileProduct,
+  isFile,
+  saveFile,
   createProduct
 );
 router.put(
@@ -32,7 +32,7 @@ router.put(
   isModelExist("product"),
   upload.single("image"),
   validateProduct,
-  saveFileProduct,
+  saveFile,
   updateProduct
 );
 router.patch(

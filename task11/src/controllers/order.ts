@@ -152,7 +152,7 @@ export async function updateOrder(
     const updatedOrder = await prisma.$transaction(async (tx) => {
       try {
         const diffQty = qty - oldOrder.qty;
-        if (product.stock < diffQty) {
+        if (diffQty > 0 && product.stock < diffQty) {
           throw appError("Insufficient stock!", 400);
         }
         if (diffQty > 0) {
@@ -260,7 +260,7 @@ export async function deleteOrder(
     }
     const deletedOrder = await prisma.$transaction(async (tx) => {
       try {
-        if ((oldOrder.total as any) > 10000) {
+        if ((oldOrder.total as any) >= 10000) {
           await tx.user.update({
             where: { id: oldOrder.userId },
             data: { point: { decrement: 10 } },

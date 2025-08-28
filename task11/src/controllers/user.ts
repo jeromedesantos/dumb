@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { renameSync, unlink } from "fs";
+import { writeFileSync, renameSync, unlink } from "fs";
 import { resolve } from "path";
 import { prisma } from "../connections/client";
 import { generateKey } from "../utils/nanoid";
@@ -189,8 +189,9 @@ export async function createUser(
   next: NextFunction
 ) {
   try {
-    const { file } = req as any;
     const { name, email, role, password } = req.body;
+    const fileName = (req as any)?.processedFile?.fileName;
+    const fileBuffer = (req as any)?.processedFile?.fileBuffer;
     const hashedPassword = await hashPassword(password);
     const exitingEmail = await prisma.user.findUnique({
       where: { email },
@@ -201,13 +202,15 @@ export async function createUser(
     const createdUser = await prisma.user.create({
       data: {
         id: generateKey("usr"),
-        profile: file,
+        profile: fileName,
         name,
         email,
         role,
         password: hashedPassword,
       },
     });
+    const savePath = resolve("src", "uploads", "product", fileName);
+    writeFileSync(savePath, fileBuffer);
     res.status(201).json({
       status: "Success",
       message: `Create user ${createdUser.name} success!`,
@@ -224,21 +227,14 @@ export async function updateUser(
 ) {
   try {
     const { id } = req.params;
-    const { file } = req as any;
     const { name, email, role, password } = req.body;
     const existingUser = (req as any).model;
+    const fileName = (req as any)?.processedFile?.fileName;
+    const fileBuffer = (req as any)?.processedFile?.fileBuffer;
     const hashedPassword = await hashPassword(password);
-    if (file) {
-      const filePath = resolve("src", "uploads", "user", existingUser.profile);
-      unlink(filePath, (err) => {
-        if (err) {
-          throw appError("File cannot remove!", 500);
-        }
-      });
-    }
     const updatedUser = await prisma.user.update({
       data: {
-        profile: file ?? existingUser.profile,
+        profile: fileName ?? existingUser.profile,
         name,
         email,
         role,
@@ -249,6 +245,16 @@ export async function updateUser(
         id,
       },
     });
+    if (fileName) {
+      const filePath = resolve("src", "uploads", "user", existingUser.profile);
+      unlink(filePath, (err) => {
+        if (err) {
+          throw appError("File cannot remove!", 500);
+        }
+      });
+      const savePath = resolve("src", "uploads", "product", fileName);
+      writeFileSync(savePath, fileBuffer);
+    }
     res.status(200).json({
       status: "200 OK",
       message: `Update user ${updatedUser.name} success!`,

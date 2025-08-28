@@ -14,7 +14,7 @@ import {
 const router = Router();
 
 router.get("/order", auth, admin, readOrders);
-router.get("/order/:id", auth, admin, readOrder);
+router.get("/order/:id", auth, readOrder);
 router.post("/order", auth, validateOrder, createOrder);
 router.put(
   "/order/:id",

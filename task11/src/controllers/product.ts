@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { resolve } from "path";
-import { renameSync, unlink } from "fs";
+import { writeFileSync, renameSync, unlink } from "fs";
 import { prisma } from "../connections/client";
 import { generateKey } from "../utils/nanoid";
 import { appError } from "../utils/error";
@@ -66,17 +66,20 @@ export async function createProduct(
   next: NextFunction
 ) {
   try {
-    const { file } = req as any;
     const { name, price, stock } = req.body;
+    const fileName = (req as any)?.processedFile?.fileName;
+    const fileBuffer = (req as any)?.processedFile?.fileBuffer;
     const createdProduct = await prisma.product.create({
       data: {
         id: generateKey("prd"),
-        image: file,
+        image: fileName,
         name,
         price: Number(price),
         stock: Number(stock),
       },
     });
+    const savePath = resolve("src", "uploads", "product", fileName);
+    writeFileSync(savePath, fileBuffer);
     res.status(201).json({
       status: "Success",
       message: `Create product ${createdProduct.name} success!`,
@@ -93,10 +96,23 @@ export async function updateProduct(
 ) {
   try {
     const { id } = req.params;
-    const { file } = req as any;
     const { name, price, stock } = req.body;
     const existingProduct = (req as any).model;
-    if (file) {
+    const fileName = (req as any)?.processedFile?.fileName;
+    const fileBuffer = (req as any)?.processedFile?.fileBuffer;
+    const updatedProduct = await prisma.product.update({
+      data: {
+        image: fileName ?? existingProduct.image,
+        name,
+        price: Number(price),
+        stock: Number(stock),
+        updatedAt: new Date(),
+      },
+      where: {
+        id,
+      },
+    });
+    if (fileName) {
       const filePath = resolve(
         "src",
         "uploads",
@@ -108,19 +124,9 @@ export async function updateProduct(
           throw appError("File cannot remove!", 500);
         }
       });
+      const savePath = resolve("src", "uploads", "product", fileName);
+      writeFileSync(savePath, fileBuffer);
     }
-    const updatedProduct = await prisma.product.update({
-      data: {
-        image: file ?? existingProduct.image,
-        name,
-        price: Number(price),
-        stock: Number(stock),
-        updatedAt: new Date(),
-      },
-      where: {
-        id,
-      },
-    });
     res.status(200).json({
       status: "Success",
       message: `Update product ${updatedProduct.name} success!`,
