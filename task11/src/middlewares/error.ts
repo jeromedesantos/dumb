@@ -6,7 +6,6 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  // console.log(err);
   if (err.code === "LIMIT_FILE_SIZE") {
     res.status(413).json({
       status: "Error",

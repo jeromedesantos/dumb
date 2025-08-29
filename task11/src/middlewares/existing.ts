@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../connections/client";
 import { appError } from "../utils/error";
 
-export function isModelExist(modelName: string, deleted: boolean = true) {
+export function isExist(modelName: string, deleted: boolean = true) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;

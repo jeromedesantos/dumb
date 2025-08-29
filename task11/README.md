@@ -20,7 +20,7 @@
 - Group order by user ID
 - Filtering, Sorting, Pagination
 
-#### 4. Transfer Antar Point Pengguna - task07 [V] -> transfer point
+#### 4. Transfer Antar Point Pengguna - task07
 
 - how to get point: transaksi Rp 10.000 jadi 10 (conversi 1 point = Rp 1.000)
 - Validasi saldo poin

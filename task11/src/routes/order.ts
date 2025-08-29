@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { auth, admin } from "../middlewares/auth";
-import { isModelExist } from "../middlewares/existing";
-import { validateOrder, validateUpdateOrder } from "../middlewares/validate";
+import { orderSchema, updateOrderSchema } from "../utils/joi";
+import { validate } from "../middlewares/validate";
+import { isExist } from "../middlewares/existing";
 import {
   readOrders,
   readOrder,
@@ -15,22 +16,22 @@ const router = Router();
 
 router.get("/order", auth, admin, readOrders);
 router.get("/order/:id", auth, readOrder);
-router.post("/order", auth, validateOrder, createOrder);
+router.post("/order", auth, validate(orderSchema), createOrder);
 router.put(
   "/order/:id",
   auth,
   admin,
-  validateUpdateOrder,
-  isModelExist("order"),
+  validate(updateOrderSchema),
+  isExist("order"),
   updateOrder
 );
 router.patch(
   "/order/:id/restore",
   auth,
   admin,
-  isModelExist("order", false),
+  isExist("order", false),
   restoreOrder
 );
-router.delete("/order/:id", auth, admin, isModelExist("order"), deleteOrder);
+router.delete("/order/:id", auth, admin, isExist("order"), deleteOrder);
 
 export default router;
