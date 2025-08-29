@@ -21,7 +21,6 @@ export function admin(req: Request, res: Response, next: NextFunction) {
 }
 
 export function nonAuth(req: Request, res: Response, next: NextFunction) {
-  console.log("cookies", req.cookies);
   const { token } = req.cookies;
   if (token) {
     throw appError("You're already logged in", 400);

@@ -15,7 +15,7 @@ export async function loginUser(
   try {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email, deletedAt: null },
     });
     if (user === null) {
       throw appError("Invalid email", 401);
@@ -183,6 +183,56 @@ export async function readUser(
   }
 }
 
+export async function transferPoint(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { senderId, receiverId, amount } = req.body;
+    if (senderId === receiverId) {
+      throw appError("Cannot transfer to yourself", 400);
+    }
+    const [sender, reciever] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: senderId, deletedAt: null },
+      }),
+      prisma.user.findUnique({
+        where: { id: receiverId, deletedAt: null },
+      }),
+    ]);
+    if (sender === null) {
+      throw appError("Sender not found!", 404);
+    }
+    if (reciever === null) {
+      throw appError("Receiver not found!", 404);
+    }
+    if (sender.point < amount) {
+      throw appError("Not enough points!", 409);
+    }
+    await prisma.$transaction(async (tx) => {
+      try {
+        await tx.user.update({
+          where: { id: senderId, deletedAt: null },
+          data: { point: { decrement: amount } },
+        });
+        await tx.user.update({
+          where: { id: receiverId, deletedAt: null },
+          data: { point: { increment: amount } },
+        });
+      } catch (err: any) {
+        throw appError(err.message, 500);
+      }
+    });
+    res.status(201).json({
+      status: "Success",
+      message: "Amount transfer successful!",
+    });
+  } catch (err: any) {
+    next(err);
+  }
+}
+
 export async function createUser(
   req: Request,
   res: Response,
@@ -194,7 +244,7 @@ export async function createUser(
     const fileBuffer = (req as any)?.processedFile?.fileBuffer;
     const hashedPassword = await hashPassword(password);
     const exitingEmail = await prisma.user.findUnique({
-      where: { email },
+      where: { email, deletedAt: null },
     });
     if (exitingEmail) {
       throw appError("Email already exists!", 409);
@@ -243,16 +293,17 @@ export async function updateUser(
       },
       where: {
         id,
+        deletedAt: null,
       },
     });
     if (fileName) {
+      const savePath = resolve("src", "uploads", "user", fileName);
       const filePath = resolve("src", "uploads", "user", existingUser.profile);
       unlink(filePath, (err) => {
         if (err) {
           throw appError("File cannot remove!", 500);
         }
       });
-      const savePath = resolve("src", "uploads", "user", fileName);
       writeFileSync(savePath, fileBuffer);
     }
     res.status(200).json({
@@ -277,13 +328,14 @@ export async function restoreUser(
       },
       where: {
         id,
+        deletedAt: { not: null },
       },
     });
     if (restoredUser) {
       const oldPath = resolve(
         "src",
         "uploads",
-        "product",
+        "user",
         "temp_" + restoredUser.profile
       );
       const newPath = resolve("src", "uploads", "user", restoredUser.profile);
@@ -311,8 +363,17 @@ export async function deleteUser(
       },
       where: {
         id,
+        deletedAt: null,
       },
     });
+    const oldPath = resolve("src", "uploads", "user", deletedUser.profile);
+    const newPath = resolve(
+      "src",
+      "uploads",
+      "user",
+      "temp_" + deletedUser.profile
+    );
+    renameSync(oldPath, newPath);
     res.status(200).json({
       status: "Success",
       message: `Delete user ${deletedUser.name} success!`,

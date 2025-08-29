@@ -110,9 +110,11 @@ export async function updateProduct(
       },
       where: {
         id,
+        deletedAt: null,
       },
     });
     if (fileName) {
+      const savePath = resolve("src", "uploads", "product", fileName);
       const filePath = resolve(
         "src",
         "uploads",
@@ -124,7 +126,6 @@ export async function updateProduct(
           throw appError("File cannot remove!", 500);
         }
       });
-      const savePath = resolve("src", "uploads", "product", fileName);
       writeFileSync(savePath, fileBuffer);
     }
     res.status(200).json({
@@ -149,6 +150,7 @@ export async function restoreProduct(
       },
       where: {
         id,
+        deletedAt: { not: null },
       },
     });
     if (restoredProduct) {
@@ -188,6 +190,7 @@ export async function deleteProduct(
       },
       where: {
         id,
+        deletedAt: null,
       },
     });
     const oldPath = resolve("src", "uploads", "product", deletedProduct.image);

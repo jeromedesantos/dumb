@@ -11,7 +11,6 @@ export function isFile(req: Request, res: Response, next: NextFunction) {
 
 export function saveFile(req: Request, res: Response, next: NextFunction) {
   const { file } = req;
-  console.log("file", file);
   if (file) {
     const fileName = `${Date.now()}-${file.originalname}`;
     const fileBuffer = file.buffer;

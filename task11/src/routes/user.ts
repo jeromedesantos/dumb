@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { upload } from "../utils/multer";
-import { userSchema } from "../utils/joi";
+import { userSchema, transferSchema } from "../utils/joi";
 import { validate } from "../middlewares/validate";
 import { auth, nonAuth, admin } from "../middlewares/auth";
 import { isExist } from "../middlewares/existing";
@@ -12,6 +12,7 @@ import {
   readUsersSummary,
   readUsers,
   readUser,
+  transferPoint,
   updateUser,
   restoreUser,
   deleteUser,
@@ -30,6 +31,7 @@ router.post(
   saveFile,
   createUser
 );
+router.post("/user/transfer-point", validate(transferSchema), transferPoint);
 router.get("/user/summary", auth, admin, readUsersSummary);
 router.get("/user", auth, admin, readUsers);
 router.get("/user/:id", auth, readUser);

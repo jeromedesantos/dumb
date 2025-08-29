@@ -25,8 +25,8 @@ export const updateOrderSchema = Joi.object({
   qty: Joi.number().min(0).max(1000000).required(),
 });
 
-export const transferPointSchema = Joi.object({
+export const transferSchema = Joi.object({
   senderId: Joi.string().min(0).max(255).required(),
-  recieverId: Joi.string().min(0).max(255).required(),
+  receiverId: Joi.string().min(0).max(255).required(),
   amount: Joi.number().min(0).max(1000000).required(),
 });

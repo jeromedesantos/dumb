@@ -9,16 +9,3 @@
     "skipLibCheck": true
   }
 }
-// {
-//   "compilerOptions": {
-//     "target": "es2022",
-//     "module": "es2022",
-//     "moduleResolution": "node",
-//     "rootDir": "./src",
-//     "outDir": "./dist",
-//     "esModuleInterop": true,
-//     "forceConsistentCasingInFileNames": true,
-//     "strict": true,
-//     "skipLibCheck": true
-//   }
-// }
