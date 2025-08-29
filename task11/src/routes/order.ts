@@ -29,7 +29,7 @@ router.patch(
   "/order/:id/restore",
   auth,
   admin,
-  isExist("order", false),
+  isExist("order", true),
   restoreOrder
 );
 router.delete("/order/:id", auth, admin, isExist("order"), deleteOrder);

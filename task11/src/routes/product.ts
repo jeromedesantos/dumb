@@ -42,7 +42,7 @@ router.patch(
   "/product/:id/restore",
   auth,
   admin,
-  isExist("product", false),
+  isExist("product", true),
   restoreProduct
 );
 router.delete("/product/:id", auth, isExist("product"), deleteProduct);

@@ -20,25 +20,25 @@
 - Group order by user ID
 - Filtering, Sorting, Pagination
 
-#### 4. Transfer Antar Point Pengguna - task07
+#### 4. Transfer Antar Point Pengguna - task07 [V]
 
 - how to get point: transaksi Rp 10.000 jadi 10 (conversi 1 point = Rp 1.000)
 - Validasi saldo poin
 - Menggunakan Prisma transaction
 - Validasi error handling
 
-#### 5. Upload Foto - task10
+#### 5. Upload Foto - task10 [V]
 
 - Upload gambar profil menggunakan multer
 - Upload gambar produk menggunakan multer
 
-#### 6. Soft Delete Produk
+#### 6. Soft Delete Produk [V]
 
 - Tambahkan field deletedAt (nullable DateTime) / status(nullable boolean) di tabel Product (pilih salah satu)
 - Saat produk dihapus, ubah deletedAt jadi waktu sekarang
 - Tambahkan endpoint untuk restore produk (PATCH /products/:id/restore)
 
-#### 7. Dokumentasi API
+#### 7. Dokumentasi API [V]
 
 - Save semua endpoint projeck ini pada postman
 - export collection/folder tersebut lalu taruh di GitHub bareng dengan projek nya

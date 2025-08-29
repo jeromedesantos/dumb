@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../connections/client";
 import { appError } from "../utils/error";
 
-export function isExist(modelName: string, deleted: boolean = true) {
+export function isExist(modelName: string, deleted: boolean = false) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -13,10 +13,10 @@ export function isExist(modelName: string, deleted: boolean = true) {
       if (model === null) {
         throw appError(`${name} Not Found!`, 404);
       }
-      if (deleted === true && model && model.deletedAt !== null) {
+      if (deleted === false && model && model.deletedAt !== null) {
         throw appError(`${name} has been deleted!!`, 404);
       }
-      if (deleted === false && model && model.deletedAt === null) {
+      if (deleted === true && model && model.deletedAt === null) {
         throw appError(`${name} still exist!!`, 404);
       }
       (req as any).model = model;

@@ -1,5 +1,5 @@
 import multer from "multer";
-import { resolve, extname } from "path";
+import { extname } from "path";
 import { appError } from "../utils/error";
 
 const storage = multer.memoryStorage();

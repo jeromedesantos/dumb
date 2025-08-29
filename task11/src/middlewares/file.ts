@@ -14,10 +14,8 @@ export function saveFile(req: Request, res: Response, next: NextFunction) {
   if (file) {
     const fileName = `${Date.now()}-${file.originalname}`;
     const fileBuffer = file.buffer;
-    const filePath = resolve("src", "uploads", "product", fileName);
     (req as any).processedFile = {
       fileName,
-      filePath,
       fileBuffer,
     };
   }

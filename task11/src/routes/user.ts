@@ -48,7 +48,7 @@ router.patch(
   "/user/:id/restore",
   auth,
   admin,
-  isExist("user", false),
+  isExist("user", true),
   restoreUser
 );
 router.delete("/user/:id", auth, isExist("user"), deleteUser);
