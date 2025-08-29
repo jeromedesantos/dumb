@@ -1,18 +1,18 @@
 ## TASK 10: 💻 Mini Online Store API
 
-#### 1. Register & Login - task09
+#### 1. Register & Login - task09 [V]
 
 - Hashing password (bcrypt)
 - Auth menggunakan JWT
 - Role-based authorization (admin / user)
 
-#### 2. Produk - task05
+#### 2. Produk - task05 [V]
 
 - Admin bisa Create, Read dan Update Produk
 - User dapat melihat semua Produk
 - Filtering, Sorting, Pagination
 
-#### 3. Order - task05
+#### 3. Order - task05 [V]
 
 - User bisa order produk
 - User melihat order miliknya
@@ -20,7 +20,7 @@
 - Group order by user ID
 - Filtering, Sorting, Pagination
 
-#### 4. Transfer Antar Point Pengguna - task07
+#### 4. Transfer Antar Point Pengguna - task07 [V] -> transfer point
 
 - how to get point: transaksi Rp 10.000 jadi 10 (conversi 1 point = Rp 1.000)
 - Validasi saldo poin

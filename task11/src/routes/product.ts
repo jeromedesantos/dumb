@@ -20,6 +20,7 @@ router.get("/product/:id", auth, readProduct);
 router.post(
   "/product",
   auth,
+  admin,
   upload.single("image"),
   validateProduct,
   isFile,
@@ -29,6 +30,7 @@ router.post(
 router.put(
   "/product/:id",
   auth,
+  admin,
   isModelExist("product"),
   upload.single("image"),
   validateProduct,

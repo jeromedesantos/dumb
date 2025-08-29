@@ -114,7 +114,7 @@ export async function readUsers(
   try {
     const {
       sortBy = "createdAt",
-      order = "asc",
+      order = "desc",
       offset = 0,
       limit = 10,
     } = req.query;
@@ -209,7 +209,7 @@ export async function createUser(
         password: hashedPassword,
       },
     });
-    const savePath = resolve("src", "uploads", "product", fileName);
+    const savePath = resolve("src", "uploads", "user", fileName);
     writeFileSync(savePath, fileBuffer);
     res.status(201).json({
       status: "Success",
@@ -252,7 +252,7 @@ export async function updateUser(
           throw appError("File cannot remove!", 500);
         }
       });
-      const savePath = resolve("src", "uploads", "product", fileName);
+      const savePath = resolve("src", "uploads", "user", fileName);
       writeFileSync(savePath, fileBuffer);
     }
     res.status(200).json({

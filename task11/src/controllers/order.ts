@@ -11,14 +11,24 @@ export async function readOrders(
   try {
     const {
       sortBy = "createdAt",
-      order = "asc",
+      order = "desc",
       offset = 0,
       limit = 10,
     } = req.query;
     const orders = await prisma.order.findMany({
       include: {
-        product: true,
-        user: true,
+        product: {
+          select: {
+            name: true,
+            price: true,
+          },
+        },
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
       },
       where: {
         deletedAt: null,
@@ -47,13 +57,23 @@ export async function readOrder(
   try {
     const id = req.params.id;
     const order = await prisma.order.findUnique({
+      include: {
+        product: {
+          select: {
+            name: true,
+            price: true,
+          },
+        },
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
       where: {
         id,
         deletedAt: null,
-      },
-      include: {
-        product: true,
-        user: true,
       },
     });
     res.status(200).json({
@@ -95,7 +115,7 @@ export async function createOrder(
           data: { stock: { decrement: qty } },
         });
         const total = (product.price as any) * qty;
-        if (total > 10000) {
+        if (total >= 10000) {
           await tx.user.update({
             where: { id: userId },
             data: { point: { increment: 10 } },
@@ -182,7 +202,12 @@ export async function updateOrder(
             where: { id: oldOrder.userId },
             data: { point: { increment: 10 } },
           });
-        } else if (oldEligible && !newEligible) {
+        } else if (
+          oldEligible &&
+          !newEligible &&
+          user?.point &&
+          user.point > 0
+        ) {
           await tx.user.update({
             where: { id: oldOrder.userId },
             data: { point: { decrement: 10 } },
@@ -260,7 +285,7 @@ export async function deleteOrder(
     }
     const deletedOrder = await prisma.$transaction(async (tx) => {
       try {
-        if ((oldOrder.total as any) >= 10000) {
+        if ((oldOrder.total as any) >= 10000 && user?.point && user.point > 0) {
           await tx.user.update({
             where: { id: oldOrder.userId },
             data: { point: { decrement: 10 } },

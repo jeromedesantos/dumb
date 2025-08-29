@@ -13,7 +13,7 @@ export async function readProducts(
   try {
     const {
       sortBy = "createdAt",
-      order = "asc",
+      order = "desc",
       offset = 0,
       limit = 10,
     } = req.query;
