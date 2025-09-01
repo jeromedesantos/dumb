@@ -30,7 +30,7 @@ function App() {
 
   return (
     <div className="App bg-[#43C5F5] w-full min-h-screen">
-      <Navbar handleIcon={handleIcon} />
+      <Navbar carts={carts} handleIcon={handleIcon} />
       {icons && (carts.length === 0 ? <CartEmpty /> : <Cart carts={carts} />)}
       <ProductList products={products} handleAdd={handleAdd} />
     </div>
