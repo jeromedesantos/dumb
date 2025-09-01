@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "image": "moona.png",
+    "name": "Moona Hoshinova",
+    "available": true
+  },
+  {
+    "id": 2,
+    "image": "iofi.png",
+    "name": "Airani Iofifteen",
+    "available": true
+  },
+  {
+    "id": 3,
+    "image": "risu.png",
+    "name": "Ayunda Risu",
+    "available": true
+  },
+  {
+    "id": 4,
+    "image": "ollie.png",
+    "name": "Kureiji Ollie",
+    "available": true
+  },
+  {
+    "id": 5,
+    "image": "anya.png",
+    "name": "Anya Melfissa",
+    "available": true
+  },
+  {
+    "id": 6,
+    "image": "reine.png",
+    "name": "Pavolia Reine",
+    "available": true
+  },
+  {
+    "id": 7,
+    "image": "zeta.png",
+    "name": "Vestia Zeta",
+    "available": true
+  },
+  {
+    "id": 8,
+    "image": "kaela.png",
+    "name": "Kaela Kovalskia",
+    "available": true
+  },
+  {
+    "id": 9,
+    "image": "kobo.png",
+    "name": "Kobo Kanaeru",
+    "available": true
+  }
+]
