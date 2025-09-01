@@ -25,7 +25,9 @@ function ProductList({ products, handleAdd }: ProductProp) {
               {product.price} $
             </p>
             <button
-              className="mt-2 text-sm text-white text-center bg-[#43C5F5] hover:bg-[#56C6FD] p-2 rounded-2xl font-bold cursor-pointer"
+              className={`mt-2 text-sm text-white text-center p-2 rounded-2xl font-bold cursor-pointer ${
+                product.available ? "bg-[#43C5F5]" : "bg-gray-400"
+              }`}
               onClick={() => handleAdd(product.id)}
             >
               {product.available ? "ADD TO CART" : "REMOVE"}
