@@ -8,7 +8,7 @@ import "./assets/style.css";
 // - e.currentTarget bertipe HTMLInputElement, jadi kamu bisa akses properti seperti:
 // - .value
 // - .checked (untuk checkbox)
-// - .files (untuk file input
+// - .files (untuk file input)
 
 // 🧠 ChangeEvent<HTMLTextAreaElement>
 // - Dipakai untuk <textarea> saja.
@@ -32,14 +32,15 @@ function App() {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (inputNote.trim() !== "") {
-      setNotes([
+      const newNotes: Note[] = [
         ...notes,
         {
           id: notes.length + 1,
           text: inputNote,
           done: false,
         },
-      ]);
+      ];
+      setNotes(newNotes);
       setInputNote("");
     }
   }
