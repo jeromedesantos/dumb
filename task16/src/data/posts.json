@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "title": "First Post",
+    "body": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Illum, harum sint! Veritatis ad libero facilis doloribus quibusdam minima rem asperiores laborum aperiam, laudantium, sed possimus ut eius fugiat! Inventore, nobis? Nulla asperiores praesentium veritatis recusandae quisquam aliquam, magnam quod, quis debitis rerum quae est reiciendis voluptatem adipisci eveniet vero tempora vel ducimus nemo dolores cum sed obcaecati? Iste, veniam corporis!"
+  },
+  {
+    "id": 2,
+    "title": "Second Post",
+    "body": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Illum, harum sint! Veritatis ad libero facilis doloribus quibusdam minima rem asperiores laborum aperiam, laudantium, sed possimus ut eius fugiat! Inventore, nobis? Nulla asperiores praesentium veritatis recusandae quisquam aliquam, magnam quod, quis debitis rerum quae est reiciendis voluptatem adipisci eveniet vero tempora vel ducimus nemo dolores cum sed obcaecati? Iste, veniam corporis!"
+  },
+  {
+    "id": 3,
+    "title": "Third Post",
+    "body": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Illum, harum sint! Veritatis ad libero facilis doloribus quibusdam minima rem asperiores laborum aperiam, laudantium, sed possimus ut eius fugiat! Inventore, nobis? Nulla asperiores praesentium veritatis recusandae quisquam aliquam, magnam quod, quis debitis rerum quae est reiciendis voluptatem adipisci eveniet vero tempora vel ducimus nemo dolores cum sed obcaecati? Iste, veniam corporis!"
+  }
+]
