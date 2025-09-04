@@ -1,5 +1,5 @@
 import type { ProductDetailProp } from "@/types/prop";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { CircleX, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -15,7 +15,7 @@ export default function ProductDetail({
 
   return (
     <div className="fixed top-0 z-20 w-full min-h-screen bg-black/70">
-      {product && (
+      {product ? (
         <div className="flex flex-col items-center justify-center mt-20">
           <CircleX
             className="relative top--10 left-100 z-30 size-10 text-white cursor-pointer"
@@ -53,6 +53,8 @@ export default function ProductDetail({
             </div>
           </div>
         </div>
+      ) : (
+        <Navigate to="/product" replace />
       )}
     </div>
   );

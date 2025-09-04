@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import ProductDetail from "./pages/ProductDetail";
 import "./assets/css/style.css";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const [products, setProducts] = useState<ProductData[]>(data);
@@ -48,6 +49,7 @@ function App() {
             path="/cart"
             element={<Cart carts={carts} handleAdd={handleAdd} />}
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </BrowserRouter>
