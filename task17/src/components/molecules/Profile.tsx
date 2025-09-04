@@ -2,8 +2,8 @@ import { Github, Instagram, Linkedin, Twitter } from "lucide-react";
 
 function Profile() {
   return (
-    <section id="about" className="py-20 ">
-      <div className="max-w-250 lg:flex-row flex flex-col gap-10 mx-auto">
+    <section id="about" className="py-20">
+      <div className="max-w-250 md:flex-row flex flex-col gap-10 mx-auto">
         <div className="flex flex-col gap-5 flex-2 px-10">
           <h2 className="text-2xl font-bold text-cyan-700">
             Welcome to Rent Waifu!
@@ -26,27 +26,27 @@ function Profile() {
           <div className="flex flex-wrap gap-2 mt-5">
             <a
               href="#"
-              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 rounded-full border-cyan-500 transition-all duration-300 hover:bg-cyan-700s0 hover:text-cyan-700"
+              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 rounded-full transition-all duration-300 hover:bg-cyan-700"
             >
               <Github />
             </a>
 
             <a
               href="#"
-              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 border-box rounded-full border-cyan-500 transition-all duration-300 hover:bg-cyan-700 "
+              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 border-box rounded-full transition-all duration-300 hover:bg-cyan-700 "
             >
               <Linkedin />
             </a>
             <a
               href="#"
-              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 border-box rounded-full border-cyan-500 transition-all duration-300 hover:bg-cyan-700"
+              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 border-box rounded-full transition-all duration-300 hover:bg-cyan-700"
             >
               <Instagram />
             </a>
 
             <a
               href="#"
-              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 border-box rounded-full border-cyan-500 transition-all duration-300 hover:bg-cyan-700 "
+              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 border-box rounded-full transition-all duration-300 hover:bg-cyan-700 "
             >
               <Twitter />
             </a>

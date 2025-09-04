@@ -1,13 +1,14 @@
 import type { ProductData } from "./types/data";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import Product from "./pages/ProductList";
-import Cart from "./pages/Cart";
-import Navbar from "./components/molecules/Navbar";
 import data from "./data/products.json";
+import Navbar from "./components/molecules/Navbar";
+import Footer from "./components/molecules/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import Product from "./pages/ProductList";
 import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/Cart";
 import "./assets/css/style.css";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ function App() {
     <BrowserRouter>
       <div className="App bg-white w-full min-h-screen font-inter flex flex-col items-center">
         <Navbar carts={carts} />
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -51,6 +53,7 @@ function App() {
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Footer />
       </div>
     </BrowserRouter>
   );

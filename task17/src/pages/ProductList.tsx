@@ -26,8 +26,8 @@ function ProductList({ products, handleAdd }: ProductProp) {
   );
 
   return (
-    <div className="w-3/4 flex gap-10 flex-col items-center mt-10 ">
-      <div className="w-1/2 flex gap-2 items-center">
+    <div className="min-h-screen md:w-3/4 flex gap-10 flex-col items-center mt-10 ">
+      <div className="w-3/4 md:w-1/2 flex gap-2 items-center">
         <Search className="text-cyan-700" />
         <Input
           className="rounded-full"
@@ -39,7 +39,11 @@ function ProductList({ products, handleAdd }: ProductProp) {
         />
       </div>
       <div className="flex flex-row gap-5 flex-wrap justify-center">
-        {filteredProducts &&
+        {filteredProducts.length === 0 ? (
+          <h1 className="text-lg font-semibold text-cyan-700 text-center mt-10">
+            Product Not Found!
+          </h1>
+        ) : (
           filteredProducts.map((product: ProductData) => (
             <Card
               className="w-60 hover:bg-accent transition duration-300"
@@ -81,7 +85,8 @@ function ProductList({ products, handleAdd }: ProductProp) {
                 </Button>
               </CardFooter>
             </Card>
-          ))}
+          ))
+        )}
       </div>
       <Outlet />
     </div>

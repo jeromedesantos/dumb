@@ -13,9 +13,9 @@ import {
 export default function Home() {
   const [covers] = useState<CoverData[]>(data);
   return (
-    <>
-      <Carousel className="bg-white max-w-250 rounded-2xl border-2 mt-10">
-        <CarouselContent className="flex">
+    <div className="min-h-screen mt-10 flex flex-col justify-center">
+      <Carousel className="bg-white md:max-w-250 rounded-2xl border-2">
+        <CarouselContent>
           {covers.map((cover: CoverData) => (
             <CarouselItem key={cover.id}>
               <img
@@ -30,6 +30,6 @@ export default function Home() {
         <CarouselNext />
       </Carousel>
       <Profile />
-    </>
+    </div>
   );
 }

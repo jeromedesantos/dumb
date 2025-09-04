@@ -14,7 +14,7 @@ export default function ProductDetail({
   );
 
   return (
-    <div className="fixed top-0 z-20 w-full min-h-screen bg-black/70">
+    <div className="w-full min-h-screen fixed top-0 z-20 bg-black/70">
       {product ? (
         <div className="flex flex-col items-center justify-center mt-20">
           <CircleX
