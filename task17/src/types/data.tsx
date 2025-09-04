@@ -4,6 +4,7 @@ export type ProductData = {
   name: string;
   description: string;
   price: number;
+  rating: number;
   available: boolean;
 };
 

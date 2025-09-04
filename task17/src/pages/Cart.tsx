@@ -1,5 +1,6 @@
-import { type CartProp } from "../types/prop";
-import CartEmpty from "../components/molecules/CartEmpty";
+import type { ProductData } from "@/types/data";
+import type { CartProp } from "@/types/prop";
+import CartEmpty from "@/components/molecules/CartEmpty";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -10,7 +11,7 @@ function Cart({ carts, handleAdd }: CartProp) {
         <CartEmpty />
       ) : (
         <div className="bg-white flex flex-col gap-5 max-w-200  mt-10">
-          {carts.map((cart) => (
+          {carts.map((cart: ProductData) => (
             <div
               className="w-full flex gap-10 items-center justify-center hover:bg-accent transition duration-300 px-10 py-5 rounded-full border-2"
               key={cart.id}

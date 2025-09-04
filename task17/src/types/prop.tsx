@@ -1,4 +1,4 @@
-import { type ProductData } from "./data";
+import type { ProductData } from "./data";
 
 export type ProductProp = {
   products: ProductData[];
@@ -7,6 +7,7 @@ export type ProductProp = {
 
 export type ProductDetailProp = {
   products: ProductData[];
+  handleAdd: (id: number) => void;
 };
 
 export type NavbarProp = {

@@ -1,14 +1,14 @@
-import { type ProductData } from "./types/data";
+import type { ProductData } from "./types/data";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import Product from "./pages/Product";
+import Product from "./pages/ProductList";
 import Cart from "./pages/Cart";
 import Navbar from "./components/molecules/Navbar";
 import data from "./data/products.json";
-import "./assets/css/style.css";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import ProductDetail from "./pages/ProductDetail";
+import "./assets/css/style.css";
 
 function App() {
   const [products, setProducts] = useState<ProductData[]>(data);
@@ -39,7 +39,9 @@ function App() {
           >
             <Route
               path=":productId"
-              element={<ProductDetail products={products} />}
+              element={
+                <ProductDetail products={products} handleAdd={handleAdd} />
+              }
             />
           </Route>
           <Route

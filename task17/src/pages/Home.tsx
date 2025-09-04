@@ -1,6 +1,7 @@
-import data from "../data/covers.json";
+import type { CoverData } from "@/types/data";
+import data from "@/data/covers.json";
+import Profile from "@/components/molecules/Profile";
 import { useState } from "react";
-import { type CoverData } from "../types/data";
 import {
   Carousel,
   CarouselContent,
@@ -12,20 +13,23 @@ import {
 export default function Home() {
   const [covers] = useState<CoverData[]>(data);
   return (
-    <Carousel className="bg-white max-w-250 rounded-2xl border-2 mt-10">
-      <CarouselContent className="flex">
-        {covers.map((cover: CoverData) => (
-          <CarouselItem key={cover.id}>
-            <img
-              src={`./img/cover/${cover.image}`}
-              className="object-cover object-center h-150"
-              alt="Profile picture"
-            />
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
+    <>
+      <Carousel className="bg-white max-w-250 rounded-2xl border-2 mt-10">
+        <CarouselContent className="flex">
+          {covers.map((cover: CoverData) => (
+            <CarouselItem key={cover.id}>
+              <img
+                src={`./img/cover/${cover.image}`}
+                className="object-cover object-center h-150"
+                alt="Profile picture"
+              />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+      <Profile />
+    </>
   );
 }
