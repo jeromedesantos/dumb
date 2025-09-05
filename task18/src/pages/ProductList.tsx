@@ -10,16 +10,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Search, Star } from "lucide-react";
+import { Loader, Search, Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useState } from "react";
 
 function ProductList({
   products,
+  loading,
   handleAdd,
 }: {
   products: ProductType[];
+  loading: boolean;
   handleAdd: (id: number) => void;
 }) {
   const [search, setSearch] = useState<string>("");
@@ -28,27 +30,31 @@ function ProductList({
 
   const filteredProducts: ProductType[] = products.filter(
     (product: ProductType) =>
-      product.name.toLowerCase().includes(debouncedSearch.toLowerCase())
+      product.title.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
   return (
-    <div className="min-h-screen md:w-3/4 flex gap-10 flex-col items-center mt-10 ">
+    <div className="min-h-screen md:w-3/4 flex gap-10 flex-col items-center mt-10">
       <div className="w-3/4 md:w-1/2 flex gap-2 items-center">
         <Search className="text-cyan-700" />
         <Input
           className="rounded-full"
           type="text"
           id="search"
-          placeholder="Search our waifu.."
+          placeholder="Search products.."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
       <div className="flex flex-row gap-5 flex-wrap justify-center">
-        {filteredProducts.length === 0 ? (
-          <h1 className="text-lg font-bold text-cyan-700 text-center mt-10">
+        {loading ? (
+          <p className="text-lg font-bold dark:text-zinc-300 text-cyan-700 text-center mt-10 flex justify-center items-center gap-2">
+            <Loader /> loading...
+          </p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="text-lg font-bold dark:text-zinc-300 text-cyan-700 text-center mt-10">
             Product Not Found!
-          </h1>
+          </p>
         ) : (
           filteredProducts.map((product: ProductType) => (
             <Card
@@ -58,31 +64,34 @@ function ProductList({
             >
               <CardContent>
                 <img
-                  src={`./img/product/${product.image}`}
+                  src={product.image}
                   alt={product.image}
+                  className="object-cover object-center h-50 rounded-2xl"
                 />
               </CardContent>
               <CardHeader>
-                <CardTitle className="text-cyan-700 font-bold">
-                  {product.name}
+                <CardTitle className=" dark:text-zinc-300 text-cyan-700 font-bold">
+                  {product.title}
                 </CardTitle>
                 <CardDescription className="line-clamp-2 md:line-clamp-2">
-                  {product.description}
+                  {product.category}
                 </CardDescription>
-                <CardDescription className="flex items-center gap-2 text-cyan-700 mt-2">
-                  {[...Array(product.rating)].map((_, i) => (
+                <CardDescription className="flex items-center gap-2 text-cyan-500 mt-2">
+                  {[...Array(Math.round(product.rating.rate))].map((_, i) => (
                     <Star key={i} className="size-5" />
                   ))}
                 </CardDescription>
               </CardHeader>
               <CardFooter className="flex justify-between gap-5">
-                <CardAction className="text-xl font-black text-cyan-700">
+                <CardAction className="text-xl font-black text-cyan-700 dark:text-zinc-300">
                   {product.price} $
                 </CardAction>
                 <Button
                   variant={product.available ? "default" : "destructive"}
                   className={`cursor-pointer font-bold ${
-                    product.available ? "bg-cyan-500 hover:bg-cyan-700" : ""
+                    product.available
+                      ? "bg-cyan-500 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-500 text-white"
+                      : ""
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();

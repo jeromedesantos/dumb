@@ -5,7 +5,7 @@ function Profile() {
     <section id="about" className="py-20">
       <div className="max-w-250 md:flex-row flex flex-col gap-10 mx-auto">
         <div className="flex flex-col gap-5 flex-2 px-10">
-          <h2 className="text-2xl font-bold text-cyan-700">
+          <h2 className="text-2xl font-black text-cyan-700">
             Welcome to Rent Waifu!
           </h2>
           <p className="text-muted-foreground text-justify">
@@ -19,7 +19,9 @@ function Profile() {
           </p>
         </div>
         <div className="flex flex-col gap-2 px-10">
-          <h3 className="text-2xl font-bold text-cyan-700">Follow for more!</h3>
+          <h3 className="text-2xl font-black text-cyan-700">
+            Follow for more!
+          </h3>
           <p className="text-muted-foreground text-base font-medium">
             To see more interesting content..
           </p>

@@ -1,18 +1,23 @@
-import type { ProductData } from "@/types/data";
-import type { CartProp } from "@/types/prop";
+import type { ProductType } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
-function Cart({ carts, handleAdd }: CartProp) {
+function Cart({
+  carts,
+  handleAdd,
+}: {
+  carts: ProductType[];
+  handleAdd: (id: number) => void;
+}) {
   return (
     <div className="w-3/4 min-h-screen md:max-w-200 bg-white mt-10">
       {carts.length === 0 ? (
-        <p className="text-lg font-semibold text-cyan-700 text-center mt-10">
+        <p className="text-lg font-bold text-cyan-700 text-center mt-10">
           Carts is Empty!
         </p>
       ) : (
         <div>
-          {carts.map((cart: ProductData) => (
+          {carts.map((cart: ProductType) => (
             <div
               className="flex flex-wrap md:flex-nowrap gap-5 items-center justify-center hover:bg-accent transition duration-300 py-5  rounded-2xl border-2 px-5 text-center md:text-left"
               key={cart.id}

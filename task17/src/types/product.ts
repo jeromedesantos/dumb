@@ -1,4 +1,4 @@
-export type ProductData = {
+export type ProductType = {
   id: number;
   image: string;
   name: string;
@@ -6,9 +6,4 @@ export type ProductData = {
   price: number;
   rating: number;
   available: boolean;
-};
-
-export type CoverData = {
-  id: number;
-  image: string;
 };

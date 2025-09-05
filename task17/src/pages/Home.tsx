@@ -1,4 +1,4 @@
-import type { CoverData } from "@/types/data";
+import type { CoverType } from "@/types/cover";
 import data from "@/data/covers.json";
 import Profile from "@/components/molecules/Profile";
 import { useState } from "react";
@@ -10,13 +10,14 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-export default function Home() {
-  const [covers] = useState<CoverData[]>(data);
+function Home() {
+  const [covers] = useState<CoverType[]>(data);
+
   return (
     <div className="min-h-screen mt-10 flex flex-col justify-center">
       <Carousel className="bg-white md:max-w-250 rounded-2xl border-2">
         <CarouselContent>
-          {covers.map((cover: CoverData) => (
+          {covers.map((cover: CoverType) => (
             <CarouselItem key={cover.id}>
               <img
                 src={`./img/cover/${cover.image}`}
@@ -33,3 +34,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home;
