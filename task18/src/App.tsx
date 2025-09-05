@@ -79,7 +79,7 @@ function App() {
                     products={products}
                     loading={loading}
                     handleAdd={handleAdd}
-                  />{" "}
+                  />
                 </PrivateRoute>
               }
             >

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardAction,
@@ -14,11 +14,8 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 
 function Login() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from =
-    (location.state as { from?: Location })?.from?.pathname || "/product";
   const { login } = useAuth();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -27,7 +24,7 @@ function Login() {
     e.preventDefault();
     if (username === "admin" && password === "admin") {
       login("token_jeremy");
-      navigate(from, { replace: true });
+      navigate("/product");
     } else {
       setErrorMsg("Invalid username or password");
     }

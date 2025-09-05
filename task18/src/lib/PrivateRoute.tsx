@@ -1,13 +1,12 @@
 import { type ReactNode } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
 export function PrivateRoute({ children }: { children: ReactNode }) {
-  const { token } = useAuth(); // ambil token dari context
-  const location = useLocation();
+  const { token } = useAuth();
 
   if (!token) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
   return <>{children}</>;
 }
