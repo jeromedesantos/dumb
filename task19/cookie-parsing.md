@@ -75,13 +75,13 @@ function getTokenFromCookie(): string | null {
 
     **🔎 Bedah Regex:**
 
-| Regex     | Arti                                                                                                                                                          | Contoh Cocok                           |
-| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------ |
-| `(^       | ;)`                                                                                                                                                           | Cocokkan **awal string** (`^`) ATAU (` | `) karakter **titik koma** (`;`). Ini memastikan kita menemukan awal dari sebuah cookie. | `^token=...` atau `;token=...` |
-| ` ?`      | Cocokkan **spasi** (` `) sebanyak nol atau satu kali (`?`). Ini menangani `token=...` dan `; token=...`.                                                      | `; token=...`                          |
-| `token=`  | Cocokkan string `token=` secara literal.                                                                                                                      | `token=`                               |
-| `([^;]*)` | **Grup Penangkapan #2:** Cocokkan karakter apa pun (`[^;]`) selain titik koma (`;`) sebanyak nol atau lebih kali (`*`). Ini adalah nilai dari cookie `token`. | `abc123`                               |
-| `(;       | $)`                                                                                                                                                           | Cocokkan **titik koma** (`;`) ATAU (`  | `) **akhir string** (`$`). Ini memastikan kita mengambil nilai sampai akhir cookie.      | `;` atau akhir string          |
+| Regex     | Arti                                                                                                                                                          | Contoh Cocok                   |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------- |
+| `(^\|;)`  | Cocokkan **awal string** (`^`) ATAU (`\|`) karakter **titik koma** (`;`). Ini memastikan kita menemukan awal dari sebuah cookie.                              | `^token=...` atau `;token=...` |
+| ` ?`      | Cocokkan **spasi** (` `) sebanyak nol atau satu kali (`?`). Ini menangani `token=...` dan `; token=...`.                                                      | `; token=...`                  |
+| `token=`  | Cocokkan string `token=` secara literal.                                                                                                                      | `token=`                       |
+| `([^;]*)` | **Grup Penangkapan #2:** Cocokkan karakter apa pun (`[^;]`) selain titik koma (`;`) sebanyak nol atau lebih kali (`*`). Ini adalah nilai dari cookie `token`. | `abc123`                       |
+| `(;\|$)`  | Cocokkan **titik koma** (`;`) ATAU (`\|`) **akhir string** (`$`). Ini memastikan kita mengambil nilai sampai akhir cookie.                                    | `;` atau akhir string          |
 
 3.  **`match ? match[2] : null`**
     - Jika regex berhasil menemukan kecocokan, `match` akan menjadi sebuah array. `match[2]` berisi teks yang ditangkap oleh grup kedua `([^;]*)`, yaitu nilai dari token.
