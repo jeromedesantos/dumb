@@ -14,13 +14,13 @@ Pertama, kita membuat sebuah "wadah" Context yang akan menampung data autentikas
 // contexts/AuthContext.ts
 import { createContext, ReactNode } from "react";
 
-export interface AuthContextType {
+interface AuthContextType {
   token: string | null;
   login: (token: string) => void;
   logout: () => void;
 }
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>(null);
 ```
 
 ### 2. `AuthProvider`
@@ -64,11 +64,13 @@ Hook ini adalah jalan pintas untuk mengakses data dari `AuthContext`. Ini juga m
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 
-export function useAuth() {
+function useAuth() {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
+
   return context;
 }
 ```
@@ -81,10 +83,10 @@ Komponen yang memerlukan data autentikasi (seperti `PrivateRoute`) dapat memangg
 // components/PrivateRoute.tsx
 import { useAuth } from "@/hooks/useAuth";
 
-const PrivateRoute = () => {
+function PrivateRoute() {
   const { token } = useAuth();
   // ... logika untuk proteksi route
-};
+}
 ```
 
 ---
@@ -101,7 +103,7 @@ Jika Anda ingin beralih ke Recoil, Anda dapat mengganti `AuthProvider` dan `crea
 // atoms/authAtom.ts
 import { atom } from "recoil";
 
-export const authAtom = atom<string | null>({
+const authAtom = atom<string | null>({
   key: "authAtom",
   default: localStorage.getItem("token"),
 });
@@ -116,15 +118,15 @@ Custom hook `useAuth` sekarang akan menggunakan `useRecoilState` untuk membaca d
 import { useRecoilState } from "recoil";
 import { authAtom } from "@/atoms/authAtom";
 
-export function useAuth() {
+function useAuth() {
   const [token, setToken] = useRecoilState(authAtom);
 
-  const login = (newToken: string) => {
+  function login = (newToken: string) {
     localStorage.setItem("token", newToken);
     setToken(newToken);
   };
 
-  const logout = () => {
+  function logout = () {
     localStorage.removeItem("token");
     setToken(null);
   };
