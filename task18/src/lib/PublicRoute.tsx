@@ -2,13 +2,13 @@ import { type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
-export function PrivateRoute({ children }: { children: ReactNode }) {
+function PublicRoute({ children }: { children: ReactNode }) {
   const { token } = useAuth();
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  if (token) {
+    return <Navigate to="/product" replace />;
   }
   return <>{children}</>;
 }
 
-export default PrivateRoute;
+export default PublicRoute;

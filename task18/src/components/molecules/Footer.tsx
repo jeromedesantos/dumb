@@ -31,9 +31,13 @@ function Footer() {
           <Twitter />
         </a>
       </div>
-      <p className="text-white dark:text-zinc-300 hover:text-secondary-light text-sm font-medium text-center transition duration-300 ease-in-out">
+      <p className="text-white dark:text-zinc-300 hover:text-secondary-light text-sm text-center transition duration-300 ease-in-out">
         Made with &#9829; by{" "}
-        <a href="https://github.com/jeromedesantos12" target="_blank">
+        <a
+          href="https://github.com/jeromedesantos12"
+          className="font-bold"
+          target="_blank"
+        >
           Jeremy Santoso
         </a>
       </p>

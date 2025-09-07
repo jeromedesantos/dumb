@@ -1,0 +1,29 @@
+import { Button } from "@/components/ui/button";
+import { Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
+
+export const ThemeToggle = () => {
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("theme") === "dark"
+  );
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
+
+  return (
+    <Button
+      variant="ghost"
+      className=" text-amber-700 hover:text-amber-700 dark:text-zinc-300 "
+      onClick={() => setDarkMode(!darkMode)}
+    >
+      {darkMode ? <Sun className="size-5" /> : <Moon className="size-5" />}
+    </Button>
+  );
+};
