@@ -6,6 +6,6 @@
 
 #### NOTES
 
-1. [Context vs Recoil](recoil.md).
-2. [Fix Error](recoil-fix.md).
-3. [Perbandingan Teknik Parsing Cookie](cookie-parsing.md).
+1. [Context vs Recoil](recoil.md)
+2. [Fix Error](recoil-fix.md)
+3. [Teknik Parsing Cookie](cookie-parsing.md)
