@@ -45,5 +45,5 @@
 
 #### 8. Penjelasan Fitur
 
-1. Update Stock [Update Stock](updStock.md).
-2. Update Point [Update Point](updPoint.md).
+1. [Update Stock](updStock.md)
+2. [Update Point](updPoint.md)
