@@ -1,7 +1,14 @@
-## TASK 18
+## TASK 21
 
-- Buat project dengan tema Product Catalog
-- Styling halaman produk menggunakan Tailwind CSS dan ShadCN UI (grid layout)
-- Fetch data produk dari API dan tampilkan produk dalam grid
-- Buat halaman Dashboard yang hanya bisa diakses user yang sudah login (menggunakan Private Route)
-- Tambahkan simulasi login dan logout menggunakan AuthContext
+#### Case Cart Management
+
+- Buat project dengan tema Cart Management
+- Gunakan React Context API untuk global state cart
+- Tambahkan fitur Add to Cart, Update Quantity, dan Remove Item dari cart
+- Implementasikan Optimistic Update saat mengubah jumlah produk
+- Tambahkan loading state untuk simulasi API call pada setiap operasi
+
+#### NOTES
+
+1. [Logika Counter](md/limitCounter.md)
+2. [Logika Edit](md/handleEdit.md)

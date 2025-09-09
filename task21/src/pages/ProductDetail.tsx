@@ -1,27 +1,47 @@
+import type { CartType } from "@/types/cart";
 import type { ProductType } from "@/types/product";
-import type { Dispatch, SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { CircleX, LoaderCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function ProductDetail({
+function ProductDetail({
   products,
   loading,
-  qty,
-  setQty,
-  handleAdd,
+  setProducts,
+  setCarts,
 }: {
   products: ProductType[];
   loading: boolean;
-  qty: number;
-  setQty: Dispatch<SetStateAction<number>>;
-  handleAdd: (id: number) => void;
+  setProducts: Dispatch<SetStateAction<ProductType[]>>;
+  setCarts: Dispatch<SetStateAction<CartType[]>>;
 }) {
   const { productId } = useParams();
   const navigate = useNavigate();
   const product: ProductType | undefined = products.find(
     (product) => product.id == parseInt(productId || "")
   );
+  const [qty, setQty] = useState(0);
+
+  function handleAdd(id: number) {
+    const findProduct = products.find((product) => product.id === id);
+    if (!findProduct) return;
+    const newCart: CartType = {
+      id: Date.now(),
+      productId: findProduct.id,
+      image: findProduct.image,
+      title: findProduct.title,
+      qty,
+      total: findProduct.price * qty,
+    };
+    setProducts((prev) =>
+      prev.map((product) =>
+        product.id === id ? { ...product, stock: product.stock - qty } : product
+      )
+    );
+    setCarts((prev) => [newCart, ...prev]);
+    setQty(0);
+  }
 
   return (
     <div className="w-full min-h-screen fixed top-0 z-20 bg-black/70">
@@ -30,17 +50,17 @@ export default function ProductDetail({
           <LoaderCircle className="animate-spin" /> loading...
         </p>
       ) : product ? (
-        <div className="flex flex-col items-center justify-center mt-20">
-          <div className="max-w-1/2 text-justify flex flex-col gap-5 bg-white dark:bg-zinc-900 shadow-lg p-10 rounded-2xl">
-            <div className="flex justify-end">
-              <CircleX
-                className="size-10 text-cyan-700 dark:text-zinc-300 cursor-pointer"
-                onClick={() => {
-                  setQty(0);
-                  navigate(`/product`);
-                }}
-              />
-            </div>
+        <div className="flex flex-col items-center justify-center mt-10 gap-5">
+          <div className="w-1/2 flex flex-row-reverse ml-20">
+            <CircleX
+              className="size-10 text-cyan-700 dark:text-zinc-300 cursor-pointer"
+              onClick={() => {
+                setQty(0);
+                navigate(`/product`);
+              }}
+            />
+          </div>
+          <div className="w-1/2 h-160 text-justify flex flex-col gap-5 bg-white dark:bg-zinc-900 shadow-lg p-10 rounded-2xl overflow-y-auto">
             <div className="flex flex-col gap-2">
               <h1 className="text-2xl font-black text-cyan-700 dark:text-zinc-300">
                 {product.title}
@@ -52,13 +72,11 @@ export default function ProductDetail({
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <div className="flex gap-2 justify-center items-center gap-2 dark:text-zinc-300 justify-center text-cyan-700">
+              <div className="flex gap-2 justify-center items-center dark:text-zinc-300  text-cyan-700">
                 <Button
                   variant="ghost"
                   className="font-bold cursor-pointer"
-                  onClick={() =>
-                    setQty((prev) => (prev <= 0 ? prev : prev - 1))
-                  }
+                  onClick={() => setQty((prev) => Math.max(1, prev - 1))}
                 >
                   -
                 </Button>
@@ -67,7 +85,7 @@ export default function ProductDetail({
                   variant="ghost"
                   className="font-bold cursor-pointer"
                   onClick={() =>
-                    setQty((prev) => (product.stock <= prev ? prev : prev + 1))
+                    setQty((prev) => Math.min(prev + 1, product.stock))
                   }
                 >
                   +
@@ -92,7 +110,6 @@ export default function ProductDetail({
                 alt={product.image}
                 className="rounded-2xl h-50 object-cover object-center"
               />
-
               <p className="text-muted-foreground">{product.description}</p>
             </div>
           </div>
@@ -103,3 +120,5 @@ export default function ProductDetail({
     </div>
   );
 }
+
+export default ProductDetail;
