@@ -18,6 +18,7 @@ export function TodoProvider({ children }: { children: ReactNode }) {
   }
 
   function updateTodo(id: number, text: string) {
+    setLoading(true);
     setTodos((prevTodo) =>
       prevTodo.map((todo) => (todo.id === id ? { ...todo, text } : todo))
     );
@@ -27,6 +28,7 @@ export function TodoProvider({ children }: { children: ReactNode }) {
   }
 
   function deleteTodo(id: number) {
+    setLoading(true);
     setTodos((prevTodo) => prevTodo.filter((todo) => todo.id !== id));
     setTimeout(() => {
       setLoading(false);

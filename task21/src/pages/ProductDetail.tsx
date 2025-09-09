@@ -47,8 +47,8 @@ function ProductDetail({
         )
       );
       setCarts((prev) => [newCart, ...prev]);
-      setLoadingAdd(null);
       setQty(0);
+      setLoadingAdd(null);
     }, 500);
   }
 
@@ -78,7 +78,6 @@ function ProductDetail({
                 ))}
               </p>
             </div>
-
             <div className="flex flex-wrap gap-2">
               <div className="flex gap-2 justify-center items-center dark:text-zinc-300 text-cyan-700">
                 <Button

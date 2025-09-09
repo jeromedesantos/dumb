@@ -10,10 +10,24 @@ export default function TodoItem({ todo }: { todo: TodoType }) {
   const { updateTodo, deleteTodo, toggleComplete, loading } = useTodo();
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(todo.text);
+  const [loadUp, setLoadUp] = useState<number | null>(null);
+  const [loadDel, setLoadDel] = useState<number | null>(null);
 
   function handleUpdate() {
-    updateTodo(todo.id, text);
-    setIsEditing(false);
+    setLoadUp(todo.id);
+    setTimeout(() => {
+      updateTodo(todo.id, text);
+      setIsEditing(false);
+      setLoadUp(null);
+    }, 500);
+  }
+
+  function handleDelete() {
+    setLoadDel(todo.id);
+    setTimeout(() => {
+      deleteTodo(todo.id);
+      setLoadDel(null);
+    }, 500);
   }
 
   return (
@@ -25,9 +39,13 @@ export default function TodoItem({ todo }: { todo: TodoType }) {
             onChange={(e) => setText(e.target.value)}
             disabled={loading}
           />
-          <Button onClick={handleUpdate} disabled={loading}>
-            Save
-          </Button>
+          {loadUp ? (
+            <Button>Loading...</Button>
+          ) : (
+            <Button onClick={handleUpdate} disabled={loading}>
+              Save
+            </Button>
+          )}
         </>
       ) : (
         <div className="flex items-center gap-5 ">
@@ -45,9 +63,13 @@ export default function TodoItem({ todo }: { todo: TodoType }) {
             <Button onClick={() => setIsEditing(true)} disabled={loading}>
               Edit
             </Button>
-            <Button onClick={() => deleteTodo(todo.id)} disabled={loading}>
-              Delete
-            </Button>
+            {loadDel ? (
+              <Button>Loading...</Button>
+            ) : (
+              <Button onClick={handleDelete} disabled={loading}>
+                Delete
+              </Button>
+            )}
           </div>
         </div>
       )}

@@ -58,8 +58,8 @@ function Cart({
             : cart
         )
       );
-      setLoadingEdit(null);
       setEditingCartId(null);
+      setLoadingEdit(null);
     }, 500);
   }
 
