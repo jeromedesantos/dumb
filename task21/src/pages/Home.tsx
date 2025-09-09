@@ -1,11 +1,6 @@
 import type { ProductType } from "@/types/product";
-import {
-  Github,
-  Instagram,
-  Linkedin,
-  LoaderCircle,
-  Twitter,
-} from "lucide-react";
+import Loading from "@/components/molecules/Loading";
+import Social from "@/components/molecules/Social";
 import {
   Carousel,
   CarouselContent,
@@ -27,9 +22,7 @@ function Home({
         <CarouselContent>
           {loading ? (
             <CarouselItem className="w-500 grid place-items-center">
-              <p className="text-lg font-bold text-cyan-700 dark:text-zinc-300 text-center mt-10 flex justify-center items-center gap-2">
-                <LoaderCircle className="animate-spin" /> loading...
-              </p>
+              <Loading />
             </CarouselItem>
           ) : (
             products.map((product: ProductType) => (
@@ -55,34 +48,7 @@ function Home({
             <h2 className="text-2xl font-black text-cyan-700 dark:text-zinc-300">
               Welcome!
             </h2>
-            <div className="flex flex-wrap gap-2">
-              <a
-                href="#"
-                className="grid place-items-center w-10 h-10 text-white dark:bg-cyan-700 dark:hover-bg-cyan-500  bg-cyan-500 rounded-full transition-all duration-300 hover:bg-cyan-700 dark:hover:bg-cyan-500"
-              >
-                <Github />
-              </a>
-
-              <a
-                href="#"
-                className="grid place-items-center w-10 h-10 text-white dark:bg-cyan-700  bg-cyan-500 dark:hover-bg-cyan-500 border-box rounded-full transition-all duration-300 hover:bg-cyan-700 dark:hover:bg-cyan-500"
-              >
-                <Linkedin />
-              </a>
-              <a
-                href="#"
-                className="grid place-items-center w-10 h-10 text-white dark:bg-cyan-700  bg-cyan-500 dark:hover-bg-cyan-500 border-box rounded-full transition-all duration-300 hover:bg-cyan-700 dark:hover:bg-cyan-500"
-              >
-                <Instagram />
-              </a>
-
-              <a
-                href="#"
-                className="grid place-items-center w-10 h-10 text-white dark:bg-cyan-700  bg-cyan-500 dark:hover-bg-cyan-500 border-box rounded-full transition-all duration-300 hover:bg-cyan-700 dark:hover:bg-cyan-500"
-              >
-                <Twitter />
-              </a>
-            </div>
+            <Social />
             <p className="text-muted-foreground text-justify mt-2">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint
               officiis pariatur iusto reiciendis amet maxime totam? Doloribus

@@ -1,29 +1,24 @@
-import { ShoppingCart, Clover, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ShoppingCart, Menu } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import Logo from "@/components/molecules/Logo";
+import ThemeToggle from "@/components/molecules/ThemeToggle";
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import ThemeToggle from "@/components/molecules/ThemeToggle";
 
 function Navbar({ carts }: { carts: number }) {
   const { token, logout } = useAuth();
   const [nav, SetNav] = useState(false);
   return (
-    <header className=" dark:bg-zinc-950 bg-white text-cyan-700 font-semibold w-full py-5 flex items-center justify-center shadow-lg text-2xl sticky top-0 z-20 dark:text-cyan-500">
+    <header className=" dark:bg-zinc-950 bg-white text-cyan-700 font-semibold w-full py-5 flex items-center justify-center shadow-lg sticky top-0 z-20 dark:text-cyan-500">
       <div className="w-full px-10 md:p-0 md:w-4/5 flex flex-row items-center justify-between gap-2">
-        <Link
-          to="/"
-          className="font-bold font-saira text-shadow-2xl flex flex-row items-center justify-center gap-3"
-        >
-          <Clover />
-          <span>My Store</span>
-        </Link>
+        <Logo />
         <Menu
           className="block md:hidden size-7 cursor-pointer"
           onClick={() => SetNav((nav) => !nav)}

@@ -1,8 +1,10 @@
-import type { CartType } from "@/types/cart";
-import { Button } from "@/components/ui/button";
-import { LoaderCircle, Save, SquarePen, Trash2 } from "lucide-react";
-import { useState, type Dispatch, type SetStateAction } from "react";
 import type { ProductType } from "@/types/product";
+import type { CartType } from "@/types/cart";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { Save, SquarePen, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Loading from "@/components/molecules/Loading";
+import ButtonLoading from "@/components/molecules/ButtonLoading";
 
 function Cart({
   products,
@@ -18,13 +20,12 @@ function Cart({
   setCarts: Dispatch<SetStateAction<CartType[]>>;
 }) {
   const [editingCartId, setEditingCartId] = useState<number | null>(null);
-  const [editingQty, setEditingQty] = useState(0);
-
-  // stok : 5
-  // 6 - 5 = 1 --> 5-1 = 6
-  // 3 - 5 = -2 --> 5--2 (jadi +) = 7
+  const [editingQty, setEditingQty] = useState(1);
+  const [loadingEdit, setLoadingEdit] = useState<number | null>(null);
+  const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
 
   function handleEdit(id: number, newQty: number) {
+    setLoadingEdit(id);
     const findCart = carts.find((cart) => cart.id === id);
     const findProduct = products.find(
       (product) => product.id === findCart?.productId
@@ -38,45 +39,51 @@ function Cart({
       alert(`Stok tidak mencukupi! Sisa stok: ${findProduct.stock}`);
       return;
     }
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === findCart.productId
-          ? { ...product, stock: product.stock - diff }
-          : product
-      )
-    );
-    setCarts((prevCarts) =>
-      prevCarts.map((cart) =>
-        cart.id === id
-          ? {
-              ...cart,
-              qty: newQty,
-              total: findProduct.price * newQty,
-            }
-          : cart
-      )
-    );
+    setTimeout(() => {
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === findCart.productId
+            ? { ...product, stock: product.stock - diff }
+            : product
+        )
+      );
+      setCarts((prevCarts) =>
+        prevCarts.map((cart) =>
+          cart.id === id
+            ? {
+                ...cart,
+                qty: newQty,
+                total: findProduct.price * newQty,
+              }
+            : cart
+        )
+      );
+      setLoadingEdit(null);
+      setEditingCartId(null);
+    }, 500);
   }
 
   function handleDelete(id: number) {
+    setLoadingDelete(id);
     const findCart = carts.find((cart) => cart.id === id);
     if (!findCart) return;
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === findCart.productId
-          ? { ...product, stock: product.stock + findCart.qty }
-          : product
-      )
-    );
-    setCarts((prev) => prev.filter((cart) => cart.id !== id));
+    setTimeout(() => {
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === findCart.productId
+            ? { ...product, stock: product.stock + findCart.qty }
+            : product
+        )
+      );
+      setCarts((prev) => prev.filter((cart) => cart.id !== id));
+      setLoadingDelete(null);
+    }, 500);
   }
 
   return (
     <div className="w-full max-w-3xl min-h-screen mt-10 flex flex-col gap-5">
       {loading ? (
-        <p className="text-lg font-bold text-cyan-700 dark:text-zinc-300 text-center mt-10 flex justify-center items-center gap-2">
-          <LoaderCircle className="animate-spin" /> Loading...
-        </p>
+        <Loading />
       ) : carts.length === 0 ? (
         <p className="text-lg font-bold text-cyan-700 dark:text-zinc-300 text-center mt-10">
           Carts is Empty!
@@ -102,44 +109,49 @@ function Cart({
                   {cart.title}
                 </h1>
                 {editingCartId === cart.id ? (
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 border rounded-lg">
+                  loading ? (
+                    <Loading />
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 border rounded-lg">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() =>
+                            setEditingQty((prev) => Math.max(0, prev - 1))
+                          }
+                        >
+                          -
+                        </Button>
+                        <p className="text-center font-bold w-8">
+                          {editingQty}
+                        </p>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() =>
+                            setEditingQty((prev) =>
+                              Math.min(prev + 1, availableStock)
+                            )
+                          }
+                        >
+                          +
+                        </Button>
+                      </div>
                       <Button
                         variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() =>
-                          setEditingQty((prev) => Math.max(1, prev - 1))
-                        }
+                        className="font-bold cursor-pointer"
+                        onClick={() => {
+                          setEditingCartId(null);
+                          setEditingQty(0);
+                        }}
                       >
-                        -
-                      </Button>
-                      <p className="text-center font-bold w-8">{editingQty}</p>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() =>
-                          setEditingQty((prev) =>
-                            Math.min(prev + 1, availableStock)
-                          )
-                        }
-                      >
-                        +
+                        Cancel
                       </Button>
                     </div>
-
-                    <Button
-                      variant="ghost"
-                      className="font-bold cursor-pointer"
-                      onClick={() => {
-                        setEditingCartId(null);
-                        setEditingQty(0);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
+                  )
                 ) : (
                   <p className="text-muted-foreground">Qty. {cart.qty}</p>
                 )}
@@ -150,16 +162,18 @@ function Cart({
                 </p>
                 <div className="flex gap-2">
                   {editingCartId === cart.id ? (
-                    <Button
-                      size="icon"
-                      className="cursor-pointer bg-green-500 hover:bg-green-600 text-white font-bold h-9 w-9"
-                      onClick={() => {
-                        handleEdit(cart.id, editingQty);
-                        setEditingCartId(null);
-                      }}
-                    >
-                      <Save />
-                    </Button>
+                    loadingEdit === cart.id ? (
+                      <ButtonLoading />
+                    ) : (
+                      <Button
+                        size="icon"
+                        disabled={editingQty === 0}
+                        className="cursor-pointer bg-green-500 hover:bg-green-600 text-white font-bold h-9 w-9"
+                        onClick={() => handleEdit(cart.id, editingQty)}
+                      >
+                        <Save />
+                      </Button>
+                    )
                   ) : (
                     <Button
                       size="icon"
@@ -172,14 +186,18 @@ function Cart({
                       <SquarePen size={20} />
                     </Button>
                   )}
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    className="cursor-pointer h-9 w-9"
-                    onClick={() => handleDelete(cart.id)}
-                  >
-                    <Trash2 size={20} />
-                  </Button>
+                  {loadingDelete === cart.id ? (
+                    <ButtonLoading />
+                  ) : (
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="cursor-pointer h-9 w-9"
+                      onClick={() => handleDelete(cart.id)}
+                    >
+                      <Trash2 size={20} />
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

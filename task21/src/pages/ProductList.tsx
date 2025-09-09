@@ -9,10 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { LoaderCircle, Search, Star } from "lucide-react";
+import { Search, Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useState } from "react";
+import Loading from "@/components/molecules/Loading";
 
 function ProductList({
   products,
@@ -45,9 +46,7 @@ function ProductList({
       </div>
       <div className="flex flex-row gap-5 flex-wrap justify-center">
         {loading ? (
-          <p className="text-lg font-bold dark:text-zinc-300 text-cyan-700 text-center mt-10 flex justify-center items-center gap-2">
-            <LoaderCircle className="animate-spin" /> loading...
-          </p>
+          <Loading />
         ) : filteredProducts.length === 0 ? (
           <p className="text-lg font-bold dark:text-zinc-300 text-cyan-700 text-center mt-10">
             Product Not Found!

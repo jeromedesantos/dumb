@@ -1,4 +1,5 @@
-import { Clover, Github, Instagram, Linkedin, Twitter } from "lucide-react";
+import Logo from "@/components/molecules/Logo";
+import Social from "@/components/molecules/Social";
 
 function About() {
   return (
@@ -8,7 +9,7 @@ function About() {
           <h1 className="text-2xl font-black text-cyan-700 dark:text-zinc-300">
             About Us
           </h1>
-          <p className="text-justify text-muted-foreground">
+          <p className="text-justify text-muted-foreground mb-5">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint
             officiis pariatur iusto reiciendis amet maxime totam? Doloribus
             rerum pariatur earum nostrum illo amet harum, mollitia magni
@@ -17,34 +18,7 @@ function About() {
             Sint aliquam vero ipsam placeat. Sapiente, nesciunt dolore porro
             necessitatibus quis doloribus quam tempora.
           </p>
-          <div className="flex flex-wrap gap-2 justify-center md:justify-start mt-5">
-            <a
-              href="#"
-              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 dark:bg-cyan-700 rounded-full transition-all duration-300 hover:bg-cyan-700  dark:hover:bg-cyan-500"
-            >
-              <Github />
-            </a>
-
-            <a
-              href="#"
-              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 dark:bg-cyan-700  border-box rounded-full transition-all duration-300 hover:bg-cyan-700  dark:hover:bg-cyan-500"
-            >
-              <Linkedin />
-            </a>
-            <a
-              href="#"
-              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 dark:bg-cyan-700 border-box rounded-full transition-all duration-300 hover:bg-cyan-700  dark:hover:bg-cyan-500"
-            >
-              <Instagram />
-            </a>
-
-            <a
-              href="#"
-              className="grid place-items-center w-10 h-10 text-white bg-cyan-500 dark:bg-cyan-700 border-box rounded-full transition-all duration-300 hover:bg-cyan-700 dark:hover:bg-cyan-500"
-            >
-              <Twitter />
-            </a>
-          </div>
+          <Social />
         </div>
         <div className="p-10">
           <div className="cursor-pointer bg-transparent flex flex-col items-center rounded-2xl overflow-hidden shadow-lg group">
@@ -54,10 +28,7 @@ function About() {
               alt="Profile picture"
             />
             <section className="border-box px-2 py-4 bg-transparent dark:bg-zinc-800 z-10 w-full flex flex-col items-center transition-all duration-300 group-hover:bg-muted">
-              <p className="font-bold font-saira text-shadow-2xl flex flex-row items-center justify-center gap-3 text-cyan-700 dark:text-cyan-500 text-2xl">
-                <Clover />
-                <span>My Store</span>
-              </p>
+              <Logo />
               <p className="text-center text-muted-foreground">
                 Unlock your future dream
               </p>

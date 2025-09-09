@@ -15,7 +15,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import "./assets/css/style.css";
+import "./App.css";
 
 function App() {
   const [products, setProducts] = useState<ProductType[]>([]);
