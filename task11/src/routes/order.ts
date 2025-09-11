@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { auth, admin } from "../middlewares/auth";
+import { auth, isAdmin, isFinance } from "../middlewares/auth";
 import { orderSchema, updateOrderSchema } from "../utils/joi";
 import { validate } from "../middlewares/validate";
 import { isExist } from "../middlewares/existing";
@@ -10,17 +10,19 @@ import {
   updateOrder,
   restoreOrder,
   deleteOrder,
+  searchOrders,
 } from "../controllers/order";
 
 const router = Router();
 
-router.get("/order", auth, admin, readOrders);
-router.get("/order/:id", auth, readOrder);
-router.post("/order", auth, validate(orderSchema), createOrder);
+router.get("/order", auth, isFinance, readOrders);
+router.get("/order/search", auth, isFinance, searchOrders);
+router.get("/order/:id", auth, isFinance, readOrder);
+router.post("/order", auth, isFinance, validate(orderSchema), createOrder);
 router.put(
   "/order/:id",
   auth,
-  admin,
+  isFinance,
   validate(updateOrderSchema),
   isExist("order"),
   updateOrder
@@ -28,10 +30,10 @@ router.put(
 router.patch(
   "/order/:id/restore",
   auth,
-  admin,
+  isAdmin,
   isExist("order", true),
   restoreOrder
 );
-router.delete("/order/:id", auth, admin, isExist("order"), deleteOrder);
+router.delete("/order/:id", auth, isFinance, isExist("order"), deleteOrder);
 
 export default router;

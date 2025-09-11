@@ -149,6 +149,52 @@ export async function readUsers(
   }
 }
 
+export async function searchUsers(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {
+      name,
+      sortBy = "createdAt",
+      order = "desc",
+      offset = 0,
+      limit = 10,
+    } = req.query;
+    if (!name || typeof name !== "string") {
+      throw appError(
+        "User name must be a string and is required for search!",
+        400
+      );
+    }
+    const users = await prisma.user.findMany({
+      where: {
+        deletedAt: null,
+        name: {
+          contains: name,
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        [sortBy as string]: order as "asc" | "desc",
+      },
+      skip: Number(offset),
+      take: Number(limit),
+    });
+    if (users.length === 0) {
+      throw appError("User not found!", 400);
+    }
+    res.status(200).json({
+      status: "Success",
+      message: "Fetch users success!",
+      data: users,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function readUser(
   req: Request,
   res: Response,
@@ -190,8 +236,12 @@ export async function transferPoint(
 ) {
   try {
     const { senderId, receiverId, amount } = req.body;
+    const idUser = (req as any).user.id;
+    if (senderId !== idUser) {
+      throw appError("Cannot use other user's account!", 400);
+    }
     if (senderId === receiverId) {
-      throw appError("Cannot transfer to yourself", 400);
+      throw appError("Cannot transfer to yourself!", 400);
     }
     const [sender, reciever] = await Promise.all([
       prisma.user.findUnique({

@@ -12,7 +12,8 @@ import error from "./routes/error";
 config();
 
 const app = express();
-const PORT = process.env.PORT;
+const url = process.env.BASE_URL;
+const PORT = new URL(url as string).port;
 
 app.use(cookieParser());
 app.use(express.json());
@@ -33,5 +34,8 @@ app.listen(PORT, () =>
     ██║░░██║█████═╝░
     ██║░░██║██╔═██╗░
     ╚█████╔╝██║░╚██╗
-    ░╚════╝░╚═╝░░╚═╝`)
+    ░╚════╝░╚═╝░░╚═╝
+    
+    𝗟𝗼𝗰𝗮𝗹: ${url}
+    `)
 );

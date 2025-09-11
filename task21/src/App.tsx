@@ -4,8 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from "./services/api";
 import AuthProvider from "./context/AuthProvider";
-import PrivateRoute from "./lib/PrivateRoute";
-import PublicRoute from "./lib/PublicRoute";
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoute from "./routes/PublicRoute";
 import Navbar from "./components/molecules/Navbar";
 import Footer from "./components/molecules/Footer";
 import Home from "./pages/Home";
@@ -40,6 +40,8 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  console.log(products);
 
   return (
     <AuthProvider>

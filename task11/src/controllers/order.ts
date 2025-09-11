@@ -49,6 +49,52 @@ export async function readOrders(
   }
 }
 
+export async function searchOrders(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {
+      id,
+      sortBy = "createdAt",
+      order = "desc",
+      offset = 0,
+      limit = 10,
+    } = req.query;
+    if (!id || typeof id !== "string") {
+      throw appError(
+        "Order id must be a string and is required for search!",
+        400
+      );
+    }
+    const orders = await prisma.order.findMany({
+      where: {
+        deletedAt: null,
+        id: {
+          contains: id,
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        [sortBy as string]: order as "asc" | "desc",
+      },
+      skip: Number(offset),
+      take: Number(limit),
+    });
+    if (orders.length === 0) {
+      throw appError("Order not found!", 400);
+    }
+    res.status(200).json({
+      status: "Success",
+      message: "Fetch orders success!",
+      data: orders,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function readOrder(
   req: Request,
   res: Response,

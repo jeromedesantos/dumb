@@ -2,11 +2,12 @@ import { Router } from "express";
 import { upload } from "../utils/multer";
 import { productSchema } from "../utils/joi";
 import { validate } from "../middlewares/validate";
-import { auth, admin } from "../middlewares/auth";
+import { auth, isAdmin, isWarehouse } from "../middlewares/auth";
 import { isExist } from "../middlewares/existing";
 import { isFile, saveFile } from "../middlewares/file";
 import {
   readProducts,
+  searchProducts,
   readProduct,
   createProduct,
   updateProduct,
@@ -16,12 +17,13 @@ import {
 
 const router = Router();
 
-router.get("/product", auth, readProducts);
-router.get("/product/:id", auth, readProduct);
+router.get("/product", auth, isWarehouse, readProducts);
+router.get("/product/search", auth, isWarehouse, searchProducts);
+router.get("/product/:id", auth, isWarehouse, readProduct);
 router.post(
   "/product",
   auth,
-  admin,
+  isWarehouse,
   upload.single("image"),
   validate(productSchema),
   isFile,
@@ -31,7 +33,7 @@ router.post(
 router.put(
   "/product/:id",
   auth,
-  admin,
+  isWarehouse,
   isExist("product"),
   upload.single("image"),
   validate(productSchema),
@@ -41,10 +43,16 @@ router.put(
 router.patch(
   "/product/:id/restore",
   auth,
-  admin,
+  isAdmin,
   isExist("product", true),
   restoreProduct
 );
-router.delete("/product/:id", auth, isExist("product"), deleteProduct);
+router.delete(
+  "/product/:id",
+  auth,
+  isWarehouse,
+  isExist("product"),
+  deleteProduct
+);
 
 export default router;

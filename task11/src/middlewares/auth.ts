@@ -12,7 +12,15 @@ export function auth(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export function admin(req: Request, res: Response, next: NextFunction) {
+export function nonAuth(req: Request, res: Response, next: NextFunction) {
+  const { token } = req.cookies;
+  if (token) {
+    throw appError("You're already logged in!", 400);
+  }
+  next();
+}
+
+export function isAdmin(req: Request, res: Response, next: NextFunction) {
   const { role } = (req as any).user;
   if (role !== "admin") {
     throw appError("Only admin can access this route!", 401);
@@ -20,10 +28,28 @@ export function admin(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export function nonAuth(req: Request, res: Response, next: NextFunction) {
-  const { token } = req.cookies;
-  if (token) {
-    throw appError("You're already logged in", 400);
+export function isWarehouse(req: Request, res: Response, next: NextFunction) {
+  const { role } = (req as any).user;
+  if (role !== "warehouse" && role !== "admin") {
+    throw appError("Only warehouse can access this route!", 401);
+  }
+  next();
+}
+
+export function isFinance(req: Request, res: Response, next: NextFunction) {
+  const { role } = (req as any).user;
+  if (role !== "finance" && role !== "admin") {
+    throw appError("Only finance can access this route!", 401);
+  }
+  next();
+}
+
+export function isSame(req: Request, res: Response, next: NextFunction) {
+  const idParam = req.params.id;
+  const { id, role } = (req as any).user;
+
+  if (role !== "admin" && idParam !== id) {
+    throw appError("You cannot see other user's data!", 400);
   }
   next();
 }

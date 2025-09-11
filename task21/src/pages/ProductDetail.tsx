@@ -53,12 +53,12 @@ function ProductDetail({
   }
 
   return (
-    <div className="w-full min-h-screen fixed top-0 z-20 bg-black/70">
+    <div className="w-full min-h-screen fixed flex justify-center top-0 z-20 bg-black/70">
       {loading ? (
         <Loading />
       ) : product ? (
-        <div className="flex flex-col items-center justify-center mt-10 gap-5">
-          <div className="w-1/2 flex flex-row-reverse ml-20">
+        <div className="flex flex-col items-center justify-center gap-5">
+          <div className="w-3/4 flex flex-row-reverse ml-20">
             <CircleX
               className="size-10 text-cyan-700 dark:text-zinc-300 cursor-pointer"
               onClick={() => {
@@ -67,7 +67,7 @@ function ProductDetail({
               }}
             />
           </div>
-          <div className="w-1/2 h-160 text-justify flex flex-col gap-5 bg-white dark:bg-zinc-900 shadow-lg p-10 rounded-2xl overflow-y-auto">
+          <div className="w-3/4 md:max-w-250 h-150 text-justify flex flex-col gap-5 bg-white dark:bg-zinc-900 shadow-lg py-15 px-10 rounded-2xl overflow-y-auto">
             <div className="flex flex-col gap-2">
               <h1 className="text-2xl font-black text-cyan-700 dark:text-zinc-300">
                 {product.title}
@@ -122,7 +122,7 @@ function ProductDetail({
               <img
                 src={product.image}
                 alt={product.image}
-                className="rounded-2xl h-50 object-cover object-center"
+                className="rounded-2xl max-w-48 h-48 object-cover object-center"
               />
               <p className="text-muted-foreground">{product.description}</p>
             </div>

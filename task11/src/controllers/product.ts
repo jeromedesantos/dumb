@@ -37,6 +37,52 @@ export async function readProducts(
   }
 }
 
+export async function searchProducts(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {
+      name,
+      sortBy = "createdAt",
+      order = "desc",
+      offset = 0,
+      limit = 10,
+    } = req.query;
+    if (!name || typeof name !== "string") {
+      throw appError(
+        "Product name must be a string and is required for search!",
+        400
+      );
+    }
+    const products = await prisma.product.findMany({
+      where: {
+        deletedAt: null,
+        name: {
+          contains: name,
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        [sortBy as string]: order as "asc" | "desc",
+      },
+      skip: Number(offset),
+      take: Number(limit),
+    });
+    if (products.length === 0) {
+      throw appError("Product not found!", 400);
+    }
+    res.status(200).json({
+      status: "Success",
+      message: "Fetch products success!",
+      data: products,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function readProduct(
   req: Request,
   res: Response,

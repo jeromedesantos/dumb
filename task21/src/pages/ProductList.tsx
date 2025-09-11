@@ -32,7 +32,7 @@ function ProductList({
   );
 
   return (
-    <div className="min-h-screen w-3/4 flex gap-10 flex-col items-center mt-10">
+    <div className="min-h-screen w-5/6 md:max-w-300 flex gap-10 flex-col items-center mt-10">
       <div className=" flex gap-2 items-center w-1/2">
         <Search className="text-cyan-700" />
         <Input

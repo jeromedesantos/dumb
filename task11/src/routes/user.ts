@@ -2,7 +2,7 @@ import { Router } from "express";
 import { upload } from "../utils/multer";
 import { userSchema, transferSchema } from "../utils/joi";
 import { validate } from "../middlewares/validate";
-import { auth, nonAuth, admin } from "../middlewares/auth";
+import { auth, nonAuth, isAdmin, isSame } from "../middlewares/auth";
 import { isExist } from "../middlewares/existing";
 import { isFile, saveFile } from "../middlewares/file";
 import {
@@ -16,6 +16,7 @@ import {
   updateUser,
   restoreUser,
   deleteUser,
+  searchUsers,
 } from "../controllers/user";
 
 const router = Router();
@@ -32,12 +33,14 @@ router.post(
   createUser
 );
 router.post("/user/transfer-point", validate(transferSchema), transferPoint);
-router.get("/user/summary", auth, admin, readUsersSummary);
-router.get("/user", auth, admin, readUsers);
-router.get("/user/:id", auth, readUser);
+router.get("/user/summary", auth, isAdmin, readUsersSummary);
+router.get("/user", auth, isAdmin, readUsers);
+router.get("/user/search", auth, isAdmin, searchUsers);
+router.get("/user/:id", auth, isSame, readUser);
 router.put(
   "/user/:id",
   auth,
+  isSame,
   isExist("user"),
   upload.single("profile"),
   validate(userSchema),
@@ -47,7 +50,7 @@ router.put(
 router.patch(
   "/user/:id/restore",
   auth,
-  admin,
+  isAdmin,
   isExist("user", true),
   restoreUser
 );

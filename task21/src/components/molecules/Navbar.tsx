@@ -17,7 +17,7 @@ function Navbar({ carts }: { carts: number }) {
   const [nav, SetNav] = useState(false);
   return (
     <header className=" dark:bg-zinc-950 bg-white text-cyan-700 font-semibold w-full py-5 flex items-center justify-center shadow-lg sticky top-0 z-20 dark:text-cyan-500">
-      <div className="w-full px-10 md:p-0 md:w-4/5 flex flex-row items-center justify-between gap-2">
+      <div className="w-4/5 md:max-w-300 flex flex-row items-center justify-between gap-2">
         <Logo />
         <Menu
           className="block md:hidden size-7 cursor-pointer"
