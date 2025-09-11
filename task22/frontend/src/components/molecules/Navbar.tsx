@@ -22,16 +22,17 @@ function Navbar({ carts }: { carts: number }) {
   const [isErrLog, setIsErrLog] = useState<string | null>(null);
 
   async function logout() {
-    try {
-      setIsLoadLog(true);
-      await api.post("/logout");
-      setToken(null);
-      setIsErrLog(null);
-    } catch (err) {
-      setIsErrLog(extractAxiosError(err));
-    } finally {
-      setIsLoadLog(false);
-    }
+    setIsLoadLog(true);
+    setTimeout(async () => {
+      try {
+        await api.post("/logout");
+        setToken(null);
+      } catch (err) {
+        setIsErrLog(extractAxiosError(err));
+      } finally {
+        setIsLoadLog(false);
+      }
+    }, 500);
   }
 
   return (
@@ -62,7 +63,7 @@ function Navbar({ carts }: { carts: number }) {
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
-            {token && (
+            {token?.role && (
               <>
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
@@ -87,7 +88,7 @@ function Navbar({ carts }: { carts: number }) {
               <ButtonLoading />
             ) : isErrLog ? (
               <ButtonError />
-            ) : token ? (
+            ) : token?.role ? (
               <Button
                 variant="destructive"
                 className="font-bold cursor-pointer rounded-full"

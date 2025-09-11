@@ -91,10 +91,7 @@ function App() {
         <Navbar carts={carts.length} />
         <div className="dark:bg-zinc-950 w-full min-h-screen font-inter flex flex-col items-center justify-center">
           <Routes>
-            <Route
-              path="/"
-              element={<Home products={products} isLoading={isLoadProducts} />}
-            />
+            <Route path="/" element={<Home />} />
             <Route
               path="/login"
               element={

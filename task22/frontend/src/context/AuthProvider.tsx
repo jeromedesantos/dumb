@@ -18,7 +18,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, setToken }}>
+    <AuthContext.Provider value={{ token, setToken, fetchToken }}>
       {children}
     </AuthContext.Provider>
   );

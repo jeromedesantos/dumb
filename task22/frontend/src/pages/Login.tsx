@@ -14,9 +14,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ButtonLoading from "@/components/molecules/ButtonLoading";
 import ButtonError from "@/components/molecules/ButtonError";
+import { useAuth } from "@/hooks/useAuth";
 
 function Login() {
   const navigate = useNavigate();
+  const { fetchToken } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoadLog, setIsLoadLog] = useState(false);
@@ -24,19 +26,21 @@ function Login() {
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    try {
-      setIsLoadLog(true);
-      await api.post("/login", {
-        email,
-        password,
-      });
-      navigate("/product");
-      setIsErrLog(null);
-    } catch (err: unknown) {
-      setIsErrLog(extractAxiosError(err));
-    } finally {
-      setIsLoadLog(false);
-    }
+    setIsLoadLog(true);
+    setTimeout(async () => {
+      try {
+        await api.post("/login", {
+          email,
+          password,
+        });
+        navigate("/product");
+        fetchToken();
+      } catch (err: unknown) {
+        setIsErrLog(extractAxiosError(err));
+      } finally {
+        setIsLoadLog(false);
+      }
+    }, 500);
   }
 
   return (
