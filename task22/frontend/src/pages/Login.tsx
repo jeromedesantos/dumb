@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ButtonLoading from "@/components/molecules/ButtonLoading";
-import ButtonError from "@/components/molecules/ButtonError";
 import { useAuth } from "@/hooks/useAuth";
 
 function Login() {
@@ -27,24 +26,25 @@ function Login() {
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoadLog(true);
+    setIsErrLog(null);
     setTimeout(async () => {
       try {
         await api.post("/login", {
           email,
           password,
         });
-        navigate("/product");
-        fetchToken();
       } catch (err: unknown) {
         setIsErrLog(extractAxiosError(err));
       } finally {
         setIsLoadLog(false);
+        fetchToken();
+        navigate("/product");
       }
     }, 500);
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center mt-10">
+    <div className="flex flex-col">
       <Card className="md:w-100 bg-white dark:bg-zinc-900 flex flex-col gap-5">
         <CardHeader className="flex flex-col gap-2 mb-5 items-center">
           <CardTitle className="text-cyan-700 font-black text-2xl dark:text-zinc-300">
@@ -66,7 +66,7 @@ function Login() {
                 Username
               </Label>
               <Input
-                className="rounded-full"
+                className="rounded-lg"
                 type="text"
                 id="email"
                 value={email}
@@ -82,7 +82,7 @@ function Login() {
                 Password
               </Label>
               <Input
-                className="rounded-full"
+                className="rounded-lg"
                 type="password"
                 id="password"
                 value={password}
@@ -94,13 +94,11 @@ function Login() {
             <CardAction className="w-full flex flex-col gap-2 mt-5">
               {isLoadLog ? (
                 <ButtonLoading />
-              ) : isErrLog ? (
-                <ButtonError />
               ) : (
                 <Button
                   type="submit"
                   variant="default"
-                  className="w-full rounded-full bg-cyan-500 hover:bg-cyan-700 font-bold cursor-pointer dark:bg-cyan-700 dark:hover:bg-cyan-500 dark:text-zinc-300"
+                  className="w-full rounded-lg bg-cyan-500 hover:bg-cyan-700 font-bold cursor-pointer dark:bg-cyan-700 dark:hover:bg-cyan-500 dark:text-zinc-300"
                 >
                   Login
                 </Button>

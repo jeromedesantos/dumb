@@ -16,6 +16,8 @@ import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import ProductForm from "./pages/ProductForm";
+import AdminRoute from "./routes/AdminRoute";
 import "./App.css";
 
 function App() {
@@ -33,7 +35,7 @@ function App() {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce<string>(search, 500);
 
-  async function fetchFilterProducts(name: string) {
+  async function fetchFilterProducts(name: string = "") {
     try {
       setIsLoadFilterProducts(true);
       const res = await api.get("/product/search", {
@@ -89,7 +91,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Navbar carts={carts.length} />
-        <div className="dark:bg-zinc-950 w-full min-h-screen font-inter flex flex-col items-center justify-center">
+        <div className="dark:bg-zinc-950 w-full font-inter flex flex-col items-center min-h-screen mt-10 px-20">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route
@@ -124,12 +126,27 @@ function App() {
                       isLoad={isLoadProducts}
                       isErr={isErrProducts}
                       fetchProducts={fetchProducts}
+                      fetchFilterProducts={fetchFilterProducts}
                       fetchCarts={fetchCarts}
                     />
                   </PrivateRoute>
                 }
               />
             </Route>
+            <Route
+              path="/add"
+              element={
+                <PrivateRoute>
+                  <AdminRoute>
+                    <ProductForm
+                      products={products}
+                      fetchProducts={fetchProducts}
+                      fetchFilterProducts={fetchFilterProducts}
+                    />
+                  </AdminRoute>
+                </PrivateRoute>
+              }
+            />
             <Route
               path="/cart"
               element={
@@ -140,6 +157,7 @@ function App() {
                     isLoad={isLoadCarts}
                     isErr={isErrCarts}
                     fetchProducts={fetchProducts}
+                    fetchFilterProducts={fetchFilterProducts}
                     fetchCarts={fetchCarts}
                   />
                 </PrivateRoute>

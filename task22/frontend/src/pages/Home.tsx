@@ -10,7 +10,7 @@ import {
 
 function Home() {
   return (
-    <div className="min-h-screen max-w-250 mt-10 flex flex-col md:flex-row md:justify-center gap-10">
+    <div className="max-w-250 mt-10 flex flex-col md:flex-row gap-10">
       <Carousel className="bg-transparent dark:bg-zinc-900 overflow-hidden h-100 md:max-w-100 rounded-2xl border-2 grid place-items-center">
         <CarouselContent>
           {covers.map((cover) => {
@@ -30,7 +30,7 @@ function Home() {
       </Carousel>
       <section id="about" className="py-10">
         <div className="flex flex-col gap-10 mx-auto">
-          <div className="flex flex-col gap-5 flex-2 px-10">
+          <div className="flex flex-col gap-5 flex-2">
             <h2 className="text-2xl font-black text-cyan-700 dark:text-zinc-300">
               Welcome!
             </h2>

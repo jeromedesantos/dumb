@@ -32,7 +32,7 @@ function ProductList({
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen w-5/6 md:max-w-300 flex gap-10 flex-col items-center mt-10">
+    <div className="w-full md:max-w-300 flex flex-col gap-10 items-center">
       <div className=" flex gap-2 items-center w-1/2">
         <Search className="text-cyan-700" />
         <Input

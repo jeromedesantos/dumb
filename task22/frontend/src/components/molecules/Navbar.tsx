@@ -23,6 +23,7 @@ function Navbar({ carts }: { carts: number }) {
 
   async function logout() {
     setIsLoadLog(true);
+    setIsErrLog(null);
     setTimeout(async () => {
       try {
         await api.post("/logout");
@@ -63,6 +64,15 @@ function Navbar({ carts }: { carts: number }) {
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
+            {token?.role === "admin" && (
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link to="/add" className="">
+                    ADD
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            )}
             {token?.role && (
               <>
                 <NavigationMenuItem>

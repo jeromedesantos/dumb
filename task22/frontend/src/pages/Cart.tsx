@@ -16,6 +16,7 @@ function Cart({
   isLoad,
   isErr,
   fetchProducts,
+  fetchFilterProducts,
   fetchCarts,
 }: {
   carts: CartType[];
@@ -23,6 +24,7 @@ function Cart({
   isLoad: boolean;
   isErr: string | null;
   fetchProducts: () => Promise<void>;
+  fetchFilterProducts: () => Promise<void>;
   fetchCarts: () => Promise<void>;
 }) {
   const [editingCartId, setEditingCartId] = useState<string | null>(null);
@@ -34,6 +36,7 @@ function Cart({
 
   function handleUpdate(id: string, qty: number) {
     setIsLoadUpdate(id);
+    setIsErrUpdate(null);
     setTimeout(async () => {
       try {
         await api.put(`/order/${id}`, {
@@ -41,31 +44,36 @@ function Cart({
         });
       } catch (err: unknown) {
         setIsErrUpdate(extractAxiosError(err));
+      } finally {
+        setEditingQty(0);
+        setEditingCartId(null);
+        setIsLoadUpdate(null);
+        fetchProducts();
+        fetchFilterProducts();
+        fetchCarts();
       }
-      setEditingQty(0);
-      setEditingCartId(null);
-      setIsLoadUpdate(null);
-      fetchProducts();
-      fetchCarts();
     }, 500);
   }
 
   function handleDelete(id: string) {
     setIsLoadDelete(id);
+    setIsErrDelete(null);
     setTimeout(async () => {
       try {
         await api.delete(`/order/${id}`);
       } catch (err: unknown) {
         setIsErrDelete(extractAxiosError(err));
+      } finally {
+        setIsLoadDelete(null);
+        fetchProducts();
+        fetchFilterProducts();
+        fetchCarts();
       }
-      setIsLoadDelete(null);
-      fetchProducts();
-      fetchCarts();
     }, 500);
   }
 
   return (
-    <div className="w-full max-w-3xl min-h-screen mt-10 flex flex-col gap-5">
+    <div className="w-full max-w-200 flex flex-col gap-5">
       {isLoad ? (
         <Loading />
       ) : isErr ? (
@@ -175,7 +183,7 @@ function Cart({
                         setEditingQty(cart.qty);
                       }}
                     >
-                      <SquarePen size={20} />
+                      <SquarePen />
                     </Button>
                   )}
                   {isLoadDelete === cart.id ? (
@@ -189,7 +197,7 @@ function Cart({
                       className="cursor-pointer h-9 w-9"
                       onClick={() => handleDelete(cart.id)}
                     >
-                      <Trash2 size={20} />
+                      <Trash2 />
                     </Button>
                   )}
                 </div>

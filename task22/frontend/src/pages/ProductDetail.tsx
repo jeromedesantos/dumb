@@ -15,12 +15,14 @@ function ProductDetail({
   isLoad,
   isErr,
   fetchProducts,
+  fetchFilterProducts,
   fetchCarts,
 }: {
   products: ProductType[];
   isLoad: boolean;
   isErr: string | null;
   fetchProducts: () => Promise<void>;
+  fetchFilterProducts: () => Promise<void>;
   fetchCarts: () => Promise<void>;
 }) {
   const { productId } = useParams();
@@ -37,6 +39,7 @@ function ProductDetail({
 
   function handleAdd(id: string) {
     setIsLoadAdd(id);
+    setIsErrAdd(null);
     setTimeout(async () => {
       try {
         await api.post("/order", {
@@ -50,6 +53,7 @@ function ProductDetail({
       setQty(0);
       setIsLoadAdd(null);
       fetchProducts();
+      fetchFilterProducts();
       fetchCarts();
     }, 500);
   }
@@ -100,7 +104,7 @@ function ProductDetail({
                   +
                 </Button>
               </div>
-              {isLoadAdd ? (
+              {isLoadAdd === product.id ? (
                 <ButtonLoading />
               ) : isErrAdd ? (
                 <ButtonError />
