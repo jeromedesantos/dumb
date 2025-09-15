@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-// import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { type AppDispatch } from "@/redux/store";
 import { verifyToken } from "@/redux/slices/token"; // Ganti dengan path slice Anda
 import { Pending } from "../components/atoms";
@@ -13,7 +13,7 @@ interface RootState {
   };
 }
 
-export function PrivateRoute({ children }: { children: ReactNode }) {
+export function PublicRoute({ children }: { children: ReactNode }) {
   // Ambil state dari Redux store dengan tipe yang benar
   const { status } = useSelector((state: RootState) => state.token);
   const dispatch: AppDispatch = useDispatch();
@@ -28,13 +28,13 @@ export function PrivateRoute({ children }: { children: ReactNode }) {
     return <Pending>Auth checking...</Pending>;
   }
 
-  if (status === "failed") {
-    window.location.href = "/login";
+  if (status === "succeeded") {
+    window.location.href = "/";
     return;
-    // return <Navigate to="/login" replace />;
+    // return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
 }
 
-export default PrivateRoute;
+export default PublicRoute;
