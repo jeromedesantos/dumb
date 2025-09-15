@@ -1,8 +1,8 @@
 -- CreateTable
 CREATE TABLE "task12"."User" (
     "id" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
-    "full_name" TEXT,
+    "username" TEXT,
+    "full_name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "photo_profile" TEXT,
