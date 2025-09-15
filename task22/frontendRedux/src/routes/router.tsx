@@ -33,21 +33,7 @@ export const router = createBrowserRouter([
       </PublicRoute>
     ),
   },
-  {
-    path: "/forgot",
-    element: (
-      <PublicRoute>
-        <Forgot />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: "/reset/:id",
-    element: (
-      <PublicRoute>
-        <Reset />
-      </PublicRoute>
-    ),
-  },
+  { path: "/forgot", element: <Forgot /> },
+  { path: "/reset/:id", element: <Reset /> },
   { path: "*", element: <NotFound /> },
 ]);
