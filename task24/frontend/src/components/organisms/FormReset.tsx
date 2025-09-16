@@ -46,15 +46,17 @@ export function FormReset({ id }: { id: string }) {
         Password
       </Input>
       {errors.password && (
-        <p className="text-red-500">{errors.password.message}</p>
+        <p className="text-red-400">{errors.password.message}</p>
       )}
       <Input type="password" id="confirmPassword" {...register("newPassword")}>
         Confirm New Password
       </Input>
       {errors.newPassword && (
-        <p className="text-red-500">{errors.newPassword.message}</p>
+        <p className="text-red-400">{errors.newPassword.message}</p>
       )}
-      <Button disabled={isPending}>Create New Password</Button>
+      <Button className="w-full" loading={isPending}>
+        Create New Password
+      </Button>
     </Form>
   );
 }

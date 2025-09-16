@@ -36,8 +36,8 @@ export function Thread({
       }`}
     >
       <img
-        src={userUrl ?? userUrl}
-        alt="Profile"
+        src={userUrl}
+        alt={`Image of ${userUrl}`}
         className="w-8 h-8 rounded-full"
       />
       <div className="flex flex-col gap-3">
@@ -52,7 +52,7 @@ export function Thread({
           <Link to={image ?? ""} className="cursor-pointer">
             <img
               src={threadUrl}
-              alt="Profile"
+              alt={`Image of ${threadUrl}`}
               className="w-full rounded-xl"
               hidden={image ? false : true}
             />
@@ -74,7 +74,6 @@ export function Thread({
           </div>
         </div>
       </div>
-      -
     </div>
   );
 }

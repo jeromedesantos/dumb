@@ -46,18 +46,20 @@ export function FormLogin() {
         Email/Username
       </Input>
       {errors.emailOrUsername && (
-        <p className="text-red-500">{errors.emailOrUsername.message}</p>
+        <p className="text-red-400">{errors.emailOrUsername.message}</p>
       )}
       <Input type="password" id="password" {...register("password")}>
         Password
       </Input>
       {errors.password && (
-        <p className="text-red-500">{errors.password.message}</p>
+        <p className="text-red-400">{errors.password.message}</p>
       )}
       <Link to="/forgot" className="flex self-end text-zinc-300 cursor-pointer">
         Forgot Password?
       </Link>
-      <Button disabled={isPending}>Login</Button>
+      <Button className="w-full" loading={isPending}>
+        Login
+      </Button>
       <p className="text-zinc-300">
         Don't have an account yet?{" "}
         <Link to="/register" className="text-[#04A51E] font-bold">

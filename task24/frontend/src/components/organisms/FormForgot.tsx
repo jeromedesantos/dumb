@@ -46,8 +46,10 @@ export function FormForgot() {
       <Input type="email" id="email" {...register("email")}>
         Email
       </Input>
-      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-      <Button disabled={isPending}>Send Instruction</Button>
+      {errors.email && <p className="text-red-400">{errors.email.message}</p>}
+      <Button className="w-full" loading={isPending}>
+        Send Instruction
+      </Button>
       <p className="text-zinc-300">
         Already have account?{" "}
         <Link to="/login" className="text-[#04A51E] font-bold">

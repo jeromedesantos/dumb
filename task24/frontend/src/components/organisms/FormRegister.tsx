@@ -21,6 +21,7 @@ export function FormRegister() {
       full_name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
   const { mutate, isPending, isError, error } = useMutation({
@@ -52,19 +53,31 @@ export function FormRegister() {
         Full Name
       </Input>
       {errors.full_name && (
-        <p className="text-red-500">{errors.full_name.message}</p>
+        <p className="text-red-400">{errors.full_name.message}</p>
       )}
       <Input type="email" id="email" {...register("email")}>
         Email
       </Input>
-      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+      {errors.email && <p className="text-red-400">{errors.email.message}</p>}
       <Input type="password" id="password" {...register("password")}>
         Password
       </Input>
       {errors.password && (
-        <p className="text-red-500">{errors.password.message}</p>
+        <p className="text-red-400">{errors.password.message}</p>
       )}
-      <Button disabled={isPending}>Create</Button>
+      <Input
+        type="confirmPassword"
+        id="password"
+        {...register("confirmPassword")}
+      >
+        Confirm Password
+      </Input>
+      {errors.confirmPassword && (
+        <p className="text-red-400">{errors.confirmPassword.message}</p>
+      )}
+      <Button className="w-full" loading={isPending}>
+        Create
+      </Button>
       <p className="text-zinc-300">
         Already have account?{" "}
         <Link to="/login" className="text-[#04A51E] font-bold">

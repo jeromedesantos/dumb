@@ -11,7 +11,11 @@ export function Form({
   onSubmit?: (e: FormEvent<HTMLFormElement>) => void;
 }) {
   return (
-    <form className="flex flex-col gap-3" action="submit" onSubmit={onSubmit}>
+    <form
+      className="w-full max-w-xs flex flex-col gap-3"
+      action="submit"
+      onSubmit={onSubmit}
+    >
       <div className="flex flex-col gap-3">
         <Logo />
         <h2 className="text-2xl font-bold text-zinc-300">{title}</h2>
