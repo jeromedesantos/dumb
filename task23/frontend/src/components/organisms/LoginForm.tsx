@@ -1,26 +1,14 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { isAxiosError } from "axios";
+import { useState, type FormEvent } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { usersKeys, loginUser } from "../../queries/users";
-import { Input, Button, Alert } from "../atoms";
+import { Input, Button, Error } from "../atoms";
 import { FormGroup } from "../molecules";
-import { loginSchema, type LoginFormData } from "../../schema/login";
 
 export function LoginForm() {
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      emailOrUsername: "",
-      password: "",
-    },
-  });
+  const [emailOrUsername, setEmailOrUsername] = useState("");
+  const [password, setPassword] = useState("");
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: usersKeys.all,
     mutationFn: loginUser,
@@ -29,35 +17,37 @@ export function LoginForm() {
     },
   });
 
-  function onSubmit(data: LoginFormData) {
-    mutate(data);
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setTimeout(() => {
+      mutate({ emailOrUsername, password });
+    }, 3000);
   }
 
+  if (isError) return <Error>Error: {error.message}</Error>;
+
   return (
-    <FormGroup title="Login to Circle" onSubmit={handleSubmit(onSubmit)}>
-      {isError && (
-        <Alert variant="danger">
-          {isAxiosError(error) && error.response
-            ? error.response.data.message
-            : error.message}
-        </Alert>
-      )}
-      <Input type="text" id="emailOrUsername" {...register("emailOrUsername")}>
+    <FormGroup title="Login to Circle" onSubmit={handleSubmit}>
+      <Input
+        type="text"
+        id="emailOrUsername"
+        value={emailOrUsername}
+        onChange={(e) => setEmailOrUsername(e.target.value)}
+      >
         Email/Username
       </Input>
-      {errors.emailOrUsername && (
-        <p className="text-red-500">{errors.emailOrUsername.message}</p>
-      )}
-      <Input type="password" id="password" {...register("password")}>
+      <Input
+        type="password"
+        id="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      >
         Password
       </Input>
-      {errors.password && (
-        <p className="text-red-500">{errors.password.message}</p>
-      )}
-      <Link to="/forgot" className="flex self-end text-white cursor-pointer">
+      <p className="flex self-end text-white cursor-pointer">
         Forgot Password?
-      </Link>
-      <Button disabled={isPending}>Login</Button>
+      </p>
+      <Button disabled={isPending ? true : false}>Login</Button>
       <p className="text-white">
         Don't have an account yet?{" "}
         <Link to="/register" className="text-[#04A51E] font-bold">

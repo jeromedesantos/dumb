@@ -12,7 +12,7 @@ export function Button({
       className={`w-full p-2 font-bold rounded-full cursor-pointer duration-300
           ${
             disabled
-              ? "bg-zinc-700 text-zinc-500 animate-pulse"
+              ? "bg-gray-700 text-gray-500 animate-pulse"
               : "bg-[#04A51E] hover:bg-[#038318] text-white"
           }`}
       type="submit"

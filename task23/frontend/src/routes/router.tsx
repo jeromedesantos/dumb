@@ -6,7 +6,6 @@ import Reset from "../pages/Reset";
 import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
 import { PrivateRoute } from "./PrivateRoute";
-import PublicRoute from "./PublicRoute";
 
 export const router = createBrowserRouter([
   {
@@ -17,37 +16,9 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
-  {
-    path: "/register",
-    element: (
-      <PublicRoute>
-        <Register />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: "/login",
-    element: (
-      <PublicRoute>
-        <Login />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: "/forgot",
-    element: (
-      <PublicRoute>
-        <Forgot />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: "/reset/:id",
-    element: (
-      <PublicRoute>
-        <Reset />
-      </PublicRoute>
-    ),
-  },
+  { path: "/register", element: <Register /> },
+  { path: "/login", element: <Login /> },
+  { path: "/forgot", element: <Forgot /> },
+  { path: "/reset", element: <Reset /> },
   { path: "*", element: <NotFound /> },
 ]);

@@ -1,9 +1,9 @@
-import { ForgotForm } from "../components/organisms";
+import { RegisterForm } from "../components/organisms";
 
-export default function Forgot() {
+export default function Register() {
   return (
     <div className="w-full max-w-xs">
-      <ForgotForm />
+      <RegisterForm />
     </div>
   );
 }

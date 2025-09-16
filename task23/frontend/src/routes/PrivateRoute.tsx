@@ -1,37 +1,19 @@
-import { type ReactNode, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { type AppDispatch } from "@/redux/store";
-import { verifyToken } from "@/redux/slices/token"; // Ganti dengan path slice Anda
+import { type ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import { Pending } from "../components/atoms";
 
-// Definisikan tipe untuk root state Redux
-interface RootState {
-  token: {
-    data: { id: string; username: string } | null;
-    status: "idle" | "loading" | "succeeded" | "failed";
-  };
-}
-
 export function PrivateRoute({ children }: { children: ReactNode }) {
-  // Ambil state dari Redux store dengan tipe yang benar
-  const { status } = useSelector((state: RootState) => state.token);
-  const dispatch: AppDispatch = useDispatch();
+  const { token, isPending } = useAuth();
 
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(verifyToken()); // Cast to any to bypass type error temporarily
-    }
-  }, [dispatch, status]);
-
-  if (status === "loading") {
-    return <Pending>Auth checking...</Pending>;
+  if (isPending) {
+    return <Pending>Loading Auth..</Pending>;
   }
 
-  if (status === "failed") {
-    window.location.href = "/login";
-    return;
+  if (!token) {
+    console.log(token);
+    return <Navigate to="/login" replace />;
   }
-
   return <>{children}</>;
 }
 

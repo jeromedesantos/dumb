@@ -30,13 +30,3 @@ export async function registerUser(input: {
   const response = await api.post("/register", input);
   return response.data;
 }
-
-export async function forgotUser(input: { email: string }) {
-  const response = await api.post("/forgot", input);
-  return response.data;
-}
-
-export async function resetUser(id: string, input: { password: string }) {
-  const response = await api.put(`/reset/${id}`, input);
-  return response.data;
-}

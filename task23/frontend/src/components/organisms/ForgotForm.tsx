@@ -1,53 +1,26 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { isAxiosError } from "axios";
-import { usersKeys, forgotUser } from "../../queries/users";
-import { Input, Button, Alert } from "../atoms";
+import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
+import { Input, Button } from "../atoms";
 import { FormGroup } from "../molecules";
-import { forgotSchema, type ForgotFormData } from "../../schema/forgot";
 
 export function ForgotForm() {
-  const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ForgotFormData>({
-    resolver: zodResolver(forgotSchema),
-    defaultValues: {
-      email: "",
-    },
-  });
-  const { mutate, isPending, isError, error } = useMutation({
-    mutationKey: usersKeys.all,
-    mutationFn: forgotUser,
-    onSuccess: (data) => {
-      alert("bcript: " + data.data.password);
-      navigate("/login");
-    },
-  });
+  const [email, setEmail] = useState("");
 
-  function onSubmit(data: ForgotFormData) {
-    mutate(data);
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
   }
 
   return (
-    <FormGroup title="Forgot password" onSubmit={handleSubmit(onSubmit)}>
-      {isError && (
-        <Alert variant="danger">
-          {isAxiosError(error) && error.response
-            ? error.response.data.message
-            : error.message}
-        </Alert>
-      )}
-
-      <Input type="email" id="email" {...register("email")}>
-        Email
+    <FormGroup title="Forgot password" onSubmit={handleSubmit}>
+      <Input
+        type="email"
+        id="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      >
+        Full Name
       </Input>
-      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-      <Button disabled={isPending}>Send Instruction</Button>
+      <Button>Send Instruction</Button>
       <p className="text-white">
         Already have account?{" "}
         <Link to="/login" className="text-[#04A51E] font-bold">

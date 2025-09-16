@@ -1,28 +1,16 @@
-// RegisterForm.jsx
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { isAxiosError } from "axios";
+import { useMutation } from "@tanstack/react-query";
 import { usersKeys, registerUser } from "../../queries/users";
-import { Input, Button, Alert } from "../atoms";
+import { Input, Button, Error } from "../atoms";
 import { FormGroup } from "../molecules";
-import { registerSchema, type RegisterFormData } from "../../schema/register";
 
 export function RegisterForm() {
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      full_name: "",
-      email: "",
-      password: "",
-    },
-  });
+  const [full_name, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: usersKeys.all,
     mutationFn: registerUser,
@@ -31,40 +19,42 @@ export function RegisterForm() {
     },
   });
 
-  function onSubmit(data: RegisterFormData) {
-    mutate(data);
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setTimeout(() => {
+      mutate({ full_name, email, password });
+    }, 3000);
   }
 
+  if (isError) return <Error>Error: {error.message}</Error>;
+
   return (
-    <FormGroup title="Create account Circle" onSubmit={handleSubmit(onSubmit)}>
-      {isError && (
-        <Alert variant="danger">
-          {isAxiosError(error) && error.response
-            ? error.response.data.message
-            : error.message}
-        </Alert>
-      )}
+    <FormGroup title="Create account Circle" onSubmit={handleSubmit}>
       <Input
         type="text"
-        id="full_name" // Pastikan id sesuai dengan key di skema Zod
-        {...register("full_name")}
+        id="fullName"
+        value={full_name}
+        onChange={(e) => setFullName(e.target.value)}
       >
         Full Name
       </Input>
-      {errors.full_name && (
-        <p className="text-red-500">{errors.full_name.message}</p>
-      )}
-      <Input type="email" id="email" {...register("email")}>
+      <Input
+        type="email"
+        id="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      >
         Email
       </Input>
-      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-      <Input type="password" id="password" {...register("password")}>
+      <Input
+        type="password"
+        id="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      >
         Password
       </Input>
-      {errors.password && (
-        <p className="text-red-500">{errors.password.message}</p>
-      )}
-      <Button disabled={isPending}>Create</Button>
+      <Button disabled={isPending ? true : false}>Create</Button>
       <p className="text-white">
         Already have account?{" "}
         <Link to="/login" className="text-[#04A51E] font-bold">
