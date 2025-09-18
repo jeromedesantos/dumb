@@ -4,13 +4,14 @@ import {
   type FormEvent,
   type SetStateAction,
   type MouseEvent,
+  useRef,
 } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { ImagePlus, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import { isAxiosError } from "axios";
 import { Alert, Button } from "../atoms";
-import { postThreads, threadsKeys } from "../../queries/threads";
+import { postThread, threadsKeys } from "../../queries/threads";
 import type { TokenStateType } from "../../types/tokenState";
 
 export function ThreadInput({
@@ -22,11 +23,12 @@ export function ThreadInput({
 }) {
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: threadsKeys.all,
-    mutationFn: postThreads,
+    mutationFn: postThread,
   });
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [content, setContent] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
-  const [base64Image, setBase64Image] = useState(null);
+  const [base64Image, setBase64Image] = useState<string | null>(null);
   const { data } = useSelector((state: TokenStateType) => state.token);
   const baseURL: string = import.meta.env.VITE_BASE_URL;
   const userUrl = data?.photo_profile
@@ -39,9 +41,10 @@ export function ThreadInput({
     setImage(file);
     const reader = new FileReader();
     reader.readAsDataURL(file);
-
     reader.onload = () => {
-      setBase64Image(reader.result as SetStateAction<null>);
+      if (typeof reader.result === "string") {
+        setBase64Image(reader.result);
+      }
     };
   }
 
@@ -57,16 +60,22 @@ export function ThreadInput({
     setContent("");
     setImage(null);
     setBase64Image(null);
-  }
-
-  function handleExit() {
-    setHide(!hide);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   }
 
   function handleClose(e: MouseEvent<SVGSVGElement>) {
     e.stopPropagation();
     setImage(null);
     setBase64Image(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Solusi
+    }
+  }
+
+  function handleExit() {
+    setHide(!hide);
   }
 
   return (
@@ -93,7 +102,7 @@ export function ThreadInput({
         )}
         <form
           className="flex flex-col gap-5"
-          action="submits"
+          action="submit"
           onSubmit={handleSubmit}
         >
           <div className="flex gap-5 w-full border-b-1 border-zinc-700 z-40">
@@ -109,34 +118,33 @@ export function ThreadInput({
               onChange={(e) => setContent(e.target.value)}
             />
           </div>
-          <div className="flex items-end gap-5">
-            {base64Image && (
-              <div className="flex flex-col items-end">
-                <X
-                  className="text-zinc-300 cursor-pointer relative top-7 right-2 rounded-full p-1 bg-zinc-900/30 hover:bg-zinc-900/50 duration-300"
-                  onClick={handleClose}
-                />
-                <img
-                  src={base64Image}
-                  alt={`Image of ${data?.username}`}
-                  className="max-w-50 h-50 rounded-xl object-cover"
-                />
-              </div>
-            )}
-            <label className="flex w-full justify-between cursor-pointer">
-              <input
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={handleImageChange}
+          <label className="flex w-full justify-between cursor-pointer">
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            <ImagePlus
+              size="30"
+              className="brightness-70 text-[#04A51E] cursor-pointer"
+            />
+            <Button loading={isPending}>Post</Button>
+          </label>
+          {base64Image && (
+            <div className="flex flex-col items-end">
+              <X
+                className="text-zinc-300 cursor-pointer relative top-7 right-2 rounded-full p-1 bg-zinc-900/30 hover:bg-zinc-900/50 duration-300"
+                onClick={handleClose}
               />
-              <ImagePlus
-                size="30"
-                className="brightness-70 text-[#04A51E] cursor-pointer"
+              <img
+                src={base64Image}
+                alt={`Image of ${data?.username}`}
+                className="rounded-xl object-cover"
               />
-              <Button loading={isPending}>Post</Button>
-            </label>
-          </div>
+            </div>
+          )}
         </form>
       </div>
     </div>
