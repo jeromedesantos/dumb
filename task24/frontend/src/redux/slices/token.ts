@@ -14,7 +14,7 @@ const initialState: TokenSliceType = {
 
 export const verifyToken = createAsyncThunk("token/verifyToken", async () => {
   const response = await getVerify();
-  return response.data;
+  return response;
 });
 
 const tokenSlice = createSlice({

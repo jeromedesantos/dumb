@@ -6,12 +6,7 @@ export const usersKeys = {
 
 export async function getVerify() {
   const response = await api.get("/verify");
-  return response.data;
-}
-
-export async function getUsers() {
-  const response = await api.get("/user");
-  return response.data;
+  return response.data.data;
 }
 
 export async function loginUser(input: {
@@ -19,7 +14,7 @@ export async function loginUser(input: {
   password: string;
 }) {
   const response = await api.post("/login", input);
-  return response.data;
+  return response.data.data;
 }
 
 export async function registerUser(input: {
@@ -28,15 +23,15 @@ export async function registerUser(input: {
   password: string;
 }) {
   const response = await api.post("/register", input);
-  return response.data;
+  return response.data.data;
 }
 
 export async function forgotUser(input: { email: string }) {
   const response = await api.post("/forgot", input);
-  return response.data;
+  return response.data.data;
 }
 
 export async function resetUser(id: string, input: { password: string }) {
   const response = await api.put(`/reset/${id}`, input);
-  return response.data;
+  return response.data.data;
 }

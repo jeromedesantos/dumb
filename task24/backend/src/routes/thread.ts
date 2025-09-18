@@ -1,9 +1,13 @@
 import { Router } from "express";
-import { auth, nonAuth, isSame, isExist } from "../middlewares/auth";
-import { getThreads } from "../controllers/thread";
+import { auth } from "../middlewares/auth";
+import { getThreads, getThreadById, postThread } from "../controllers/thread";
+import { upload } from "../utils/multer";
+import { saveFile } from "../middlewares/file";
 
 const router = Router();
 
 router.get("/thread", auth, getThreads);
+router.get("/thread/:id", auth, getThreadById);
+router.post("/thread", auth, upload.single("image"), saveFile, postThread);
 
 export default router;

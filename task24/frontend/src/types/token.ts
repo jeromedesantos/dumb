@@ -1,4 +1,8 @@
 export interface TokenType {
-  id: string;
-  username: string;
+  id: true;
+  username?: true;
+  full_name: true;
+  email: true;
+  photo_profile?: true;
+  bio?: true;
 }

@@ -1,10 +1,10 @@
 import { LayoutHome } from "../components/template";
-import { ListThread } from "../components/organisms";
+import { Threads } from "../components/organisms";
 
 export default function Home() {
   return (
     <LayoutHome>
-      <ListThread />
+      <Threads />
     </LayoutHome>
   );
 }

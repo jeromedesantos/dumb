@@ -20,7 +20,7 @@ export function Button({
         ${disabled && "brightness-70 bg-[#038318]"}
       `}
       type="submit"
-      disabled={loading}
+      disabled={loading || disabled}
       onClick={onClick}
     >
       {loading ? children + ".." : children}

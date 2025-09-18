@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 import Forgot from "../pages/Forgot";
 import Reset from "../pages/Reset";
 import Home from "../pages/Home";
+import HomeID from "../pages/HomeID";
 import NotFound from "../pages/NotFound";
 import Private from "./Private";
 import Public from "./Public";
@@ -14,6 +15,14 @@ export const router = createBrowserRouter([
     element: (
       <Private>
         <Home />
+      </Private>
+    ),
+  },
+  {
+    path: "/thread/:id",
+    element: (
+      <Private>
+        <HomeID />
       </Private>
     ),
   },

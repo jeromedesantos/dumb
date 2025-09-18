@@ -28,7 +28,33 @@ export async function loginUser(
     const token = signToken({
       id: user.id,
       username: user.username,
+      full_name: user.full_name,
+      email: user.email,
+      photo_profile: user.photo_profile,
+      bio: user.bio,
     });
+    const { email, photo_profile, bio } = user;
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: "strict",
+        path: "/",
+      })
+      .status(200)
+      .json({
+        status: "Success",
+        message: `Login User by: ${emailOrUsername} success!`,
+        data: {
+          id: user.id,
+          username: user.username,
+          full_name: user.full_name,
+          email,
+          photo_profile,
+          bio,
+        },
+      });
     res
       .cookie("token", token, {
         httpOnly: true,
@@ -105,11 +131,19 @@ export async function registerUser(
 
 export function verifyUser(req: Request, res: Response, next: NextFunction) {
   try {
-    const { id, username } = (req as any).user;
+    const { id, username, full_name, email, photo_profile, bio } = (req as any)
+      .user;
     res.status(200).json({
       status: "Success",
       message: "Fetch user success!",
-      data: { id, username },
+      data: {
+        id,
+        username,
+        full_name,
+        email,
+        photo_profile,
+        bio,
+      },
     });
   } catch (err) {
     next(err);
