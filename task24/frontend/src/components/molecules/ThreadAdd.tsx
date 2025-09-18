@@ -133,7 +133,7 @@ export function ThreadAdd({
         </div>
       </div>
       {base64Image && (
-        <div className="flex flex-col items-end">
+        <div className="max-w-fit flex flex-col items-end">
           <X
             className="text-zinc-300 cursor-pointer relative top-7 right-2 rounded-full p-1 bg-zinc-900/30 hover:bg-zinc-900/50 duration-300"
             onClick={handleClose}

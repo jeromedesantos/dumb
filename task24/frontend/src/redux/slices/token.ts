@@ -21,6 +21,7 @@ const tokenSlice = createSlice({
   name: "token",
   initialState,
   reducers: {
+    resetToken: () => initialState,
     setToken: (state, action: PayloadAction<TokenType>) => {
       state.data = action.payload;
     },
@@ -47,5 +48,5 @@ const tokenSlice = createSlice({
   },
 });
 
-export const { setToken, clearToken } = tokenSlice.actions;
+export const { resetToken, setToken, clearToken } = tokenSlice.actions;
 export default tokenSlice.reducer;

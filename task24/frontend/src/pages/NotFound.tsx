@@ -1,12 +1,5 @@
-import { LayoutAuth } from "../components/template";
 import { Error } from "../components/atoms";
 
-function NotFound() {
-  return (
-    <LayoutAuth>
-      <Error>Page not found</Error>
-    </LayoutAuth>
-  );
+export function NotFound() {
+  return <Error>Page not found</Error>;
 }
-
-export default NotFound;
