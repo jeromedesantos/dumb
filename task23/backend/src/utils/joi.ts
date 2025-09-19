@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const userSchema = Joi.object({
+export const registerSchema = Joi.object({
   full_name: Joi.string()
     .min(3)
     .max(50)
@@ -25,4 +25,25 @@ export const userSchema = Joi.object({
     "string.min": "Password must be at least 6 characters",
     "any.required": "Password is a required field",
   }),
+});
+
+export const resetSchema = Joi.object({
+  password: Joi.string().min(6).required().messages({
+    "string.min": "Password must be at least 6 characters",
+    "any.required": "Password is a required field",
+  }),
+  newPassword: Joi.string().min(6).required().messages({
+    "string.min": "Password must be at least 6 characters",
+    "any.required": "Password is a required field",
+  }),
+});
+
+export const forgotSchema = Joi.object({
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .required()
+    .messages({
+      "string.email": "Invalid email address",
+      "any.required": "Email is a required field",
+    }),
 });
