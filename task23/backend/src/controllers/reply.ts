@@ -1,18 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import { resolve } from "path";
-import { writeFileSync } from "fs";
+import { unlink, writeFileSync } from "fs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import { prisma } from "../connections/client";
 import type { ReplyType } from "../types/reply";
+import { appError } from "../utils/error";
 
-export async function getReplyById(
+export async function getReplies(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const { id } = req.params;
+    const { id: thread_id } = req.params;
     const {
       sortBy = "created_at",
       order = "desc",
@@ -32,8 +33,8 @@ export async function getReplyById(
             R.updated_at, 
             R.updated_by
         FROM "Reply" AS R
-        JOIN "User" AS U ON R.user_id = U.id
-        WHERE R.thread_id = '${id}'
+        JOIN "User" AS U ON R.created_by = U.id
+        WHERE R.thread_id = '${thread_id}'
         ORDER BY ${sortBy} ${order}
         OFFSET ${offset} LIMIT ${limit}`
     );
@@ -52,23 +53,26 @@ export async function getReplyById(
   }
 }
 
-export async function postReplyById(
+export async function postReplies(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const { id } = req.params;
+    const { io } = req as any;
     const { content } = req.body;
-    const io = (req as any).io;
+    const { id: thread_id } = req.params;
+    const { id: user_id } = (req as any).user;
     const fileName = (req as any)?.processedFile?.fileName;
     const fileBuffer = (req as any)?.processedFile?.fileBuffer;
     const createdReply = await prisma.reply.create({
       data: {
-        user_id: (req as any).user.id,
-        thread_id: id,
+        user_id,
+        thread_id,
         content,
         image: fileName,
+        created_by: user_id,
+        updated_by: user_id,
       },
     });
     const rawReply = await prisma.$queryRawUnsafe(
@@ -84,7 +88,7 @@ export async function postReplyById(
             R.updated_at, 
             R.updated_by
         FROM "Reply" AS R
-        JOIN "User" AS U ON R.user_id = U.id
+        JOIN "User" AS U ON R.created_by = U.id
         WHERE R.id = '${createdReply.id}'
     `
     );
@@ -101,6 +105,38 @@ export async function postReplyById(
     res.status(201).json({
       status: "Success",
       message: `Create reply: ${content} success!`,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteReply(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { io } = req as any;
+    const { id } = req.params;
+    const { id: user_id } = (req as any).user;
+    const existingReply = (req as any).model;
+    if (existingReply.created_by !== user_id) {
+      throw appError("You are not authorized to delete this reply!", 403);
+    }
+    await prisma.reply.delete({
+      where: { id },
+    });
+    io.emit("deleteReply", { id });
+    if (existingReply.image) {
+      const filePath = resolve("src", "uploads", "reply", existingReply.image);
+      unlink(filePath, (err) => {
+        if (err) throw appError(`File cannot remove!: ${filePath}`, 500);
+      });
+    }
+    res.status(200).json({
+      status: "Success",
+      message: `Delete reply by id: ${id} success!`,
     });
   } catch (err) {
     next(err);

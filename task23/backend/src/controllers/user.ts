@@ -106,7 +106,7 @@ export async function registerUser(
     if (exitingEmail) {
       throw appError("Email already exists!", 409);
     }
-    const createdUser = await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       const newUser = await tx.user.create({
         data: {
           full_name,
@@ -240,7 +240,7 @@ export async function resetUser(
       throw appError("Invalid password", 401);
     }
     const hashedPassword = await hashPassword(password);
-    const updatedUser = await prisma.user.update({
+    await prisma.user.update({
       data: {
         password: hashedPassword,
       },

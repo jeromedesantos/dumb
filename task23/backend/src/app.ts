@@ -10,6 +10,7 @@ import { corsSocket, corsMiddleware } from "./utils/cors";
 import http from "http";
 import { Server } from "socket.io";
 import reply from "./routes/reply";
+import like from "./routes/like";
 
 config();
 
@@ -39,6 +40,7 @@ app.use((req, res, next) => {
 app.use("/api/v1", user);
 app.use("/api/v1", thread);
 app.use("/api/v1", reply);
+app.use("/api/v1", like);
 app.use("*catchall", error);
 app.use(errorHandler);
 

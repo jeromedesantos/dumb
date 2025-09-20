@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { resolve } from "path";
-import { writeFileSync } from "fs";
+import { unlink, writeFileSync } from "fs";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { prisma } from "../connections/client";
 import type { ThreadType } from "../types/thread";
+import { appError } from "../utils/error";
 
 export async function getThreads(
   req: Request,
@@ -28,7 +29,7 @@ export async function getThreads(
           T.content,
           T.image,
           COUNT(L.thread_id)::int AS number_of_likes,
-          COUNT(R.thread_id)::int AS number_of_replies,         
+          COUNT(R.thread_id)::int AS number_of_replies,
           T.created_at,
           T.created_by,
           T.updated_at,
@@ -110,16 +111,17 @@ export async function postThread(
   next: NextFunction
 ) {
   try {
+    const { io } = req as any;
     const { content } = req.body;
-    const io = (req as any).io;
+    const { id: user_id } = (req as any).user;
     const fileName = (req as any)?.processedFile?.fileName;
     const fileBuffer = (req as any)?.processedFile?.fileBuffer;
     const createdThread = await prisma.thread.create({
       data: {
         content,
         image: fileName,
-        created_by: (req as any).user.id,
-        updated_by: (req as any).user.id,
+        created_by: user_id,
+        updated_by: user_id,
       },
     });
     const rawThread = await prisma.$queryRawUnsafe(`
@@ -156,6 +158,64 @@ export async function postThread(
     res.status(201).json({
       status: "Success",
       message: `Create thread: ${content} success!`,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteThread(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { io } = req as any;
+    const { id } = req.params;
+    const { id: user_id } = (req as any).user;
+    const existingThread = (req as any).model;
+    if (existingThread.created_by !== user_id) {
+      throw appError("You are not authorized to delete this thread!", 403);
+    }
+    const repliesWithImages = await prisma.reply.findMany({
+      where: { thread_id: id },
+      select: { image: true },
+    });
+    await prisma.$transaction(async (tx) => {
+      try {
+        await tx.reply.deleteMany({
+          where: { thread_id: id },
+        });
+        return await tx.thread.delete({
+          where: { id },
+        });
+      } catch (err: any) {
+        throw appError(err.message, 500);
+      }
+    });
+    io.emit("deleteThread", { id });
+    if (existingThread.image) {
+      const filePath = resolve(
+        "src",
+        "uploads",
+        "thread",
+        existingThread.image
+      );
+      repliesWithImages.forEach((reply) => {
+        if (reply.image) {
+          const filePath = resolve("src", "uploads", "reply", reply.image);
+          unlink(filePath, (err) => {
+            if (err) throw appError(`File cannot remove!: ${filePath}`, 500);
+          });
+        }
+      });
+      unlink(filePath, (err) => {
+        if (err) throw appError(`File cannot remove!: ${filePath}`, 500);
+      });
+    }
+    res.status(200).json({
+      status: "Success",
+      message: `Delete thread by id: ${id} success!`,
     });
   } catch (err) {
     next(err);
