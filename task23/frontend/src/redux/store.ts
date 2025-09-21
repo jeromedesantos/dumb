@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {
   tokenReducer,
+  likesReducer,
   repliesReducer,
   threadsReducer,
   threadByIdReducer,
@@ -9,6 +10,7 @@ import {
 export const store = configureStore({
   reducer: {
     token: tokenReducer,
+    likes: likesReducer,
     replies: repliesReducer,
     threads: threadsReducer,
     threadById: threadByIdReducer,

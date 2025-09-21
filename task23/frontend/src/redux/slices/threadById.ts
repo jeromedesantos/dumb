@@ -32,9 +32,12 @@ const threadByIdSlice = createSlice({
     removeThread: (state) => {
       state.data = null;
     },
-    incrementRepliesCount: (state) => {
-      if (state.data) {
-        state.data.number_of_replies += 1;
+    setRepliesCount: (
+      state,
+      action: PayloadAction<{ threadId: string; count: number }>
+    ) => {
+      if (state.data && state.data.id === action.payload.threadId) {
+        state.data.number_of_replies = action.payload.count;
       }
     },
   },
@@ -60,5 +63,5 @@ const threadByIdSlice = createSlice({
   },
 });
 
-export const { removeThread, incrementRepliesCount } = threadByIdSlice.actions;
+export const { removeThread, setRepliesCount } = threadByIdSlice.actions;
 export default threadByIdSlice.reducer;

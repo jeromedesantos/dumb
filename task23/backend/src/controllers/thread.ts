@@ -28,8 +28,9 @@ export async function getThreads(
           EXTRACT(EPOCH FROM (NOW() - T."created_at"))::int AS age,
           T.content,
           T.image,
-          COUNT(L.thread_id)::int AS number_of_likes,
           COUNT(R.thread_id)::int AS number_of_replies,
+          COUNT(L.thread_id)::int AS number_of_likes,
+          COALESCE(array_agg(DISTINCT L.user_id) FILTER (WHERE L.user_id IS NOT NULL), '{}') AS liked_user_ids,
           T.created_at,
           T.created_by,
           T.updated_at,
@@ -50,6 +51,7 @@ export async function getThreads(
     dayjs.extend(relativeTime);
     const threads = (rawThreads as ThreadType[]).map((thread) => ({
       ...thread,
+      isLiked: thread.liked_user_ids.includes((req as any).user.id),
       age: dayjs(thread.created_at).fromNow(),
     }));
     res.status(200).json({
@@ -77,8 +79,9 @@ export async function getThreadById(
           U.username,
           T.content,
           T.image,
-          COUNT(L.thread_id)::int AS number_of_likes,
           COUNT(R.thread_id)::int AS number_of_replies,
+          COUNT(L.thread_id)::int AS number_of_likes,
+          COALESCE(array_agg(DISTINCT L.user_id) FILTER (WHERE L.user_id IS NOT NULL), '{}') AS liked_user_ids,
           T.created_at,
           T.created_by,
           T.updated_at,
@@ -93,6 +96,7 @@ export async function getThreadById(
     dayjs.extend(relativeTime);
     const threads = (rawThreads as ThreadType[]).map((thread) => ({
       ...thread,
+      isLiked: thread.liked_user_ids.includes((req as any).user.id),
       age: dayjs(thread.created_at).fromNow(),
     }));
     res.status(200).json({
@@ -134,6 +138,7 @@ export async function postThread(
         T.image,
         COUNT(L.thread_id)::int AS number_of_likes,
         COUNT(R.thread_id)::int AS number_of_replies,
+        COALESCE(array_agg(DISTINCT L.user_id) FILTER (WHERE L.user_id IS NOT NULL), '{}') AS liked_user_ids,
         T.created_at,
         T.created_by,
         T.updated_at,
@@ -148,8 +153,12 @@ export async function postThread(
     dayjs.extend(relativeTime);
     const thread = {
       ...(rawThread as ThreadType[])[0],
+      isLiked: (rawThread as ThreadType[])[0].liked_user_ids.includes(
+        (req as any).user.id
+      ),
       age: dayjs((rawThread as ThreadType[])[0].created_at).fromNow(),
     };
+
     io.emit("newThread", thread);
     if (fileName && fileBuffer) {
       const savePath = resolve("src", "uploads", "thread", fileName);
@@ -183,6 +192,9 @@ export async function deleteThread(
     });
     await prisma.$transaction(async (tx) => {
       try {
+        await tx.like.deleteMany({
+          where: { thread_id: id },
+        });
         await tx.reply.deleteMany({
           where: { thread_id: id },
         });

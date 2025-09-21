@@ -6,12 +6,13 @@ import { Reply, Thread, ThreadAdd } from "../molecules";
 import { Alert, Header } from "../atoms";
 import {
   fetchThreadById,
-  incrementRepliesCount,
+  setRepliesCount,
 } from "../../redux/slices/threadById";
 import { fetchReplies, addReplies } from "../../redux/slices/replies";
 import { useNavigate } from "react-router-dom";
 import type { ReplyType } from "../../types/reply";
 import type { AppDispatch, RootState } from "../../redux/store";
+import { updateRepliesCount } from "@/redux/slices/threads";
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
 export function ThreadID({ id }: { id: string }) {
@@ -34,10 +35,24 @@ export function ThreadID({ id }: { id: string }) {
     const socket = io(socketURL, {
       withCredentials: true,
     });
-    socket.on("newReply", (newReply: ReplyType) => {
-      dispatch(addReplies(newReply));
-      dispatch(incrementRepliesCount());
-    });
+    socket.on(
+      "newReply",
+      (newReply: ReplyType & { thread_id: string; totalReplies: number }) => {
+        dispatch(addReplies(newReply));
+        dispatch(
+          setRepliesCount({
+            threadId: newReply.thread_id,
+            count: newReply.totalReplies,
+          })
+        );
+        dispatch(
+          updateRepliesCount({
+            threadId: newReply.thread_id,
+            count: newReply.totalReplies,
+          })
+        );
+      }
+    );
     return () => {
       socket.disconnect();
     };
@@ -76,6 +91,7 @@ export function ThreadID({ id }: { id: string }) {
           age={threadById.age}
           content={threadById.content}
           image={threadById.image}
+          isLiked={threadById.isLiked}
           number_of_likes={threadById.number_of_likes}
           number_of_replies={threadById.number_of_replies}
           created_by={threadById.created_by}

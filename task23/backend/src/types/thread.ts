@@ -8,7 +8,7 @@ export interface ThreadType {
   image: string | null;
   number_of_likes: number;
   number_of_replies: number;
-  pending: boolean;
+  liked_user_ids: string[];
   created_at: Date;
   created_by: string;
   updated_at: Date;

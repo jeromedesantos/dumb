@@ -35,6 +35,16 @@ const threadsSlice = createSlice({
     removeThreads: (state, action: PayloadAction<string>) => {
       state.data = state.data.filter((t) => t.id !== action.payload);
     },
+    updateRepliesCount: (
+      state,
+      action: PayloadAction<{ threadId: string; count: number }>
+    ) => {
+      state.data = state.data.map((thread) =>
+        thread.id === action.payload.threadId
+          ? { ...thread, number_of_replies: action.payload.count }
+          : thread
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -58,5 +68,6 @@ const threadsSlice = createSlice({
   },
 });
 
-export const { addThreads, removeThreads } = threadsSlice.actions;
+export const { addThreads, removeThreads, updateRepliesCount } =
+  threadsSlice.actions;
 export default threadsSlice.reducer;

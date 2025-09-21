@@ -97,7 +97,14 @@ export async function postReplies(
       ...(rawReply as ReplyType[])[0],
       age: dayjs((rawReply as ReplyType[])[0].created_at).fromNow(),
     };
-    io.emit("newReply", reply);
+    const totalReplies = await prisma.reply.count({
+      where: { thread_id },
+    });
+    io.emit("newReply", {
+      ...reply,
+      thread_id,
+      totalReplies,
+    });
     if (fileName && fileBuffer) {
       const savePath = resolve("src", "uploads", "reply", fileName);
       writeFileSync(savePath, fileBuffer);

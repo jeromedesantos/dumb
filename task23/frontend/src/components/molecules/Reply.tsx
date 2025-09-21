@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { io } from "socket.io-client";
 import { useMutation } from "@tanstack/react-query";
 import { deleteReply, repliesKeys } from "../../queries/reply";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { ButtonTrash } from "../atoms/ButtonTrash";
 import { isAxiosError } from "axios";
 import { Alert } from "../atoms";
-import { useEffect } from "react";
 import { removeReplies } from "../../redux/slices/replies";
-import { io } from "socket.io-client";
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
 export function Reply({
@@ -85,11 +86,10 @@ export function Reply({
         <div className="flex flex-col gap-2">
           <p className="text-sm text-zinc-300 whitespace-pre-wrap">{content}</p>
           {image && (
-            <a
-              href={replyUrl}
+            <Link
+              to={replyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
               className="cursor-pointer"
             >
               <img
@@ -97,7 +97,7 @@ export function Reply({
                 alt={`Image of ${content}`}
                 className="w-full rounded-xl"
               />
-            </a>
+            </Link>
           )}
         </div>
       </div>

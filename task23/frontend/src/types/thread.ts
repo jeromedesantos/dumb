@@ -9,4 +9,5 @@ export interface ThreadType {
   number_of_likes: number;
   number_of_replies: number;
   created_by: string;
+  isLiked?: boolean;
 }
