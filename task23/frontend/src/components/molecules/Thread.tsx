@@ -12,7 +12,6 @@ import { deleteThread, threadsKeys } from "../../queries/thread";
 import { removeThread } from "../../redux/slices/threadById";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { setIsLiked, setLikes } from "../../redux/slices/likes";
-import { updateRepliesCount } from "../../redux/slices/threads";
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
 export function Thread({
@@ -37,8 +36,8 @@ export function Thread({
   content?: string | null;
   image?: string | null;
   isLiked?: boolean;
-  number_of_likes: number;
-  number_of_replies: number;
+  number_of_likes?: number | null;
+  number_of_replies?: number | null;
   created_by?: string;
   pending?: boolean;
 }) {
@@ -60,9 +59,6 @@ export function Thread({
   } = useMutation<void, Error, string>({
     mutationKey: threadsKeys.all,
     mutationFn: (id: string) => deleteThread(id),
-    onSuccess: () => {
-      dispatch(setIsLiked({ threadId: id, isLiked: false }));
-    },
   });
   const baseURL: string = import.meta.env.VITE_BASE_URL;
   const userUrl = photo_profile
@@ -80,7 +76,6 @@ export function Thread({
 
   function handleDelete(id: string) {
     mutateDel(id);
-    navigate("/");
   }
 
   function handleToggleLike(e: MouseEvent<SVGSVGElement>) {
@@ -95,6 +90,7 @@ export function Thread({
   }
 
   useEffect(() => {
+    if (!number_of_likes) return;
     dispatch(setLikes({ threadId: id, count: number_of_likes }));
     dispatch(setIsLiked({ threadId: id, isLiked: isLiked ?? false }));
   }, [dispatch, id, number_of_likes, isLiked]);
@@ -106,18 +102,6 @@ export function Thread({
     socket.on("deleteThread", () => {
       dispatch(removeThread());
     });
-    socket.on(
-      "newReply",
-      (payload: { thread_id: string; totalReplies: number }) => {
-        if (payload.thread_id !== id) return;
-        dispatch(
-          updateRepliesCount({
-            threadId: payload.thread_id,
-            count: payload.totalReplies,
-          })
-        );
-      }
-    );
     socket.on(
       "newLike",
       (payload: { thread_id: string; count: number; user_id: string }) => {

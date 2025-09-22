@@ -134,7 +134,14 @@ export async function deleteReply(
     await prisma.reply.delete({
       where: { id },
     });
-    io.emit("deleteReply", { id });
+    const totalReplies = await prisma.reply.count({
+      where: { thread_id: existingReply.thread_id },
+    });
+    io.emit("deleteReply", {
+      id: id,
+      thread_id: existingReply.thread_id,
+      totalReplies,
+    });
     if (existingReply.image) {
       const filePath = resolve("src", "uploads", "reply", existingReply.image);
       unlink(filePath, (err) => {

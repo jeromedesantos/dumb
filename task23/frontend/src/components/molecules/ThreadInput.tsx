@@ -50,6 +50,7 @@ export function ThreadInput({
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (content === "") return;
     const formData = new FormData();
     if (image) {
       formData.append("image", image);

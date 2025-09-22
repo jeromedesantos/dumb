@@ -6,10 +6,13 @@ import {
   removeThreads,
   addThreads,
   fetchThreads,
+  updateRepliesCount,
 } from "../../redux/slices/threads";
 import type { ThreadType } from "../../types/thread";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
+import { setRepliesCount } from "@/redux/slices/threadById";
+import type { ReplyType } from "@/types/reply";
 
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
@@ -33,6 +36,40 @@ export function Threads() {
     socket.on("deleteThread", ({ id }: { id: string }) => {
       dispatch(removeThreads(id));
     });
+    socket.on(
+      "newReply",
+      (payload: ReplyType & { thread_id: string; totalReplies: number }) => {
+        dispatch(
+          setRepliesCount({
+            threadId: payload.thread_id,
+            count: payload.totalReplies,
+          })
+        );
+        dispatch(
+          updateRepliesCount({
+            threadId: payload.thread_id,
+            count: payload.totalReplies,
+          })
+        );
+      }
+    );
+    socket.on(
+      "deleteReply",
+      (payload: { id: string; thread_id: string; totalReplies: number }) => {
+        dispatch(
+          setRepliesCount({
+            threadId: payload.thread_id,
+            count: payload.totalReplies,
+          })
+        );
+        dispatch(
+          updateRepliesCount({
+            threadId: payload.thread_id,
+            count: payload.totalReplies,
+          })
+        );
+      }
+    );
     return () => {
       socket.disconnect();
     };
@@ -61,8 +98,8 @@ export function Threads() {
           age={"Loading.."}
           content={"Loading.."}
           image={null}
-          number_of_likes={0}
-          number_of_replies={0}
+          number_of_likes={null}
+          number_of_replies={null}
           pending={true}
         />
       )}

@@ -8,7 +8,11 @@ import {
   fetchThreadById,
   setRepliesCount,
 } from "../../redux/slices/threadById";
-import { fetchReplies, addReplies } from "../../redux/slices/replies";
+import {
+  fetchReplies,
+  addReplies,
+  removeReplies,
+} from "../../redux/slices/replies";
 import { useNavigate } from "react-router-dom";
 import type { ReplyType } from "../../types/reply";
 import type { AppDispatch, RootState } from "../../redux/store";
@@ -37,18 +41,36 @@ export function ThreadID({ id }: { id: string }) {
     });
     socket.on(
       "newReply",
-      (newReply: ReplyType & { thread_id: string; totalReplies: number }) => {
-        dispatch(addReplies(newReply));
+      (payload: ReplyType & { thread_id: string; totalReplies: number }) => {
+        dispatch(addReplies(payload));
         dispatch(
           setRepliesCount({
-            threadId: newReply.thread_id,
-            count: newReply.totalReplies,
+            threadId: payload.thread_id,
+            count: payload.totalReplies,
           })
         );
         dispatch(
           updateRepliesCount({
-            threadId: newReply.thread_id,
-            count: newReply.totalReplies,
+            threadId: payload.thread_id,
+            count: payload.totalReplies,
+          })
+        );
+      }
+    );
+    socket.on(
+      "deleteReply",
+      (payload: { id: string; thread_id: string; totalReplies: number }) => {
+        dispatch(removeReplies(payload.id));
+        dispatch(
+          setRepliesCount({
+            threadId: payload.thread_id,
+            count: payload.totalReplies,
+          })
+        );
+        dispatch(
+          updateRepliesCount({
+            threadId: payload.thread_id,
+            count: payload.totalReplies,
           })
         );
       }

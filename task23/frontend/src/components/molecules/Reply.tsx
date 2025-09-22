@@ -1,15 +1,11 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import { io } from "socket.io-client";
 import { useMutation } from "@tanstack/react-query";
 import { deleteReply, repliesKeys } from "../../queries/reply";
-import type { AppDispatch, RootState } from "../../redux/store";
+import type { RootState } from "../../redux/store";
 import { ButtonTrash } from "../atoms/ButtonTrash";
 import { isAxiosError } from "axios";
 import { Alert } from "../atoms";
-import { removeReplies } from "../../redux/slices/replies";
-const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
 export function Reply({
   id,
@@ -46,19 +42,10 @@ export function Reply({
     mutationKey: repliesKeys.all,
     mutationFn: (id: string) => deleteReply(id),
   });
-  const dispatch: AppDispatch = useDispatch();
 
   function handleDelete(id: string) {
     mutate(id);
   }
-  useEffect(() => {
-    const socket = io(socketURL, {
-      withCredentials: true,
-    });
-    socket.on("deleteReply", ({ id }: { id: string }) => {
-      dispatch(removeReplies(id));
-    });
-  }, [dispatch, id]);
 
   return (
     <div
