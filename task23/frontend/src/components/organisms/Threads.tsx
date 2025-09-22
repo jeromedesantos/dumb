@@ -11,7 +11,6 @@ import {
 import type { ThreadType } from "../../types/thread";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
-import { setRepliesCount } from "@/redux/slices/threadById";
 import type { ReplyType } from "@/types/reply";
 
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
@@ -40,12 +39,6 @@ export function Threads() {
       "newReply",
       (payload: ReplyType & { thread_id: string; totalReplies: number }) => {
         dispatch(
-          setRepliesCount({
-            threadId: payload.thread_id,
-            count: payload.totalReplies,
-          })
-        );
-        dispatch(
           updateRepliesCount({
             threadId: payload.thread_id,
             count: payload.totalReplies,
@@ -56,12 +49,6 @@ export function Threads() {
     socket.on(
       "deleteReply",
       (payload: { id: string; thread_id: string; totalReplies: number }) => {
-        dispatch(
-          setRepliesCount({
-            threadId: payload.thread_id,
-            count: payload.totalReplies,
-          })
-        );
         dispatch(
           updateRepliesCount({
             threadId: payload.thread_id,

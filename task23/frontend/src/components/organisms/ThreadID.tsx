@@ -16,7 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import type { ReplyType } from "../../types/reply";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { updateRepliesCount } from "@/redux/slices/threads";
+
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
 export function ThreadID({ id }: { id: string }) {
@@ -49,12 +49,6 @@ export function ThreadID({ id }: { id: string }) {
             count: payload.totalReplies,
           })
         );
-        dispatch(
-          updateRepliesCount({
-            threadId: payload.thread_id,
-            count: payload.totalReplies,
-          })
-        );
       }
     );
     socket.on(
@@ -63,12 +57,6 @@ export function ThreadID({ id }: { id: string }) {
         dispatch(removeReplies(payload.id));
         dispatch(
           setRepliesCount({
-            threadId: payload.thread_id,
-            count: payload.totalReplies,
-          })
-        );
-        dispatch(
-          updateRepliesCount({
             threadId: payload.thread_id,
             count: payload.totalReplies,
           })
