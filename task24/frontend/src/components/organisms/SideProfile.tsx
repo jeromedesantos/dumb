@@ -2,15 +2,19 @@ import { Profile } from "../molecules";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useEffect } from "react";
-import { fetchUserById } from "../../redux/slices/userById";
+import { io } from "socket.io-client";
+import { fetchUserById, setUser } from "../../redux/slices/userById";
 import { Alert } from "../atoms";
+import type { UserType } from "../../types";
+
+const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
 export function SideProfile() {
   const { data } = useSelector((state: RootState) => state.token);
   const {
     data: user,
-    status,
-    error,
+    status: statusUser,
+    error: errorUser,
   } = useSelector((state: RootState) => state.userById);
   const dispatch: AppDispatch = useDispatch();
 
@@ -18,14 +22,26 @@ export function SideProfile() {
     if (data?.id) dispatch(fetchUserById(data.id));
   }, [dispatch, data?.id]);
 
+  useEffect(() => {
+    const socket = io(socketURL, {
+      withCredentials: true,
+    });
+    socket.on("updateUser", (updateUser: UserType) => {
+      if (user?.id === updateUser.id) return dispatch(setUser(updateUser));
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [dispatch, user?.id]);
+
   return (
     <div className=" bg-zinc-950 w-full max-w-xs flex flex-col items-center">
-      {status === "failed" && (
+      {statusUser === "failed" && (
         <div className="py-5">
-          <Alert variant="danger">{error}</Alert>
+          <Alert variant="danger">{errorUser}</Alert>
         </div>
       )}
-      {status === "loading" && (
+      {statusUser === "loading" && (
         <Profile
           id={""}
           full_name={"Loading.."}

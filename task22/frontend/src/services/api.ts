@@ -5,9 +5,3 @@ export const api = axios.create({
   baseURL,
   withCredentials: true,
 });
-
-export function extractAxiosError(err: unknown): string | null {
-  return axios.isAxiosError(err) && err.response
-    ? err.response.data.message
-    : "Unexpected error";
-}

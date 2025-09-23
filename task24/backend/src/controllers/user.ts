@@ -284,12 +284,13 @@ export async function updateUser(
   next: NextFunction
 ) {
   try {
-    console.log(req.body);
     const { id } = req.params;
+    const { io } = req as any;
     const { remove, full_name, username, bio } = req.body;
     const existingUser = (req as any).model;
     const fileName = (req as any)?.processedFile?.fileName;
     const fileBuffer = (req as any)?.processedFile?.fileBuffer;
+    const relativePath = fileName ? `user/${fileName}` : null;
     await prisma.user.update({
       data: {
         username,
@@ -297,26 +298,45 @@ export async function updateUser(
         email: existingUser.email,
         password: existingUser.password,
         photo_profile:
-          remove === "ok" ? null : fileName ?? existingUser.photo_profile,
+          remove === "ok" ? null : relativePath ?? existingUser.photo_profile,
         bio,
         updated_by: existingUser.id,
       },
       where: { id },
     });
-    if (fileName) {
-      const savePath = resolve("src", "uploads", "user", fileName);
-      const filePath = resolve(
-        "src",
-        "uploads",
-        "user",
-        existingUser.photo_profile
-      );
-      unlink(filePath, (err) => {
-        if (err) {
-          throw appError("File cannot remove!", 500);
-        }
+    const user = await prisma.user.findUnique({
+      select: {
+        id: true,
+        username: true,
+        full_name: true,
+        email: true,
+        photo_profile: true,
+        bio: true,
+        created_at: true,
+        created_by: true,
+        updated_at: true,
+        updated_by: true,
+      },
+      where: { id },
+    });
+    io.emit("updateUser", user);
+    const uploadsDir = resolve(process.cwd(), "uploads");
+    const oldFilePath = existingUser.photo_profile
+      ? resolve(uploadsDir, existingUser.photo_profile)
+      : null;
+    const newFilePath = fileName ? resolve(uploadsDir, "user", fileName) : null;
+    if (remove === "ok" && oldFilePath) {
+      unlink(oldFilePath, (err) => {
+        if (err) throw appError("File cannot remove!", 500);
       });
-      writeFileSync(savePath, fileBuffer);
+    }
+    if (fileName && fileBuffer) {
+      if (oldFilePath) {
+        unlink(oldFilePath, (err) => {
+          if (err) throw appError("File cannot remove!", 500);
+        });
+      }
+      writeFileSync(newFilePath!, fileBuffer);
     }
     res.status(200).json({
       status: "Success",

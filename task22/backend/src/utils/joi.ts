@@ -1,34 +1,74 @@
 import Joi from "joi";
 
 export const userSchema = Joi.object({
-  profile: Joi.string().allow(""),
-  name: Joi.string().min(3).max(100).required(),
-  email: Joi.string().email().min(10).max(255).required(),
-  password: Joi.string().min(10).max(255).required(),
-  role: Joi.string().min(3).max(50).required(),
+  username: Joi.string()
+    .pattern(/^[a-zA-Z0-9_]{3,30}$/)
+    .allow(null, "")
+    .optional()
+    .messages({
+      "string.pattern.base":
+        "Username must be 3-30 alphanumeric characters or underscores.",
+    }),
+  full_name: Joi.string().trim().min(1).required().messages({
+    "string.empty": "Full name is required.",
+    "string.min": "Full name must not be empty.",
+    "any.required": "Full name is required.",
+  }),
+  remove: Joi.string().optional(),
+  email: Joi.string().optional(),
+  password: Joi.string().optional(),
+  photo_profile: Joi.string().uri().allow(null, "").optional().messages({
+    "string.uri": "Invalid photo profile URL.",
+  }),
+  bio: Joi.string().max(500).allow(null, "").optional().messages({
+    "string.max": "Bio cannot exceed 500 characters.",
+  }),
 });
 
-export const productSchema = Joi.object({
-  image: Joi.string().allow(""),
-  name: Joi.string().min(3).max(100).required(),
-  category: Joi.string().min(3).max(100).required(),
-  description: Joi.string().min(0).max(255).required(),
-  price: Joi.number().min(0).max(1000000).required(),
-  stock: Joi.number().min(0).max(1000000).required(),
+export const registerSchema = Joi.object({
+  full_name: Joi.string()
+    .min(3)
+    .max(50)
+    .pattern(/^[a-zA-Z\s]+$/)
+    .required()
+    .messages({
+      "string.base": "Full name should be a type of text",
+      "string.empty": "Full name cannot be an empty field",
+      "string.min": "Full name should have a minimum length of {#limit}",
+      "string.max": "Full name should have a maximum length of {#limit}",
+      "string.pattern.base": "Full name can only contain letters and spaces",
+      "any.required": "Full name is a required field",
+    }),
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .required()
+    .messages({
+      "string.email": "Invalid email address",
+      "any.required": "Email is a required field",
+    }),
+  password: Joi.string().min(6).required().messages({
+    "string.min": "Password must be at least 6 characters",
+    "any.required": "Password is a required field",
+  }),
 });
 
-export const orderSchema = Joi.object({
-  userId: Joi.string().min(0).max(255).required(),
-  productId: Joi.string().min(0).max(255).required(),
-  qty: Joi.number().min(0).max(1000000).required(),
+export const resetSchema = Joi.object({
+  password: Joi.string().min(6).required().messages({
+    "string.min": "Password must be at least 6 characters",
+    "any.required": "Password is a required field",
+  }),
+  newPassword: Joi.string().min(6).required().messages({
+    "string.min": "Password must be at least 6 characters",
+    "any.required": "Password is a required field",
+  }),
 });
 
-export const updateOrderSchema = Joi.object({
-  qty: Joi.number().min(0).max(1000000).required(),
-});
-
-export const transferSchema = Joi.object({
-  senderId: Joi.string().min(0).max(255).required(),
-  receiverId: Joi.string().min(0).max(255).required(),
-  amount: Joi.number().min(0).max(1000000).required(),
+export const forgotSchema = Joi.object({
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .required()
+    .messages({
+      "string.email": "Invalid email address",
+      "any.required": "Email is a required field",
+    }),
 });

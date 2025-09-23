@@ -1,62 +1,54 @@
 import { Router } from "express";
+import { auth, nonAuth, isSame, isExist } from "../middlewares/auth";
 import { upload } from "../utils/multer";
-import { userSchema, transferSchema } from "../utils/joi";
 import { validate } from "../middlewares/validate";
-import { auth, nonAuth, isAdmin, isSame } from "../middlewares/auth";
-import { isExist } from "../middlewares/existing";
-import { isFile, saveFile } from "../middlewares/file";
+import { saveFile } from "../middlewares/file";
+import {
+  forgotSchema,
+  registerSchema,
+  resetSchema,
+  userSchema,
+} from "../utils/joi";
 import {
   loginUser,
   logoutUser,
-  createUser,
-  readUsersSummary,
-  readUsers,
-  readUser,
+  registerUser,
+  resetUser,
+  forgotUser,
   verifyUser,
-  transferPoint,
+  getUsers,
+  getUserById,
   updateUser,
-  restoreUser,
-  deleteUser,
-  searchUsers,
+  // deleteUser,
 } from "../controllers/user";
 
 const router = Router();
 
 router.post("/login", nonAuth, loginUser);
+router.post("/register", nonAuth, validate(registerSchema), registerUser);
+router.post("/forgot", nonAuth, validate(forgotSchema), forgotUser);
 router.post("/logout", auth, logoutUser);
-router.post(
-  "/register",
+router.put(
+  "/reset/:id",
   nonAuth,
-  upload.single("profile"),
-  validate(userSchema),
-  isFile,
-  saveFile,
-  createUser
+  isExist("user"),
+  isSame,
+  validate(resetSchema),
+  resetUser
 );
-
-router.post("/transfer-point", validate(transferSchema), transferPoint);
-router.get("/summary", auth, isAdmin, readUsersSummary);
 router.get("/verify", auth, verifyUser);
-
-router.get("/user", auth, isAdmin, readUsers);
-router.get("/user/search", auth, isAdmin, searchUsers);
-router.get("/user/:id", auth, isSame, readUser);
+router.get("/user", auth, getUsers);
+router.get("/user/:id", auth, isSame, getUserById);
 router.put(
   "/user/:id",
   auth,
   isSame,
   isExist("user"),
-  upload.single("profile"),
+  upload.single("photo_profile"),
+  validate(userSchema),
   saveFile,
   updateUser
 );
-router.patch(
-  "/user/:id/restore",
-  auth,
-  isAdmin,
-  isExist("user", true),
-  restoreUser
-);
-router.delete("/user/:id", auth, isExist("user"), deleteUser);
+// router.delete("/user/:id", auth, isSame, deleteUser);
 
 export default router;

@@ -1,14 +1,20 @@
-import { type ReactNode } from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Loading } from "../components/atoms";
+import { verifyToken } from "../redux/slices/token";
+import type { AppDispatch, RootState } from "../redux/store";
 
-export function PrivateRoute({ children }: { children: ReactNode }) {
-  const { token } = useAuth();
+export function PrivateRoute() {
+  const { status, data } = useSelector((state: RootState) => state.token);
+  const dispatch: AppDispatch = useDispatch();
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-  return <>{children}</>;
+  useEffect(() => {
+    if (!data && status !== "loading") dispatch(verifyToken());
+  }, [dispatch, data, status]);
+
+  if (status === "loading") return <Loading>Auth checking...</Loading>;
+  if (status === "failed") return <Navigate to="/login" replace />;
+
+  return <Outlet />;
 }
-
-export default PrivateRoute;

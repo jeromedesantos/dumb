@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { prisma } from "../connections/client";
 import { verifyToken } from "../utils/jwt";
 import { appError } from "../utils/error";
 
@@ -20,28 +21,30 @@ export function nonAuth(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export function isAdmin(req: Request, res: Response, next: NextFunction) {
-  const { role } = (req as any).user;
-  if (role !== "admin") {
-    throw appError("Only admin can access this route!", 401);
-  }
-  next();
-}
-
 export function isSame(req: Request, res: Response, next: NextFunction) {
   const idParam = req.params.id;
-  const { id, role } = (req as any).user;
-  if (role !== "admin" && idParam !== id) {
+  const { id } = (req as any).user;
+  if (idParam !== id) {
     throw appError("You cannot see other user's data!", 400);
   }
   next();
 }
 
-export function isOrderSame(req: Request, res: Response, next: NextFunction) {
-  const { userId } = req.body;
-  const { id, role } = (req as any).user;
-  if (role !== "admin" && userId !== id) {
-    throw appError("You cannot order with other user's data!", 400);
-  }
-  next();
+export function isExist(modelName: string) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const name = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+      const model = await (prisma as any)[modelName].findUnique({
+        where: { id },
+      });
+      if (model === null) {
+        throw appError(`${name} Not Found!`, 404);
+      }
+      (req as any).model = model;
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
 }

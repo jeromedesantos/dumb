@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { writeFileSync, renameSync, unlink } from "fs";
+import { unlink, writeFileSync } from "fs";
 import { resolve } from "path";
 import { prisma } from "../connections/client";
-import { generateKey } from "../utils/nanoid";
 import { appError } from "../utils/error";
 import { signToken } from "../utils/jwt";
 import { hashPassword, comparePassword } from "../utils/bcrypt";
@@ -13,12 +12,14 @@ export async function loginUser(
   next: NextFunction
 ) {
   try {
-    const { email, password } = req.body;
-    const user = await prisma.user.findUnique({
-      where: { email, deletedAt: null },
+    const { emailOrUsername, password } = req.body;
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email: emailOrUsername }, { username: emailOrUsername }],
+      },
     });
     if (user === null) {
-      throw appError("Invalid email", 401);
+      throw appError("Invalid email or username", 401);
     }
     const isPasswordValid = await comparePassword(password, user.password);
     if (user && isPasswordValid === false) {
@@ -26,8 +27,13 @@ export async function loginUser(
     }
     const token = signToken({
       id: user.id,
-      role: user.role,
+      username: user.username,
+      full_name: user.full_name,
+      email: user.email,
+      photo_profile: user.photo_profile,
+      bio: user.bio,
     });
+    const { email, photo_profile, bio } = user;
     res
       .cookie("token", token, {
         httpOnly: true,
@@ -39,7 +45,28 @@ export async function loginUser(
       .status(200)
       .json({
         status: "Success",
-        message: `Login User ${user.name} success!`,
+        message: `Login User by: ${emailOrUsername} success!`,
+        data: {
+          id: user.id,
+          username: user.username,
+          full_name: user.full_name,
+          email,
+          photo_profile,
+          bio,
+        },
+      });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: "strict",
+        path: "/",
+      })
+      .status(200)
+      .json({
+        status: "Success",
+        message: `Login User by: ${emailOrUsername} success!`,
       });
   } catch (err) {
     next(err);
@@ -65,55 +92,127 @@ export function logoutUser(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export async function readUsersSummary(
+export async function registerUser(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const {
-      sortBy = "u.id",
-      order = "desc",
-      offset = 0,
-      limit = 10,
-    } = req.query;
-    const rawUsers = `
-      SELECT
-        u."id" AS "userId",
-        u."name",
-        COUNT(o."id")::int AS "totalOrders",
-        SUM(o."qty" * p.price)::numeric AS "totalSpent"
-      FROM
-        "Order" o
-      INNER JOIN
-        "User" u ON o."userId" = u."id"
-      INNER JOIN
-        "Product" p ON o."productId" = p."id"
-      GROUP BY
-        u."id", u."name"
-      ORDER BY
-         ${sortBy} ${order}
-      LIMIT ${Number(limit)} OFFSET ${Number(offset)};
-    `;
-    const summary = await prisma.$queryRawUnsafe(rawUsers);
-    res.status(200).json({
+    const { full_name, email, password } = req.body;
+    const hashedPassword = await hashPassword(password);
+    const exitingEmail = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (exitingEmail) {
+      throw appError("Email already exists!", 409);
+    }
+    await prisma.$transaction(async (tx) => {
+      const newUser = await tx.user.create({
+        data: {
+          full_name,
+          email,
+          password: hashedPassword,
+        },
+      });
+      await tx.user.update({
+        where: { id: newUser.id },
+        data: { created_by: newUser.id },
+      });
+      return newUser;
+    });
+    res.status(201).json({
       status: "Success",
-      message: "Fetch summary success!",
-      data: summary,
+      message: `Create user ${full_name} success!`,
     });
   } catch (err) {
     next(err);
   }
 }
 
-export async function readUsers(
+export function verifyUser(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id, username, full_name, email, photo_profile, bio } = (req as any)
+      .user;
+    res.status(200).json({
+      status: "Success",
+      message: "Fetch user success!",
+      data: {
+        id,
+        username,
+        full_name,
+        email,
+        photo_profile,
+        bio,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function resetUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+    const existingUser = (req as any).model;
+    const isPasswordValid = await comparePassword(
+      password,
+      existingUser.password
+    );
+    if (existingUser && isPasswordValid === false) {
+      throw appError("Invalid password", 401);
+    }
+    const hashedPassword = await hashPassword(password);
+    await prisma.user.update({
+      data: {
+        password: hashedPassword,
+      },
+      where: { id },
+    });
+    res.status(200).json({
+      status: "Success",
+      message: `Reset user by id: ${id} success!`,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function forgotUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { email } = req.body;
+    const user = await prisma.user.findUnique({
+      select: {
+        password: true,
+      },
+      where: { email },
+    });
+    res.status(200).json({
+      status: "Success",
+      message: `Fetch user success!`,
+      data: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getUsers(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
     const {
-      sortBy = "createdAt",
+      sortBy = "created_at",
       order = "desc",
       offset = 0,
       limit = 10,
@@ -121,17 +220,15 @@ export async function readUsers(
     const users = await prisma.user.findMany({
       select: {
         id: true,
-        profile: true,
-        name: true,
+        username: true,
+        full_name: true,
         email: true,
-        point: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-        deletedAt: true,
-      },
-      where: {
-        deletedAt: null,
+        photo_profile: true,
+        bio: true,
+        created_at: true,
+        created_by: true,
+        updated_at: true,
+        updated_by: true,
       },
       orderBy: {
         [sortBy as string]: order as "asc" | "desc",
@@ -149,73 +246,7 @@ export async function readUsers(
   }
 }
 
-export async function searchUsers(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const {
-      name,
-      sortBy = "createdAt",
-      order = "desc",
-      offset = 0,
-      limit = 10,
-    } = req.query;
-    if (!name || typeof name !== "string") {
-      const users = await prisma.user.findMany({
-        select: {
-          id: true,
-          profile: true,
-          name: true,
-          email: true,
-          point: true,
-          role: true,
-          createdAt: true,
-          updatedAt: true,
-          deletedAt: true,
-        },
-        where: {
-          deletedAt: null,
-        },
-        orderBy: {
-          [sortBy as string]: order as "asc" | "desc",
-        },
-        skip: Number(offset),
-        take: Number(limit),
-      });
-      res.status(200).json({
-        status: "Success",
-        message: "Fetch users success!",
-        data: users,
-      });
-      return;
-    }
-    const users = await prisma.user.findMany({
-      where: {
-        deletedAt: null,
-        name: {
-          contains: name,
-          mode: "insensitive",
-        },
-      },
-      orderBy: {
-        [sortBy as string]: order as "asc" | "desc",
-      },
-      skip: Number(offset),
-      take: Number(limit),
-    });
-    res.status(200).json({
-      status: "Success",
-      message: "Fetch users success!",
-      data: users,
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function readUser(
+export async function getUserById(
   req: Request,
   res: Response,
   next: NextFunction
@@ -225,128 +256,22 @@ export async function readUser(
     const user = await prisma.user.findUnique({
       select: {
         id: true,
-        profile: true,
-        name: true,
+        username: true,
+        full_name: true,
         email: true,
-        point: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-        deletedAt: true,
+        photo_profile: true,
+        bio: true,
+        created_at: true,
+        created_by: true,
+        updated_at: true,
+        updated_by: true,
       },
-      where: {
-        id,
-        deletedAt: null,
-      },
+      where: { id },
     });
     res.status(200).json({
       status: "Success",
       message: "Fetch user success!",
       data: user,
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
-export function verifyUser(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { id, role } = (req as any).user;
-    res.status(200).json({
-      status: "Success",
-      message: "Fetch user success!",
-      data: { id, role },
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function transferPoint(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const { senderId, receiverId, amount } = req.body;
-    const idUser = (req as any).user.id;
-    if (senderId !== idUser) {
-      throw appError("Cannot use other user's account!", 400);
-    }
-    if (senderId === receiverId) {
-      throw appError("Cannot transfer to yourself!", 400);
-    }
-    const [sender, reciever] = await Promise.all([
-      prisma.user.findUnique({
-        where: { id: senderId, deletedAt: null },
-      }),
-      prisma.user.findUnique({
-        where: { id: receiverId, deletedAt: null },
-      }),
-    ]);
-    if (sender === null) {
-      throw appError("Sender not found!", 404);
-    }
-    if (reciever === null) {
-      throw appError("Receiver not found!", 404);
-    }
-    if (sender.point < amount) {
-      throw appError("Not enough points!", 409);
-    }
-    await prisma.$transaction(async (tx) => {
-      try {
-        await tx.user.update({
-          where: { id: senderId, deletedAt: null },
-          data: { point: { decrement: amount } },
-        });
-        await tx.user.update({
-          where: { id: receiverId, deletedAt: null },
-          data: { point: { increment: amount } },
-        });
-      } catch (err: any) {
-        throw appError(err.message, 500);
-      }
-    });
-    res.status(201).json({
-      status: "Success",
-      message: "Amount transfer successful!",
-    });
-  } catch (err: any) {
-    next(err);
-  }
-}
-
-export async function createUser(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const { name, email, role, password } = req.body;
-    const fileName = (req as any)?.processedFile?.fileName;
-    const fileBuffer = (req as any)?.processedFile?.fileBuffer;
-    const hashedPassword = await hashPassword(password);
-    const exitingEmail = await prisma.user.findUnique({
-      where: { email, deletedAt: null },
-    });
-    if (exitingEmail) {
-      throw appError("Email already exists!", 409);
-    }
-    const createdUser = await prisma.user.create({
-      data: {
-        id: generateKey("usr"),
-        profile: fileName,
-        name,
-        email,
-        role,
-        password: hashedPassword,
-      },
-    });
-    const savePath = resolve("src", "uploads", "user", fileName);
-    writeFileSync(savePath, fileBuffer);
-    res.status(201).json({
-      status: "Success",
-      message: `Create user ${createdUser.name} success!`,
     });
   } catch (err) {
     next(err);
@@ -360,108 +285,147 @@ export async function updateUser(
 ) {
   try {
     const { id } = req.params;
-    const { name, email, role, password } = req.body;
+    const { io } = req as any;
+    const { remove, full_name, username, bio } = req.body;
     const existingUser = (req as any).model;
     const fileName = (req as any)?.processedFile?.fileName;
     const fileBuffer = (req as any)?.processedFile?.fileBuffer;
-    const hashedPassword = await hashPassword(password);
-    const updatedUser = await prisma.user.update({
+    const relativePath = fileName ? `user/${fileName}` : null;
+    await prisma.user.update({
       data: {
-        profile: fileName ?? existingUser.profile,
-        name: name ? name : existingUser.name,
-        email: email ? email : existingUser.email,
-        role: role ? role : existingUser.role,
-        password: hashedPassword ? hashedPassword : existingUser.password,
-        updatedAt: new Date(),
+        username,
+        full_name,
+        email: existingUser.email,
+        password: existingUser.password,
+        photo_profile:
+          remove === "ok" ? null : relativePath ?? existingUser.photo_profile,
+        bio,
+        updated_by: existingUser.id,
       },
-      where: {
-        id,
-        deletedAt: null,
-      },
+      where: { id },
     });
-    if (fileName) {
-      const savePath = resolve("src", "uploads", "user", fileName);
-      const filePath = resolve("src", "uploads", "user", existingUser.profile);
-      unlink(filePath, (err) => {
-        if (err) {
-          throw appError("File cannot remove!", 500);
-        }
+    const user = await prisma.user.findUnique({
+      select: {
+        id: true,
+        username: true,
+        full_name: true,
+        email: true,
+        photo_profile: true,
+        bio: true,
+        created_at: true,
+        created_by: true,
+        updated_at: true,
+        updated_by: true,
+      },
+      where: { id },
+    });
+    io.emit("updateUser", user);
+    const uploadsDir = resolve(process.cwd(), "uploads");
+    const oldFilePath = existingUser.photo_profile
+      ? resolve(uploadsDir, existingUser.photo_profile)
+      : null;
+    const newFilePath = fileName ? resolve(uploadsDir, "user", fileName) : null;
+    if (remove === "ok" && oldFilePath) {
+      unlink(oldFilePath, (err) => {
+        if (err) throw appError("File cannot remove!", 500);
       });
-      writeFileSync(savePath, fileBuffer);
+    }
+    if (fileName && fileBuffer) {
+      if (oldFilePath) {
+        unlink(oldFilePath, (err) => {
+          if (err) throw appError("File cannot remove!", 500);
+        });
+      }
+      writeFileSync(newFilePath!, fileBuffer);
     }
     res.status(200).json({
-      status: "200 OK",
-      message: `Update user ${updatedUser.name} success!`,
+      status: "Success",
+      message: `Update user ${full_name} success!`,
     });
   } catch (err) {
     next(err);
   }
 }
 
-export async function restoreUser(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const { id } = req.params;
-    const restoredUser = await prisma.user.update({
-      data: {
-        deletedAt: null,
-      },
-      where: {
-        id,
-        deletedAt: { not: null },
-      },
-    });
-    if (restoredUser) {
-      const oldPath = resolve(
-        "src",
-        "uploads",
-        "user",
-        "temp_" + restoredUser.profile
-      );
-      const newPath = resolve("src", "uploads", "user", restoredUser.profile);
-      renameSync(oldPath, newPath);
-    }
-    res.status(200).json({
-      status: "Success",
-      message: `Restore user ${restoredUser.name} success!`,
-    });
-  } catch (err) {
-    next(err);
-  }
-}
+// export async function deleteUser(
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) {
+//   try {
+//     const { id } = req.params;
+//     const existingUser = (req as any).model;
+//     await prisma.user.delete({
+//       where: { id },
+//     });
+//     const filePath = resolve(
+//       "src",
+//       "uploads",
+//       "user",
+//       existingUser.photo_profile
+//     );
+//     unlink(filePath, (err) => {
+//       if (err) {
+//         throw appError("File cannot remove!", 500);
+//       }
+//     });
+//     res.status(200).json({
+//       status: "Success",
+//       message: `Delete user ${existingUser.username} success!`,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// }
 
-export async function deleteUser(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const { id } = req.params;
-    const deletedUser = await prisma.user.update({
-      data: {
-        deletedAt: new Date(),
-      },
-      where: {
-        id,
-        deletedAt: null,
-      },
-    });
-    const oldPath = resolve("src", "uploads", "user", deletedUser.profile);
-    const newPath = resolve(
-      "src",
-      "uploads",
-      "user",
-      "temp_" + deletedUser.profile
-    );
-    renameSync(oldPath, newPath);
-    res.status(200).json({
-      status: "Success",
-      message: `Delete user ${deletedUser.name} success!`,
-    });
-  } catch (err) {
-    next(err);
-  }
-}
+// export async function createUser(
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) {
+//   try {
+//     const { username, full_name, email, password, bio } = req.body;
+//     const fileName = (req as any)?.processedFile?.fileName;
+//     const fileBuffer = (req as any)?.processedFile?.fileBuffer;
+//     const hashedPassword = await hashPassword(password);
+//     const [exitingUsername, exitingEmail] = await Promise.all([
+//       prisma.user.findUnique({
+//         where: { username },
+//       }),
+//       prisma.user.findUnique({
+//         where: { email },
+//       }),
+//     ]);
+//     if (exitingUsername) {
+//       throw appError("Username already exists!", 409);
+//     }
+//     if (exitingEmail) {
+//       throw appError("Email already exists!", 409);
+//     }
+//     const createdUser = await prisma.$transaction(async (tx) => {
+//       const newUser = await tx.user.create({
+//         data: {
+//           username,
+//           full_name,
+//           email,
+//           password: hashedPassword,
+//           photo_profile: fileName,
+//           bio,
+//         },
+//       });
+//       await tx.user.update({
+//         where: { id: newUser.id },
+//         data: { created_by: newUser.id },
+//       });
+//       return newUser;
+//     });
+//     const savePath = resolve("src", "uploads", "user", fileName);
+//     writeFileSync(savePath, fileBuffer);
+//     res.status(201).json({
+//       status: "Success",
+//       message: `Create user ${createdUser.full_name} success!`,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// }

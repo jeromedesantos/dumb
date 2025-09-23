@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import error from "./routes/error";
 import user from "./routes/user";
 import thread from "./routes/thread";
-import { join } from "path";
+import { resolve } from "path";
 import { config } from "dotenv";
 import { errorHandler } from "./middlewares/error";
 import { corsSocket, corsMiddleware } from "./utils/cors";
@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(corsMiddleware);
-app.use("/api/v1/uploads", express.static(join(__dirname, "uploads")));
+app.use("/api/v1/uploads", express.static(resolve(process.cwd(), "uploads")));
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
   socket.on("disconnect", () => {
