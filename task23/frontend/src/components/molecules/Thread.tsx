@@ -9,7 +9,6 @@ import { Alert } from "../atoms";
 import { ButtonTrash } from "../atoms/ButtonTrash";
 import { likesKeys, postLike } from "../../queries/like";
 import { deleteThread, threadsKeys } from "../../queries/thread";
-import { removeThread } from "../../redux/slices/threadById";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { setIsLiked, setLikes } from "../../redux/slices/likes";
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
@@ -98,9 +97,6 @@ export function Thread({
   useEffect(() => {
     const socket = io(socketURL, {
       withCredentials: true,
-    });
-    socket.on("deleteThread", () => {
-      dispatch(removeThread());
     });
     socket.on(
       "newLike",

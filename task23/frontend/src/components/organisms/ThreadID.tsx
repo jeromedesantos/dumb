@@ -6,12 +6,14 @@ import { Reply, Thread, ThreadAdd } from "../molecules";
 import { Alert, Header } from "../atoms";
 import {
   fetchThreadById,
+  removeThread,
   setRepliesCount,
 } from "../../redux/slices/threadById";
 import {
   fetchReplies,
   addReplies,
   removeReplies,
+  truncateReplies,
 } from "../../redux/slices/replies";
 import { useNavigate } from "react-router-dom";
 import type { ReplyType } from "../../types/reply";
@@ -36,12 +38,22 @@ export function ThreadID({ id }: { id: string }) {
   useEffect(() => {
     dispatch(fetchThreadById(id));
     dispatch(fetchReplies(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
     const socket = io(socketURL, {
       withCredentials: true,
+    });
+    socket.on("deleteThread", ({ id: deletedThreadId }: { id: string }) => {
+      if (deletedThreadId !== id) return;
+      dispatch(removeThread());
+      dispatch(truncateReplies(deletedThreadId));
+      navigate("/");
     });
     socket.on(
       "newReply",
       (payload: ReplyType & { thread_id: string; totalReplies: number }) => {
+        if (payload.thread_id !== id) return;
         dispatch(addReplies(payload));
         dispatch(
           setRepliesCount({
@@ -54,6 +66,7 @@ export function ThreadID({ id }: { id: string }) {
     socket.on(
       "deleteReply",
       (payload: { id: string; thread_id: string; totalReplies: number }) => {
+        if (payload.thread_id !== id) return;
         dispatch(removeReplies(payload.id));
         dispatch(
           setRepliesCount({
@@ -66,7 +79,7 @@ export function ThreadID({ id }: { id: string }) {
     return () => {
       socket.disconnect();
     };
-  }, [dispatch, id]);
+  }, [dispatch, id, navigate]);
 
   return (
     <div className="w-full max-w-xl flex flex-col">

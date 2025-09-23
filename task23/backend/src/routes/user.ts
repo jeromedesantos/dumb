@@ -11,6 +11,8 @@ import {
   resetUser,
   forgotUser,
   verifyUser,
+  getUserById,
+  getUsers,
   // getUsers,
   // getUserById,
   // updateUser,
@@ -32,9 +34,10 @@ router.put(
   resetUser
 );
 router.get("/verify", auth, verifyUser);
+router.get("/user", auth, getUsers);
+router.get("/user/:id", auth, isSame, getUserById);
 
 // router.get("/user", auth, getUsers);
-// router.get("/user/:id", auth, isSame, getUserById);
 // router.put(
 //   "/user/:id",
 //   auth,

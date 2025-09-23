@@ -4,6 +4,7 @@ import { verifyToken } from "../utils/jwt";
 import { appError } from "../utils/error";
 
 export function auth(req: Request, res: Response, next: NextFunction) {
+  console.log("Auth middleware hit");
   const { token } = req.cookies;
   if (token === undefined) {
     throw appError("You must Login to access!", 401);

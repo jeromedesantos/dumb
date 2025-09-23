@@ -32,6 +32,9 @@ const repliesSlice = createSlice({
     addReplies: (state, action: PayloadAction<ReplyType>) => {
       state.data.unshift(action.payload);
     },
+    truncateReplies: (state, action: PayloadAction<string>) => {
+      state.data = state.data.filter((r) => r.thread_id !== action.payload);
+    },
     removeReplies: (state, action: PayloadAction<string>) => {
       state.data = state.data.filter((r) => r.id !== action.payload);
     },
@@ -58,5 +61,6 @@ const repliesSlice = createSlice({
   },
 });
 
-export const { addReplies, removeReplies } = repliesSlice.actions;
+export const { addReplies, removeReplies, truncateReplies } =
+  repliesSlice.actions;
 export default repliesSlice.reducer;
