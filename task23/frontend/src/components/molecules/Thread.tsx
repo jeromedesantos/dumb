@@ -5,12 +5,13 @@ import { isAxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import { io } from "socket.io-client";
-import { Alert } from "../atoms";
-import { ButtonTrash } from "../atoms/ButtonTrash";
+import { Alert, ImgProfile } from "../atoms";
+import { ButtonTrash } from "../atoms";
 import { likesKeys, postLike } from "../../queries/like";
 import { deleteThread, threadsKeys } from "../../queries/thread";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { setIsLiked, setLikes } from "../../redux/slices/likes";
+
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
 export function Thread({
@@ -29,7 +30,7 @@ export function Thread({
 }: {
   id: string;
   photo_profile?: string | null;
-  full_name: string;
+  full_name?: string;
   username?: string | null;
   age?: string | null;
   content?: string | null;
@@ -60,10 +61,8 @@ export function Thread({
     mutationFn: (id: string) => deleteThread(id),
   });
   const baseURL: string = import.meta.env.VITE_BASE_URL;
-  const userUrl = photo_profile
-    ? `${baseURL}/uploads/user/${photo_profile}`
-    : "/img/profile.jpg";
-  const threadUrl = image ? `${baseURL}/uploads/thread/${image}` : "";
+  const userUrl = photo_profile && `${baseURL}/uploads/${photo_profile}`;
+  const threadUrl = image ? `${baseURL}/uploads/${image}` : "";
   const { data } = useSelector((state: RootState) => state.token);
   const likeData = useSelector((state: RootState) => state.likes.data[id]) ?? {
     count: number_of_likes,
@@ -148,10 +147,10 @@ export function Thread({
             errorLike.response.data.message}
         </Alert>
       )}
-      <img
+      <ImgProfile
         src={userUrl}
         alt={`Image of ${userUrl}`}
-        className="w-8 h-8 rounded-full"
+        className="w-10 h-10"
       />
       <div className="flex flex-col gap-3 w-full">
         <div className="flex items-center gap-2">

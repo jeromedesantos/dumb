@@ -1,9 +1,14 @@
 import { Router } from "express";
 import { auth, nonAuth, isSame, isExist } from "../middlewares/auth";
-// import { upload } from "../utils/multer";
+import { upload } from "../utils/multer";
 import { validate } from "../middlewares/validate";
-// import { saveFile } from "../middlewares/file";
-import { forgotSchema, registerSchema, resetSchema } from "../utils/joi";
+import { saveFile } from "../middlewares/file";
+import {
+  forgotSchema,
+  registerSchema,
+  resetSchema,
+  userSchema,
+} from "../utils/joi";
 import {
   loginUser,
   logoutUser,
@@ -11,12 +16,9 @@ import {
   resetUser,
   forgotUser,
   verifyUser,
-  getUserById,
   getUsers,
-  // getUsers,
-  // getUserById,
-  // updateUser,
-  // deleteUser,
+  getUserById,
+  updateUser,
 } from "../controllers/user";
 
 const router = Router();
@@ -36,17 +38,15 @@ router.put(
 router.get("/verify", auth, verifyUser);
 router.get("/user", auth, getUsers);
 router.get("/user/:id", auth, isSame, getUserById);
-
-// router.get("/user", auth, getUsers);
-// router.put(
-//   "/user/:id",
-//   auth,
-//   isSame,
-//   isExist("user"),
-//   upload.single("profile"),
-//   saveFile,
-//   updateUser
-// );
-// router.delete("/user/:id", auth, isSame, deleteUser);
+router.put(
+  "/user/:id",
+  auth,
+  isSame,
+  isExist("user"),
+  upload.single("photo_profile"),
+  validate(userSchema),
+  saveFile,
+  updateUser
+);
 
 export default router;

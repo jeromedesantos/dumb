@@ -16,8 +16,8 @@ import {
   truncateReplies,
 } from "../../redux/slices/replies";
 import { useNavigate } from "react-router-dom";
-import type { ReplyType } from "../../types/reply";
 import type { AppDispatch, RootState } from "../../redux/store";
+import type { ReplyType } from "../../types";
 
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
@@ -43,6 +43,10 @@ export function ThreadID({ id }: { id: string }) {
   useEffect(() => {
     const socket = io(socketURL, {
       withCredentials: true,
+    });
+    socket.on("updateUser", () => {
+      dispatch(fetchThreadById(id));
+      dispatch(fetchReplies(id));
     });
     socket.on("deleteThread", ({ id: deletedThreadId }: { id: string }) => {
       if (deletedThreadId !== id) return;
@@ -82,11 +86,13 @@ export function ThreadID({ id }: { id: string }) {
   }, [dispatch, id, navigate]);
 
   return (
-    <div className="w-full max-w-xl flex flex-col">
-      <Header onClick={() => navigate("/")}>
-        <MoveLeft size="30" />
-        <p>Status</p>
-      </Header>
+    <div className="flex flex-col w-full max-w-2xl">
+      <div className="sticky top-0">
+        <Header onClick={() => navigate("/")}>
+          <MoveLeft size="30" />
+          <p>Status</p>
+        </Header>
+      </div>
       {statusThreadById === "failed" && (
         <div className="py-5">
           <Alert variant="danger">{errorThreadById}</Alert>
@@ -96,12 +102,9 @@ export function ThreadID({ id }: { id: string }) {
         <Thread
           id={"00"}
           full_name={"Loading.."}
-          username={"Loading.."}
-          age={"Loading.."}
-          content={"Loading.."}
-          image={null}
-          number_of_likes={0}
-          number_of_replies={0}
+          username={".."}
+          age={".."}
+          content={".."}
           pending={true}
         />
       )}
@@ -130,13 +133,11 @@ export function ThreadID({ id }: { id: string }) {
       )}
       {statusReplies === "loading" && (
         <Reply
-          id={"00"}
-          photo_profile={"./img/profile.jpg"}
+          id={""}
           full_name={"Loading.."}
-          username={"Loading.."}
-          age={"Loading.."}
-          content={"Loading.."}
-          image={null}
+          username={".."}
+          age={".."}
+          content={".."}
           pending={true}
         />
       )}

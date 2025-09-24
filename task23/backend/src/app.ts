@@ -1,16 +1,17 @@
-import express from "express";
 import cookieParser from "cookie-parser";
-import error from "./routes/error";
-import user from "./routes/user";
-import thread from "./routes/thread";
-import { join } from "path";
+import express from "express";
+import http from "http";
+import { Server } from "socket.io";
+import { resolve } from "path";
 import { config } from "dotenv";
 import { errorHandler } from "./middlewares/error";
 import { corsSocket, corsMiddleware } from "./utils/cors";
-import http from "http";
-import { Server } from "socket.io";
+import error from "./routes/error";
+import user from "./routes/user";
+import thread from "./routes/thread";
 import reply from "./routes/reply";
 import like from "./routes/like";
+import follow from "./routes/follow";
 
 config();
 
@@ -24,7 +25,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(corsMiddleware);
-app.use("/api/v1/uploads", express.static(join(__dirname, "uploads")));
+app.use("/api/v1/uploads", express.static(resolve(process.cwd(), "uploads")));
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
   socket.on("disconnect", () => {
@@ -41,6 +42,7 @@ app.use("/api/v1", user);
 app.use("/api/v1", thread);
 app.use("/api/v1", reply);
 app.use("/api/v1", like);
+app.use("/api/v1", follow);
 app.use("*catchall", error);
 app.use(errorHandler);
 

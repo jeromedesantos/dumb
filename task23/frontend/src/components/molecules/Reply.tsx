@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { deleteReply, repliesKeys } from "../../queries/reply";
 import type { RootState } from "../../redux/store";
-import { ButtonTrash } from "../atoms/ButtonTrash";
+import { ButtonTrash, ImgProfile } from "../atoms";
 import { isAxiosError } from "axios";
 import { Alert } from "../atoms";
 
@@ -19,21 +19,19 @@ export function Reply({
   pending = false,
 }: {
   id: string;
-  photo_profile: string | null;
-  full_name: string;
-  username: string | null;
-  age: string | null;
-  content: string | null;
-  image: string | null;
+  photo_profile?: string | null;
+  full_name?: string;
+  username?: string | null;
+  age?: string | null;
+  content?: string | null;
+  image?: string | null;
   created_by?: string;
   pending?: boolean;
 }) {
   const baseURL: string = import.meta.env.VITE_BASE_URL;
-  const userUrl = photo_profile
-    ? `${baseURL}/uploads/user/${photo_profile}`
-    : "/img/profile.jpg";
-  const replyUrl = image ? `${baseURL}/uploads/reply/${image}` : "";
-  const { data } = useSelector((state: RootState) => state.token);
+  const userUrl = photo_profile && `${baseURL}/uploads/${photo_profile}`;
+  const replyUrl = image ? `${baseURL}/uploads/${image}` : "";
+  const { data } = useSelector((state: RootState) => state.userById);
   const { mutate, isPending, isError, error } = useMutation<
     void,
     Error,
@@ -58,10 +56,10 @@ export function Reply({
           {isAxiosError(error) && error.response && error.response.data.message}
         </Alert>
       )}
-      <img
+      <ImgProfile
         src={userUrl}
         alt={`Image of ${userUrl}`}
-        className="w-8 h-8 rounded-full"
+        className="w-10 h-10"
       />
       <div className="flex flex-col gap-3 w-full">
         <div className="flex items-center gap-2">

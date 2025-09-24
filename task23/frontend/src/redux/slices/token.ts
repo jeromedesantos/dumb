@@ -3,9 +3,9 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import { getVerify } from "../../queries/user";
-import type { TokenType } from "../../types/token";
 import { isAxiosError } from "axios";
+import { getVerify } from "../../queries/user";
+import type { TokenType } from "../../types";
 
 export const verifyToken = createAsyncThunk(
   "token/verifyToken",

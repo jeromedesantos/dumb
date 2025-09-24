@@ -65,12 +65,13 @@ export async function postReplies(
     const { id: user_id } = (req as any).user;
     const fileName = (req as any)?.processedFile?.fileName;
     const fileBuffer = (req as any)?.processedFile?.fileBuffer;
+    const relativePath = fileName ? `reply/${fileName}` : null;
     const createdReply = await prisma.reply.create({
       data: {
         user_id,
         thread_id,
         content,
-        image: fileName,
+        image: relativePath,
         created_by: user_id,
         updated_by: user_id,
       },
@@ -106,7 +107,7 @@ export async function postReplies(
       totalReplies,
     });
     if (fileName && fileBuffer) {
-      const savePath = resolve("src", "uploads", "reply", fileName);
+      const savePath = resolve(process.cwd(), "uploads", "reply", fileName);
       writeFileSync(savePath, fileBuffer);
     }
     res.status(201).json({
@@ -143,11 +144,16 @@ export async function deleteReply(
       totalReplies,
     });
     if (existingReply.image) {
-      const filePath = resolve("src", "uploads", "reply", existingReply.image);
+      const uploadsRoot = resolve(process.cwd(), "uploads");
+      const filePath = resolve(uploadsRoot, existingReply.image);
+
       unlink(filePath, (err) => {
-        if (err) throw appError(`File cannot remove!: ${filePath}`, 500);
+        if (err) {
+          console.error(`❌ Gagal hapus reply file: ${filePath}`);
+        }
       });
     }
+
     res.status(200).json({
       status: "Success",
       message: `Delete reply by id: ${id} success!`,

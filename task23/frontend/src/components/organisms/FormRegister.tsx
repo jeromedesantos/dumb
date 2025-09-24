@@ -33,7 +33,9 @@ export function FormRegister() {
   });
 
   function onSubmit(data: RegisterFormData) {
-    mutate(data);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...dataToSubmit } = data;
+    mutate(dataToSubmit);
   }
 
   return (
@@ -45,11 +47,7 @@ export function FormRegister() {
             : error.message}
         </Alert>
       )}
-      <Input
-        type="text"
-        id="full_name" // Pastikan id sesuai dengan key di skema Zod
-        {...register("full_name")}
-      >
+      <Input type="text" id="full_name" {...register("full_name")}>
         Full Name
       </Input>
       {errors.full_name && (

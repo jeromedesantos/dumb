@@ -4,8 +4,8 @@ import { unlink, writeFileSync } from "fs";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { prisma } from "../connections/client";
-import type { ThreadType } from "../types/thread";
 import { appError } from "../utils/error";
+import type { ThreadType } from "../types/thread";
 
 export async function getThreads(
   req: Request,
@@ -19,6 +19,7 @@ export async function getThreads(
       offset = 0,
       limit = 10,
     } = req.query;
+    const logUserId = (req as any).user.id;
     const rawThreads = await prisma.$queryRawUnsafe(
       ` SELECT
           T.id,
@@ -43,6 +44,10 @@ export async function getThreads(
           "Reply" AS R ON T.id = R.thread_id
         LEFT JOIN
           "User" AS U ON T.created_by = U.id
+                LEFT JOIN
+          "Following" AS F ON T.created_by = F.following_id
+        WHERE
+          F.follower_id = '${logUserId}' OR T.created_by = '${logUserId}'
         GROUP BY
           T.id, U.photo_profile, U.full_name, U.username
         ORDER BY ${sortBy} ${order}
@@ -120,10 +125,11 @@ export async function postThread(
     const { id: user_id } = (req as any).user;
     const fileName = (req as any)?.processedFile?.fileName;
     const fileBuffer = (req as any)?.processedFile?.fileBuffer;
+    const relativePath = fileName ? `thread/${fileName}` : null;
     const createdThread = await prisma.thread.create({
       data: {
         content,
-        image: fileName,
+        image: relativePath,
         created_by: user_id,
         updated_by: user_id,
       },
@@ -158,10 +164,9 @@ export async function postThread(
       ),
       age: dayjs((rawThread as ThreadType[])[0].created_at).fromNow(),
     };
-
     io.emit("newThread", thread);
     if (fileName && fileBuffer) {
-      const savePath = resolve("src", "uploads", "thread", fileName);
+      const savePath = resolve(process.cwd(), "uploads", "thread", fileName);
       writeFileSync(savePath, fileBuffer);
     }
     res.status(201).json({
@@ -207,22 +212,20 @@ export async function deleteThread(
     });
     io.emit("deleteThread", { id });
     if (existingThread.image) {
-      const filePath = resolve(
-        "src",
-        "uploads",
-        "thread",
-        existingThread.image
-      );
+      const uploadsRoot = resolve(process.cwd(), "uploads");
+      if (existingThread.image) {
+        const filePath = resolve(uploadsRoot, existingThread.image);
+        unlink(filePath, (err) => {
+          if (err) console.error(`❌ Gagal hapus thread file: ${filePath}`);
+        });
+      }
       repliesWithImages.forEach((reply) => {
         if (reply.image) {
-          const filePath = resolve("src", "uploads", "reply", reply.image);
-          unlink(filePath, (err) => {
-            if (err) throw appError(`File cannot remove!: ${filePath}`, 500);
+          const replyPath = resolve(uploadsRoot, reply.image);
+          unlink(replyPath, (err) => {
+            if (err) console.error(`❌ Gagal hapus reply file: ${replyPath}`);
           });
         }
-      });
-      unlink(filePath, (err) => {
-        if (err) throw appError(`File cannot remove!: ${filePath}`, 500);
       });
     }
     res.status(200).json({

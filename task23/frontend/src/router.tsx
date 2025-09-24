@@ -3,6 +3,8 @@ import { PrivateRoute, PublicRoute } from "./routes";
 import {
   Home,
   HomeID,
+  Follows,
+  Search,
   Register,
   Login,
   Forgot,
@@ -21,6 +23,8 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Home /> },
           { path: "thread/:id", element: <HomeID /> },
+          { path: "follows", element: <Follows /> },
+          { path: "search", element: <Search /> },
         ],
       },
     ],
@@ -31,10 +35,10 @@ export const router = createBrowserRouter([
       {
         element: <LayoutAuth />,
         children: [
-          { path: "/register", element: <Register /> },
-          { path: "/login", element: <Login /> },
-          { path: "/forgot", element: <Forgot /> },
-          { path: "/reset/:id", element: <Reset /> },
+          { path: "register", element: <Register /> },
+          { path: "login", element: <Login /> },
+          { path: "forgot", element: <Forgot /> },
+          { path: "reset/:id", element: <Reset /> },
         ],
       },
     ],

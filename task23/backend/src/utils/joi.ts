@@ -1,5 +1,30 @@
 import Joi from "joi";
 
+export const userSchema = Joi.object({
+  username: Joi.string()
+    .pattern(/^[a-zA-Z0-9_]{3,30}$/)
+    .allow(null, "")
+    .optional()
+    .messages({
+      "string.pattern.base":
+        "Username must be 3-30 alphanumeric characters or underscores.",
+    }),
+  full_name: Joi.string().trim().min(1).required().messages({
+    "string.empty": "Full name is required.",
+    "string.min": "Full name must not be empty.",
+    "any.required": "Full name is required.",
+  }),
+  remove: Joi.string().optional(),
+  email: Joi.string().optional(),
+  password: Joi.string().optional(),
+  photo_profile: Joi.string().uri().allow(null, "").optional().messages({
+    "string.uri": "Invalid photo profile URL.",
+  }),
+  bio: Joi.string().max(500).allow(null, "").optional().messages({
+    "string.max": "Bio cannot exceed 500 characters.",
+  }),
+});
+
 export const registerSchema = Joi.object({
   full_name: Joi.string()
     .min(3)

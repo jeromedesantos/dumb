@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-// import { unlink, writeFileSync } from "fs";
-// import { resolve } from "path";
+import { unlink, writeFileSync } from "fs";
+import { resolve } from "path";
 import { prisma } from "../connections/client";
 import { appError } from "../utils/error";
 import { signToken } from "../utils/jwt";
@@ -150,79 +150,6 @@ export function verifyUser(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export async function getUsers(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const {
-      sortBy = "created_at",
-      order = "desc",
-      offset = 0,
-      limit = 10,
-    } = req.query;
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        username: true,
-        full_name: true,
-        email: true,
-        photo_profile: true,
-        bio: true,
-        created_at: true,
-        created_by: true,
-        updated_at: true,
-        updated_by: true,
-      },
-      orderBy: {
-        [sortBy as string]: order as "asc" | "desc",
-      },
-      skip: Number(offset),
-      take: Number(limit),
-    });
-    res.status(200).json({
-      status: "Success",
-      message: "Fetch users success!",
-      data: users,
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getUserById(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const { id } = req.params;
-    const user = await prisma.user.findUnique({
-      select: {
-        id: true,
-        username: true,
-        full_name: true,
-        email: true,
-        photo_profile: true,
-        bio: true,
-        created_at: true,
-        created_by: true,
-        updated_at: true,
-        updated_by: true,
-      },
-      where: { id },
-    });
-    res.status(200).json({
-      status: "Success",
-      message: "Fetch user success!",
-      data: user,
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
 export async function resetUser(
   req: Request,
   res: Response,
@@ -272,6 +199,177 @@ export async function forgotUser(
       status: "Success",
       message: `Fetch user success!`,
       data: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getUsers(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {
+      search,
+      sortBy = "created_at",
+      order = "desc",
+      offset = 0,
+      limit = 10,
+    } = req.query;
+    const logUserId = (req as any).user.id;
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            username: {
+              contains: search as string,
+              mode: "insensitive",
+            },
+          },
+          {
+            full_name: {
+              contains: search as string,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        username: true,
+        full_name: true,
+        email: true,
+        photo_profile: true,
+        bio: true,
+        created_at: true,
+        updated_at: true,
+      },
+      orderBy: {
+        [sortBy as string]: order as "asc" | "desc",
+      },
+      skip: Number(offset),
+      take: Number(limit),
+    });
+    const followedUsers = await prisma.following.findMany({
+      where: {
+        follower_id: logUserId,
+      },
+      select: {
+        following_id: true,
+      },
+    });
+    const followedUserIds = new Set(followedUsers.map((f) => f.following_id));
+    const usersWithFollowStatus = users.map((user) => ({
+      ...user,
+      isFollowed: followedUserIds.has(user.id),
+    }));
+    res.status(200).json({
+      status: "Success",
+      message: "Fetch users success!",
+      data: usersWithFollowStatus,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getUserById(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({
+      select: {
+        id: true,
+        username: true,
+        full_name: true,
+        email: true,
+        photo_profile: true,
+        bio: true,
+        created_at: true,
+        created_by: true,
+        updated_at: true,
+        updated_by: true,
+      },
+      where: { id },
+    });
+    res.status(200).json({
+      status: "Success",
+      message: "Fetch user success!",
+      data: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    const { io } = req as any;
+    const { remove, full_name, username, bio } = req.body;
+    const existingUser = (req as any).model;
+    const fileName = (req as any)?.processedFile?.fileName;
+    const fileBuffer = (req as any)?.processedFile?.fileBuffer;
+    const relativePath = fileName ? `user/${fileName}` : null;
+    await prisma.user.update({
+      data: {
+        username,
+        full_name,
+        email: existingUser.email,
+        password: existingUser.password,
+        photo_profile:
+          remove === "ok" ? null : relativePath ?? existingUser.photo_profile,
+        bio,
+        updated_by: existingUser.id,
+      },
+      where: { id },
+    });
+    const user = await prisma.user.findUnique({
+      select: {
+        id: true,
+        username: true,
+        full_name: true,
+        email: true,
+        photo_profile: true,
+        bio: true,
+        created_at: true,
+        created_by: true,
+        updated_at: true,
+        updated_by: true,
+      },
+      where: { id },
+    });
+    io.emit("updateUser", user);
+    const uploadsDir = resolve(process.cwd(), "uploads");
+    const oldFilePath = existingUser.photo_profile
+      ? resolve(uploadsDir, existingUser.photo_profile)
+      : null;
+    const newFilePath = fileName ? resolve(uploadsDir, "user", fileName) : null;
+    if (remove === "ok" && oldFilePath) {
+      unlink(oldFilePath, (err) => {
+        if (err) throw appError("File cannot remove!", 500);
+      });
+    }
+    if (fileName && fileBuffer) {
+      if (oldFilePath) {
+        unlink(oldFilePath, (err) => {
+          if (err) throw appError("File cannot remove!", 500);
+        });
+      }
+      writeFileSync(newFilePath!, fileBuffer);
+    }
+    res.status(200).json({
+      status: "Success",
+      message: `Update user ${full_name} success!`,
     });
   } catch (err) {
     next(err);
@@ -355,55 +453,6 @@ export async function forgotUser(
 //     res.status(201).json({
 //       status: "Success",
 //       message: `Create user ${createdUser.full_name} success!`,
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// }
-
-// export async function updateUser(
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) {
-//   try {
-//     const { id } = req.params;
-//     const { remove, username, full_name, email, password, bio } = req.body;
-//     const existingUser = (req as any).model;
-//     const fileName = (req as any)?.processedFile?.fileName;
-//     const fileBuffer = (req as any)?.processedFile?.fileBuffer;
-//     const hashedPassword = await hashPassword(password);
-//     const updatedUser = await prisma.user.update({
-//       data: {
-//         username,
-//         full_name,
-//         email,
-//         password: hashedPassword,
-//         photo_profile:
-//           remove === "ok" ? null : fileName ?? existingUser.photo_profile,
-//         bio,
-//         updated_by: existingUser.id,
-//       },
-//       where: { id },
-//     });
-//     if (fileName) {
-//       const savePath = resolve("src", "uploads", "user", fileName);
-//       const filePath = resolve(
-//         "src",
-//         "uploads",
-//         "user",
-//         existingUser.photo_profile
-//       );
-//       unlink(filePath, (err) => {
-//         if (err) {
-//           throw appError("File cannot remove!", 500);
-//         }
-//       });
-//       writeFileSync(savePath, fileBuffer);
-//     }
-//     res.status(200).json({
-//       status: "Success",
-//       message: `Update user ${updatedUser.username} success!`,
 //     });
 //   } catch (err) {
 //     next(err);

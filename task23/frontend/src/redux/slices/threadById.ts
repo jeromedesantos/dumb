@@ -5,10 +5,10 @@ import {
 } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 import { getThreadById } from "../../queries/thread";
-import type { ThreadType } from "../../types/thread";
+import type { ThreadType } from "../../types";
 
 export const fetchThreadById = createAsyncThunk(
-  "Thread/fetchThreadById",
+  "thread/fetchThreadById",
   async (id: string, { rejectWithValue }) => {
     try {
       return await getThreadById(id);

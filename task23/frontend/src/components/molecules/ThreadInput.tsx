@@ -5,13 +5,14 @@ import {
   type SetStateAction,
   type MouseEvent,
   useRef,
+  useEffect,
 } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { ImagePlus, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import { isAxiosError } from "axios";
 import type { RootState } from "../../redux/store";
-import { Alert, Button } from "../atoms";
+import { Alert, Button, ImgPreview, ImgProfile } from "../atoms";
 import { postThread, threadsKeys } from "../../queries/thread";
 
 export function ThreadInput({
@@ -24,16 +25,23 @@ export function ThreadInput({
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: threadsKeys.all,
     mutationFn: postThread,
+    onSuccess: () => {
+      setHide(!hide);
+      setContent("");
+      setImage(null);
+      setBase64Image(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    },
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const [content, setContent] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
   const [base64Image, setBase64Image] = useState<string | null>(null);
-  const { data } = useSelector((state: RootState) => state.token);
+  const { data } = useSelector((state: RootState) => state.userById);
   const baseURL: string = import.meta.env.VITE_BASE_URL;
-  const userUrl = data?.photo_profile
-    ? `${baseURL}/uploads/user/${data.photo_profile}`
-    : "/img/profile.jpg";
+  const userUrl =
+    data?.photo_profile && `${baseURL}/uploads/${data.photo_profile}`;
 
   function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.length ? e.target.files[0] : null;
@@ -50,20 +58,10 @@ export function ThreadInput({
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (content === "") return;
     const formData = new FormData();
-    if (image) {
-      formData.append("image", image);
-    }
+    if (image) formData.append("image", image);
     formData.append("content", content);
     mutate(formData);
-    setHide(!hide);
-    setContent("");
-    setImage(null);
-    setBase64Image(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   }
 
   function handleClose(e: MouseEvent<SVGSVGElement>) {
@@ -79,6 +77,14 @@ export function ThreadInput({
     setHide(!hide);
   }
 
+  useEffect(() => {
+    if (content === "" && image === null) {
+      setButtonDisabled(true);
+    } else {
+      setButtonDisabled(false);
+    }
+  }, [content, image]);
+
   return (
     <div
       className={`w-full min-h-screen flex flex-col justify-center bg-zinc-950/70 fixed z-20
@@ -86,12 +92,12 @@ export function ThreadInput({
      `}
     >
       <div
-        className={`w-full max-w-xl flex flex-col gap-5 cursor-text p-5 border-zinc-300 bg-zinc-900 rounded-xl z-40
+        className={`w-full max-w-2xl flex flex-col gap-5 cursor-text p-5 border-zinc-300 bg-zinc-900 rounded-xl z-40
        
     `}
       >
         <X
-          className="text-zinc-300 self-end p-1 -mb-5 rounded-full border-2 border-zinc-300 cursor-pointer"
+          className="text-zinc-300 self-end p-1 -mb-2 rounded-full border-2 border-zinc-300 cursor-pointer"
           onClick={handleExit}
         />
         {isError && (
@@ -106,11 +112,11 @@ export function ThreadInput({
           action="submit"
           onSubmit={handleSubmit}
         >
-          <div className="flex gap-5 w-full border-b-1 border-zinc-700 z-40">
-            <img
+          <div className="flex gap-5 w-full border-b-1 border-zinc-700 z-40 pr-5">
+            <ImgProfile
               src={userUrl}
-              alt={`Image of ${data?.username}`}
-              className="w-8 h-8 rounded-full cursor-pointer"
+              alt={`Image of ${userUrl}`}
+              className="w-10 h-10"
             />
             <textarea
               placeholder="What is happening?!"
@@ -119,32 +125,28 @@ export function ThreadInput({
               onChange={(e) => setContent(e.target.value)}
             />
           </div>
-          <label className="flex w-full justify-between cursor-pointer">
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-            <ImagePlus
-              size="30"
-              className="brightness-70 text-[#04A51E] cursor-pointer"
-            />
-            <Button loading={isPending}>Post</Button>
-          </label>
+          <div className="flex w-full justify-between">
+            <label htmlFor="image" className=" cursor-pointer">
+              <input
+                id="image"
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                hidden
+              />
+              <ImagePlus size="30" className="brightness-70 text-[#04A51E]" />
+            </label>
+            <Button disabled={buttonDisabled} loading={isPending}>
+              Post
+            </Button>
+          </div>
           {base64Image && (
-            <div className="max-w-fit flex flex-col items-end">
-              <X
-                className="text-zinc-300 cursor-pointer relative top-7 right-2 rounded-full p-1 bg-zinc-900/30 hover:bg-zinc-900/50 duration-300"
-                onClick={handleClose}
-              />
-              <img
-                src={base64Image}
-                alt={`Image of ${data?.username}`}
-                className="rounded-xl object-cover"
-              />
-            </div>
+            <ImgPreview
+              onClick={handleClose}
+              src={base64Image}
+              alt={`Image of ${data?.username}`}
+            />
           )}
         </form>
       </div>

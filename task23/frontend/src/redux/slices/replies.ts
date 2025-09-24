@@ -5,10 +5,10 @@ import {
 } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 import { getReplies } from "../../queries/reply";
-import type { ReplyType } from "../../types/reply";
+import type { ReplyType } from "../../types";
 
 export const fetchReplies = createAsyncThunk(
-  "Thread/fetchReplies",
+  "thread/fetchReplies",
   async (id: string, { rejectWithValue }) => {
     try {
       return await getReplies(id);
