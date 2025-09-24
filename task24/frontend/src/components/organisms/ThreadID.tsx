@@ -86,11 +86,13 @@ export function ThreadID({ id }: { id: string }) {
   }, [dispatch, id, navigate]);
 
   return (
-    <div className="w-full max-w-xl flex flex-col">
-      <Header onClick={() => navigate("/")}>
-        <MoveLeft size="30" />
-        <p>Status</p>
-      </Header>
+    <div className="flex flex-col w-full max-w-2xl">
+      <div className="sticky top-0">
+        <Header onClick={() => navigate("/")}>
+          <MoveLeft size="30" />
+          <p>Status</p>
+        </Header>
+      </div>
       {statusThreadById === "failed" && (
         <div className="py-5">
           <Alert variant="danger">{errorThreadById}</Alert>

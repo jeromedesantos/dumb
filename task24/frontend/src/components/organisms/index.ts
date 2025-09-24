@@ -1,14 +1,16 @@
+import { ListFollows } from "./ListFollows";
 import { FormRegister } from "./FormRegister";
 import { FormLogin } from "./FormLogin";
 import { FormForgot } from "./FormForgot";
 import { FormReset } from "./FormReset";
 import { Threads } from "./Threads";
 import { ThreadID } from "./ThreadID";
-import { Navbar } from "./Navbar";
+import { SideNavbar } from "./SideNavbar";
 import { SideProfile } from "./SideProfile";
 
 export {
-  Navbar,
+  ListFollows,
+  SideNavbar,
   SideProfile,
   FormRegister,
   FormLogin,

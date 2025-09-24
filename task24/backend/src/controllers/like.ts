@@ -27,7 +27,7 @@ export async function postLike(
     });
     const count = await prisma.like.count({ where: { thread_id } });
     io.emit("newLike", { thread_id, count, user_id });
-    return res.status(201).json({
+    res.status(201).json({
       status: "Success",
       message: `Create like for thread: ${thread_id} success!`,
     });

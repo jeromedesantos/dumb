@@ -8,6 +8,7 @@ import {
   Forgot,
   Reset,
   NotFound,
+  Follows,
 } from "./pages";
 import { Layout, LayoutAuth } from "./components/template";
 
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Home /> },
           { path: "thread/:id", element: <HomeID /> },
+          { path: "follows", element: <Follows /> },
         ],
       },
     ],

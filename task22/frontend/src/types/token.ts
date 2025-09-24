@@ -1,9 +1,4 @@
-export interface TokenType {
+export type TokenType = {
   id: string;
-  username?: string;
-  full_name: string;
-  email: string;
-  photo_profile?: string;
-  bio?: string;
-}
-
+  role: string;
+};

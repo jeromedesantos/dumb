@@ -29,6 +29,12 @@ export function ThreadAdd({
     mutationKey: repliesKeys.all,
     mutationFn: (formData: FormData) =>
       postReplies(formData, threadId as string),
+    onSuccess: () => {
+      setContent("");
+      setImage(null);
+      setBase64Image(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    },
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -56,17 +62,9 @@ export function ThreadAdd({
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData();
-    if (image) {
-      formData.append("image", image);
-    }
+    if (image) formData.append("image", image);
     formData.append("content", content);
     mutate(formData);
-    setContent("");
-    setImage(null);
-    setBase64Image(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   }
 
   function handleClose(e: MouseEvent<SVGSVGElement>) {
@@ -90,9 +88,7 @@ export function ThreadAdd({
     <form
       action="submit"
       onSubmit={handleSubmit}
-      className={
-        "w-full max-w-xl flex flex-col gap-5 cursor-text p-5 bg-zinc-900"
-      }
+      className="flex flex-col gap-5 cursor-text p-5 bg-zinc-900"
       onClick={onClick}
     >
       {isError && (

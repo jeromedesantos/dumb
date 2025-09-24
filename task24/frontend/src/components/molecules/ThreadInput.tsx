@@ -25,6 +25,13 @@ export function ThreadInput({
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: threadsKeys.all,
     mutationFn: postThread,
+    onSuccess: () => {
+      setHide(!hide);
+      setContent("");
+      setImage(null);
+      setBase64Image(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    },
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -52,18 +59,9 @@ export function ThreadInput({
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData();
-    if (image) {
-      formData.append("image", image);
-    }
+    if (image) formData.append("image", image);
     formData.append("content", content);
     mutate(formData);
-    setHide(!hide);
-    setContent("");
-    setImage(null);
-    setBase64Image(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   }
 
   function handleClose(e: MouseEvent<SVGSVGElement>) {
@@ -94,7 +92,7 @@ export function ThreadInput({
      `}
     >
       <div
-        className={`w-full max-w-xl flex flex-col gap-5 cursor-text p-5 border-zinc-300 bg-zinc-900 rounded-xl z-40
+        className={`w-full max-w-2xl flex flex-col gap-5 cursor-text p-5 border-zinc-300 bg-zinc-900 rounded-xl z-40
        
     `}
       >

@@ -19,7 +19,6 @@ import {
   getUsers,
   getUserById,
   updateUser,
-  // deleteUser,
 } from "../controllers/user";
 
 const router = Router();
@@ -49,6 +48,5 @@ router.put(
   saveFile,
   updateUser
 );
-// router.delete("/user/:id", auth, isSame, deleteUser);
 
 export default router;

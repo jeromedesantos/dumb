@@ -1,19 +1,27 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {
+  countReducer,
   tokenReducer,
   likesReducer,
-  repliesReducer,
   threadsReducer,
+  followsReducer,
+  followersReducer,
+  followingReducer,
+  repliesReducer,
   userByIdReducer,
   threadByIdReducer,
 } from "./slices";
 
 export const store = configureStore({
   reducer: {
+    count: countReducer,
     token: tokenReducer,
     userById: userByIdReducer,
     likes: likesReducer,
     replies: repliesReducer,
+    follows: followsReducer,
+    followers: followersReducer,
+    following: followingReducer,
     threads: threadsReducer,
     threadById: threadByIdReducer,
   },

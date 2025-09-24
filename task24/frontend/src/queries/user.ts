@@ -31,6 +31,11 @@ export async function forgotUser(input: { email: string }) {
   return response.data.data;
 }
 
+export async function logoutUser() {
+  const response = await api.post("/logout");
+  return response.data.data;
+}
+
 export async function resetUser(id: string, input: { password: string }) {
   const response = await api.put(`/reset/${id}`, input);
   return response.data.data;

@@ -14,6 +14,8 @@ export function Profile({
   username,
   photo_profile,
   bio,
+  totalFollowing,
+  totalFollowers,
   pending = false,
 }: {
   id: string;
@@ -22,6 +24,8 @@ export function Profile({
   email: string;
   photo_profile?: string;
   bio?: string;
+  totalFollowing?: number;
+  totalFollowers?: number;
   pending?: boolean;
 }) {
   const baseURL: string = import.meta.env.VITE_BASE_URL;
@@ -36,6 +40,11 @@ export function Profile({
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: usersKeys.all,
     mutationFn: (formData: FormData) => updateUser(id, formData),
+    onSuccess: () => {
+      setRemove(null);
+      setEdit(!edit);
+      reset();
+    },
   });
 
   function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
@@ -75,9 +84,6 @@ export function Profile({
         formData.append(key, String(value));
       }
     });
-    setRemove(null);
-    setEdit(!edit);
-    reset();
     mutate(formData);
   }
 
@@ -121,6 +127,7 @@ export function Profile({
             reset();
           }}
           loading={pending}
+          active={edit}
         >
           {edit ? "Cancel" : "Edit Profile"}
         </ButtonProfile>
@@ -132,12 +139,12 @@ export function Profile({
           <p className="text-zinc-300">{bio}</p>
         </div>
         <div className="flex gap-5">
-          <div className="flex gap-1">
-            <span className="text-zinc-300 font-bold">10</span>
+          <div className="flex gap-2">
+            <span className="text-zinc-300 font-bold">{totalFollowing}</span>
             <p className="text-zinc-500">Following</p>
           </div>
-          <div className="flex gap-1">
-            <span className="text-zinc-300 font-bold">10</span>
+          <div className="flex gap-2">
+            <span className="text-zinc-300 font-bold">{totalFollowers}</span>
             <p className="text-zinc-500">Followers</p>
           </div>
         </div>

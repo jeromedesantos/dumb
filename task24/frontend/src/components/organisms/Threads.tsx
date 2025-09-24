@@ -18,8 +18,8 @@ export function Threads() {
   const [hide, setHide] = useState(false);
   const {
     data: threads,
-    status: threadsStatus,
-    error: threadsError,
+    status: statusThreads,
+    error: errorThreads,
   } = useSelector((state: RootState) => state.threads);
   const dispatch: AppDispatch = useDispatch();
 
@@ -65,20 +65,22 @@ export function Threads() {
   }, [dispatch]);
 
   return (
-    <div className="w-full max-w-xl flex flex-col">
+    <div className="flex flex-col w-full max-w-2xl">
       <ThreadInput hide={hide} setHide={setHide} />
-      <Header>Home</Header>
-      <ThreadAdd
-        placeholder="What is happening?!"
-        disabled={true}
-        onClick={() => setHide(!hide)}
-      />
-      {threadsStatus === "failed" && (
+      <div className="sticky top-0">
+        <Header>Home</Header>
+        <ThreadAdd
+          placeholder="What is happening?!"
+          disabled={true}
+          onClick={() => setHide(!hide)}
+        />
+      </div>
+      {statusThreads === "failed" && (
         <div className="py-5">
-          <Alert variant="danger">{threadsError}</Alert>
+          <Alert variant="danger">{errorThreads}</Alert>
         </div>
       )}
-      {threadsStatus === "loading" && (
+      {statusThreads === "loading" && (
         <Thread
           id={"00"}
           full_name={"Loading.."}
