@@ -3,6 +3,8 @@ import { isAxiosError } from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { followsKeys, postFollowing } from "../../queries/follow";
 import { Alert, ButtonProfile, ImgProfile } from "../atoms";
+import type { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 export function Follow({
   id,
@@ -21,7 +23,10 @@ export function Follow({
 }) {
   const baseURL: string = import.meta.env.VITE_BASE_URL;
   const userUrl = photo_profile && `${baseURL}/uploads/${photo_profile}`;
+  const { data } = useSelector((state: RootState) => state.token);
+  const [hidden, setHidden] = useState(false);
   const [active, setActive] = useState(false);
+
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: followsKeys.all,
     mutationFn: () => postFollowing(id as string),
@@ -36,6 +41,8 @@ export function Follow({
 
   useEffect(() => {
     if (isActive) setActive(!active);
+    if (data?.id === id) setHidden(!hidden);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -54,6 +61,7 @@ export function Follow({
       </div>
       <ButtonProfile
         active={active}
+        hidden={hidden}
         loading={pending || isPending}
         onClick={handleFollow}
       >

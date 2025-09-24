@@ -2,22 +2,25 @@ import type { ReactNode } from "react";
 
 export function ButtonProfile({
   loading = false,
-  active,
+  active = false,
+  hidden = false,
   children,
   onClick,
 }: {
   loading?: boolean;
   active?: boolean;
+  hidden?: boolean;
   children?: ReactNode;
   onClick?: () => void;
 }) {
   return (
     <button
+      hidden={hidden}
       disabled={loading}
       onClick={onClick}
       className={`${loading && "animate-pulse"}
     ${
-      active
+      active || loading
         ? "bg-zinc-900 text-zinc-500 border-zinc-500 "
         : " bg-zinc-900 text-zinc-300 border-zinc-300 "
     } 
