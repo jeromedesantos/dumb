@@ -11,6 +11,8 @@ export function Follow({
   photo_profile,
   full_name,
   username,
+  bio,
+  usr,
   isActive,
   pending = false,
 }: {
@@ -18,6 +20,8 @@ export function Follow({
   photo_profile?: string;
   full_name?: string;
   username?: string;
+  bio?: string;
+  usr?: boolean;
   isActive?: boolean;
   pending?: boolean;
 }) {
@@ -54,9 +58,12 @@ export function Follow({
       )}
       <div className="flex gap-3 items-center">
         <ImgProfile src={userUrl} className="w-10 h-10" />
-        <div className="flex flex-col">
-          <h1 className="text-zinc-300 font-bold">{full_name}</h1>
-          <p className="text-zinc-500">@{username}</p>
+        <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
+            <h1 className="text-zinc-300 font-bold">{full_name}</h1>
+            <p className="text-zinc-500">@{username}</p>
+          </div>
+          {usr && <p className="text-zinc-300">{bio}</p>}
         </div>
       </div>
       <ButtonProfile

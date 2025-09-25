@@ -96,7 +96,12 @@ export function ListUsers() {
         )}
         {users &&
           users.map((user: UserType) => (
-            <Follow key={user.id} {...user} isActive={user.isFollowed} />
+            <Follow
+              key={user.id}
+              {...user}
+              isActive={user.isFollowed}
+              usr={true}
+            />
           ))}
       </div>
     </div>
