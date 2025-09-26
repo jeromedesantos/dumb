@@ -1,7 +1,8 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { MoveLeft } from "lucide-react";
 import { io } from "socket.io-client";
-import { useEffect } from "react";
 import { Reply, Thread, ThreadAdd } from "../molecules";
 import { Alert, Header } from "../atoms";
 import {
@@ -15,7 +16,6 @@ import {
   removeReplies,
   truncateReplies,
 } from "../../redux/slices/replies";
-import { useNavigate } from "react-router-dom";
 import type { AppDispatch, RootState } from "../../redux/store";
 import type { ReplyType } from "../../types";
 

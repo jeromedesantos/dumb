@@ -10,6 +10,7 @@ import { addFollows } from "@/redux/slices/follows";
 import type { FollowType } from "@/types";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { fetchCount } from "@/redux/slices/count";
+import { fetchThreads } from "@/redux/slices/threads";
 
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
@@ -20,16 +21,20 @@ export function ListFollows() {
   const [follows, setFollows] = useState(false);
 
   useEffect(() => {
-    if (data?.id) {
-      dispatch(fetchUserById(data.id));
-      dispatch(fetchFollowing(data.id));
-      dispatch(fetchFollowers(data.id));
-    }
+    if (!data?.id) return;
+    dispatch(fetchUserById(data.id));
+    dispatch(fetchFollowing(data.id));
+    dispatch(fetchFollowers(data.id));
   }, [dispatch, data?.id]);
 
   useEffect(() => {
     const socket = io(socketURL, {
       withCredentials: true,
+    });
+    socket.on("updateUser", () => {
+      if (!user?.id) return;
+      dispatch(fetchFollowing(user?.id));
+      dispatch(fetchFollowers(user?.id));
     });
     socket.on(
       "deleteFollowing",
@@ -38,6 +43,7 @@ export function ListFollows() {
         followingData: FollowType;
         targetUser: string;
       }) => {
+        dispatch(fetchThreads());
         if (user?.id !== payload.user_id) return;
         dispatch(fetchCount(payload.user_id));
         dispatch(removeFollowing(payload.targetUser));

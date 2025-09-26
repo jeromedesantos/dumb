@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { prisma } from "../connections/client";
+import { prisma } from "../connections/prisma";
 
 export async function postLike(
   req: Request,

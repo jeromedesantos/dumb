@@ -1,17 +1,18 @@
-import { Search } from "lucide-react";
-import { Alert, Header } from "../atoms";
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
+import { io } from "socket.io-client";
+import { Alert, Header } from "../atoms";
 import { useDebounce } from "../../hooks/useDebounce";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../redux/store";
 import { fetchUsers } from "../../redux/slices/users";
 import { Follow } from "../atoms/Follow";
-import type { FollowType, UserType } from "../../types";
 import { fetchCount } from "../../redux/slices/count";
 import { removeFollowing } from "../../redux/slices/following";
 import { addFollows } from "../../redux/slices/follows";
-import { io } from "socket.io-client";
-import { fetchUserById } from "@/redux/slices/userById";
+import { fetchUserById } from "../../redux/slices/userById";
+import type { AppDispatch, RootState } from "../../redux/store";
+import type { FollowType, UserType } from "../../types";
+import { fetchThreads } from "@/redux/slices/threads";
 
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
@@ -28,16 +29,20 @@ export function ListUsers() {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    if (data?.id) dispatch(fetchUserById(data.id));
-  }, [dispatch, data?.id]);
-
-  useEffect(() => {
     dispatch(fetchUsers(debouncedSearch));
   }, [dispatch, debouncedSearch]);
 
   useEffect(() => {
+    if (data?.id) dispatch(fetchUserById(data.id));
+  }, [dispatch, data?.id]);
+
+  useEffect(() => {
     const socket = io(socketURL, {
       withCredentials: true,
+    });
+    socket.on("updateUser", (updateUser: UserType) => {
+      if (user?.id !== updateUser.id) return;
+      dispatch(fetchUsers(""));
     });
     socket.on(
       "deleteFollowing",
@@ -46,6 +51,7 @@ export function ListUsers() {
         followingData: FollowType;
         targetUser: string;
       }) => {
+        dispatch(fetchThreads());
         if (user?.id !== payload.user_id) return;
         dispatch(fetchCount(payload.user_id));
         dispatch(removeFollowing(payload.targetUser));

@@ -35,7 +35,7 @@ export function People({ pending }: { id: string; pending?: boolean }) {
         )}
         {follows &&
           follows.map((follow: FollowType) => (
-            <Follow key={follow.id} {...follow} />
+            <Follow key={follow.id} {...follow} isActive={follow.isFollowed} />
           ))}
       </div>
     </div>

@@ -1,12 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Logo } from "../atoms";
-import {
-  // CircleUser,
-  Heart,
-  House,
-  LogOut,
-  UserRoundSearch,
-} from "lucide-react";
+import { Heart, House, LogOut, UserRoundSearch } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { clearToken } from "../../redux/slices/token";
 import { useMutation } from "@tanstack/react-query";

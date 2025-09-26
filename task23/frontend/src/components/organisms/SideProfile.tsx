@@ -1,14 +1,15 @@
-import { People, Profile } from "../molecules";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../redux/store";
-import { useEffect } from "react";
 import { io } from "socket.io-client";
-import { fetchUserById, setUser } from "../../redux/slices/userById";
-import { Alert } from "../atoms";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import type { FollowType, UserType } from "../../types";
-import { fetchFollows, removeFollows } from "@/redux/slices/follows";
-import { fetchCount } from "@/redux/slices/count";
-import { addFollowing } from "@/redux/slices/following";
+import type { AppDispatch, RootState } from "../../redux/store";
+import { fetchUserById, setUser } from "../../redux/slices/userById";
+import { fetchFollows, removeFollows } from "../../redux/slices/follows";
+import { fetchCount } from "../../redux/slices/count";
+import { addFollowing } from "../../redux/slices/following";
+import { People, Profile } from "../molecules";
+import { Alert } from "../atoms";
+import { fetchThreads } from "@/redux/slices/threads";
 
 const socketURL: string = import.meta.env.VITE_SOCKET_URL;
 
@@ -27,11 +28,10 @@ export function SideProfile() {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    if (data?.id) {
-      dispatch(fetchUserById(data.id));
-      dispatch(fetchFollows(data.id));
-      dispatch(fetchCount(data.id));
-    }
+    if (!data?.id) return;
+    dispatch(fetchUserById(data.id));
+    dispatch(fetchFollows(data.id));
+    dispatch(fetchCount(data.id));
   }, [dispatch, data?.id]);
 
   useEffect(() => {
@@ -39,7 +39,8 @@ export function SideProfile() {
       withCredentials: true,
     });
     socket.on("updateUser", (updateUser: UserType) => {
-      if (user?.id) dispatch(fetchFollows(user.id));
+      if (!user?.id) return;
+      dispatch(fetchFollows(user.id));
       if (user?.id !== updateUser.id) return;
       dispatch(setUser(updateUser));
     });
@@ -50,10 +51,11 @@ export function SideProfile() {
         followingData: FollowType;
         targetUser: string;
       }) => {
+        dispatch(fetchThreads());
         if (user?.id !== payload.user_id) return;
         dispatch(fetchCount(payload.user_id));
-        dispatch(removeFollows(payload.targetUser));
         dispatch(addFollowing(payload.followingData));
+        dispatch(removeFollows(payload.targetUser));
       }
     );
     return () => {

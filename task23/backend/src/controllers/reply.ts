@@ -3,7 +3,8 @@ import { resolve } from "path";
 import { unlink, writeFileSync } from "fs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
-import { prisma } from "../connections/client";
+import { prisma } from "../connections/prisma";
+import { redis } from "../connections/redis";
 import type { ReplyType } from "../types/reply";
 import { appError } from "../utils/error";
 
@@ -43,10 +44,23 @@ export async function getReplies(
       ...thread,
       age: dayjs(thread.created_at).fromNow(),
     }));
+    let results = null;
+    const key = "getReplies:" + thread_id;
+    const value = await redis.get(key);
+    if (value) {
+      results = JSON.parse(value);
+      console.log("Catche hit");
+    } else {
+      results = reply;
+      await redis.set(key, JSON.stringify(results), {
+        EX: 300,
+      });
+      console.log("Catche miss");
+    }
     res.status(200).json({
       status: "Success",
       message: "Fetch threads success!",
-      data: reply,
+      data: results,
     });
   } catch (err) {
     next(err);

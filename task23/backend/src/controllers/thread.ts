@@ -3,7 +3,8 @@ import { resolve } from "path";
 import { unlink, writeFileSync } from "fs";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { prisma } from "../connections/client";
+import { prisma } from "../connections/prisma";
+import { redis } from "../connections/redis";
 import { appError } from "../utils/error";
 import type { ThreadType } from "../types/thread";
 
@@ -59,9 +60,23 @@ export async function getThreads(
       isLiked: thread.liked_user_ids.includes((req as any).user.id),
       age: dayjs(thread.created_at).fromNow(),
     }));
+    let results = null;
+    const key = "getThreads";
+    const value = await redis.get(key);
+    if (value) {
+      results = JSON.parse(value);
+      console.log("Catche hit");
+    } else {
+      results = threads;
+      await redis.set(key, JSON.stringify(results), {
+        EX: 300,
+      });
+      console.log("Catche miss");
+    }
     res.status(200).json({
       status: "Success",
       message: "Fetch threads success!",
+      // data: results,
       data: threads,
     });
   } catch (err) {
@@ -104,9 +119,23 @@ export async function getThreadById(
       isLiked: thread.liked_user_ids.includes((req as any).user.id),
       age: dayjs(thread.created_at).fromNow(),
     }));
+    let results = null;
+    const key = "getThreadById:" + id;
+    const value = await redis.get(key);
+    if (value) {
+      results = JSON.parse(value);
+      console.log("Catche hit");
+    } else {
+      results = threads[0];
+      await redis.set(key, JSON.stringify(results), {
+        EX: 300,
+      });
+      console.log("Catche miss");
+    }
     res.status(200).json({
       status: "Success",
       message: "Fetch threads success!",
+      // data: results,
       data: threads[0],
     });
   } catch (err) {

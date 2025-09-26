@@ -58,8 +58,8 @@ export const resetSchema = Joi.object({
     "any.required": "Password is a required field",
   }),
   newPassword: Joi.string().min(6).required().messages({
-    "string.min": "Password must be at least 6 characters",
-    "any.required": "Password is a required field",
+    "string.min": "New Password must be at least 6 characters",
+    "any.required": "New Password is a required field",
   }),
 });
 

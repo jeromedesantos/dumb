@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { auth, isSame } from "../middlewares/auth";
+import { auth } from "../middlewares/auth";
 import {
   countFollows,
   getFollowers,

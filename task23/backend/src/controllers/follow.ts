@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { prisma } from "../connections/client";
+import { prisma } from "../connections/prisma";
+import { redis } from "../connections/redis";
 import { appError } from "../utils/error";
 
 export async function countFollows(
@@ -35,30 +36,77 @@ export async function getFollows(
 ) {
   try {
     const { id: follower_id } = req.params;
+    const logUserId = (req as any).user.id;
     const {
       sortBy = "created_at",
       order = "desc",
       offset = 0,
       limit = 5,
     } = req.query;
-    const rawFollow = await prisma.$queryRawUnsafe(`
-        SELECT
-        id, username, full_name, photo_profile, bio
-        FROM "User"
-        WHERE
-        id NOT IN (
-        SELECT "following_id"
-        FROM "Following"
-        WHERE "follower_id" = '${follower_id}'
-        )
-        AND id != '${follower_id}'
-        ORDER BY ${sortBy} ${order}
-        OFFSET ${offset} LIMIT ${limit}
-    `);
+    const notFollowingIds = await prisma.following.findMany({
+      where: {
+        follower_id: follower_id,
+      },
+      select: {
+        following_id: true,
+      },
+    });
+    const followingIdList = notFollowingIds.map(
+      (follow) => follow.following_id
+    );
+    const notFollowingData = await prisma.user.findMany({
+      where: {
+        id: {
+          notIn: followingIdList,
+        },
+        NOT: {
+          id: follower_id,
+        },
+      },
+      select: {
+        id: true,
+        username: true,
+        full_name: true,
+        photo_profile: true,
+        bio: true,
+      },
+      orderBy: {
+        [sortBy as string]: order as "asc" | "desc",
+      },
+      skip: Number(offset),
+      take: Number(limit),
+    });
+    const followedUsers = await prisma.following.findMany({
+      where: {
+        follower_id: logUserId,
+      },
+      select: {
+        following_id: true,
+      },
+    });
+    const followedUserIds = new Set(followedUsers.map((f) => f.following_id));
+    const usersWithFollowStatus = notFollowingData.map((user) => ({
+      ...user,
+      isFollowed: followedUserIds.has(user.id),
+    }));
+    let results = null;
+    const key = "getFollows:" + follower_id;
+    const value = await redis.get(key);
+    if (value) {
+      results = JSON.parse(value);
+      console.log("Catche hit");
+    } else {
+      results = usersWithFollowStatus;
+      await redis.set(key, JSON.stringify(results), {
+        EX: 300,
+      });
+      console.log("Catche miss");
+    }
     res.status(200).json({
       status: "Success",
       message: "Fetch threads success!",
-      data: rawFollow,
+      data: usersWithFollowStatus,
+      // data: results,
     });
   } catch (err) {
     next(err);
@@ -114,10 +162,24 @@ export async function getFollowing(
       ...user,
       isFollowed: followedUserIds.has(user.id),
     }));
+    let results = null;
+    const key = "getFollowing:" + follower_id;
+    const value = await redis.get(key);
+    if (value) {
+      results = JSON.parse(value);
+      console.log("Catche hit");
+    } else {
+      results = usersWithFollowStatus;
+      await redis.set(key, JSON.stringify(results), {
+        EX: 300,
+      });
+      console.log("Catche miss");
+    }
     res.status(200).json({
       status: "Success",
       message: "Fetch following success!",
       data: usersWithFollowStatus,
+      // data: results,
     });
   } catch (err) {
     next(err);
@@ -173,10 +235,24 @@ export async function getFollowers(
       ...user,
       isFollowed: followedUserIds.has(user.id),
     }));
+    let results = null;
+    const key = "getFollowers:" + following_id;
+    const value = await redis.get(key);
+    if (value) {
+      results = JSON.parse(value);
+      console.log("Catche hit");
+    } else {
+      results = usersWithFollowStatus;
+      await redis.set(key, JSON.stringify(results), {
+        EX: 300,
+      });
+      console.log("Catche miss");
+    }
     res.status(200).json({
       status: "Success",
       message: "Fetch following success!",
       data: usersWithFollowStatus,
+      // data: results,
     });
   } catch (err) {
     next(err);
