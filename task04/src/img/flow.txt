@@ -1,0 +1,1 @@
+Users can create projects. After creating a project, it will appear in "My Projects." If users click on one of the cards in "My Projects," they can view the project details.

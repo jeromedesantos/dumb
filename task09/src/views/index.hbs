@@ -1,0 +1,199 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../assets/css/reset.css" />
+    <link rel="stylesheet" href="../assets/css/cdn.css" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <script src="../assets/js/script.js" defer></script>
+    <script src="../assets/js/validator.js" defer></script>
+    <title>{{#if userData}}Halo {{userData}}{{else}}Selamat Datang{{/if}}</title>
+  </head>
+  <body>
+    <!-- scroll atas -->
+    <div id="header"></div>
+    <div class="add bi bi-plus"></div>
+    <!-- bagian menu -->
+    <div class="menubar">
+      <nav>
+        <img src="../assets/img/logo.png" alt="logo" />
+      </nav>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <form action="/logout" method= "POST">
+        <button type= "submit" class="log">
+          {{#if userData}}Logout{{else}}Login{{/if}}</button>
+      </form>
+    </div>
+    <div class="menu-mini">
+      <form action="/logout" method= "POST">
+        <p id="miniLog" role="button" tabindex="0">
+          {{#if userData}}Logout{{else}}Login{{/if}}</p>
+      </form>
+    </div>
+
+    <!-- isi konten -->
+    <input type="checkbox" name="edit" value="{{row.id}}" 
+    {{#if row}}checked{{/if}} 
+    /> 
+    <div class="container">
+      <h1>{{#if (not row)}}ADD MY PROJECT{{else}}EDIT PROJECT {{row.id}}{{/if}}</h1>
+      <form action="{{#if (not row)}}/{{else}}/edit/{{row.id}}{{/if}}"
+       method="POST" enctype="multipart/form-data">
+        <div class="name">
+          <label for="name">Project Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value="{{row.name_project}}"
+          />
+          <span></span>
+        </div>
+        <div class="date">
+          <section>
+            <div class="start">
+              <label for="start">Start Date</label>
+              <input
+                type="date"
+                id="start"
+                name="start"
+                value="{{row.start}}"
+              />
+            </div>
+            <div class="end">
+              <label for="end">End Date</label>
+              <input type="date" id="end" name="end" value="{{row.end}}" />
+            </div>
+          </section>
+          <span></span>
+        </div>
+        <div class="desc">
+          <label for="desc">Description</label>
+          <textarea
+            name="desc"
+            id="desc"
+            cols="30"
+            rows="5"
+          >{{row.description}}</textarea>
+          <span></span>
+        </div>
+        <div class="tech">
+          <label>Technologies</label>
+          <section>
+            <div class="side">
+              <section>
+                <input
+                  type="checkbox"
+                  name="tech"
+                  id="js"
+                  value="js"
+                  {{#if (includes row.tech "js")}}checked{{/if}} 
+                />
+                <label for="js">JavaScript</label>
+              </section>
+              <section>
+                <input
+                  type="checkbox"
+                  name="tech"
+                  id="react"
+                  value="react"
+                  {{#if (includes row.tech "react")}}checked{{/if}}
+                />
+                <label for="react">React JS</label>
+              </section>
+            </div>
+            <div class="side">
+              <section>
+                <input
+                  type="checkbox"
+                  name="tech"
+                  id="php"
+                  value="php"
+                  {{#if (includes row.tech "php")}}checked{{/if}}
+                />
+                <label for="php">PHP</label>
+              </section>
+              <section>
+                <input
+                  type="checkbox"
+                  name="tech"
+                  id="laravel"
+                  value="laravel"
+                  {{#if (includes row.tech "laravel")}}checked{{/if}}
+                />
+                <label for="laravel">Laravel</label>
+              </section>
+            </div>
+          </section>
+          <span></span>
+        </div>
+        <div class="img">
+          <label for="img">Upload Image</label>
+          <input type="file" name="img" id="img" accept="image/*" />
+          <span></span>
+          <img
+            alt="preview"
+            src="../assets/uploads/{{row.image_filename}}"
+            id="preview"
+            class="{{#if row.image_filename}}active{{/if}}"
+          />
+        </div>
+        <button class="submit" type="submit">{{#if (not row)}}submit{{else}}update{{/if}}</button>
+      </form>
+    </div>
+
+    <!-- scroll bawah -->
+    <div id="dropDown" style="{{#if (not row)}}display:block;{{else}}display:none;{{/if}}">
+      <h1>MY PROJECT</h1>
+      <div class="wrapper">
+        {{#if (isEmpty updRows)}}
+            <p class="none">Tidak ada project.</p>
+        {{else}}
+          {{#each updRows}}
+            <div
+              class="cards"
+              data-index="{{this.no}}"
+            >
+              <img
+                class="cover"
+                src="../assets/uploads/{{this.image_filename}}"
+                alt="{{this.name_project}}"
+              />
+              <h2>{{this.name_project}}</h2>
+              <span>durasi {{this.month}} bulan</span>
+              <p class="truncate">{{this.description}}</p>
+              <div class="techs">
+                {{#each this.techUpd}}
+                  <i class="fa-brands {{this}}"></i>
+                {{/each}}
+              </div>
+              <div class="buttons">
+                <button
+                  class="edit"
+                  data-index="{{this.no}}"
+                >Edit</button>
+                <form action="/delete/{{this.no}}" method="POST" enctype="multipart/form-data">
+                <button
+                  class="delete"
+                >Delete</button>
+                </form>
+              </div>
+            </div>
+          {{/each}}
+        {{/if}}     
+      </div>
+    </div>
+  </body>
+</html>

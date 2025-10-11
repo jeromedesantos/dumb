@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      media="(prefers-color-scheme: light)"
+      href="src/img/assets/favicon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      media="(prefers-color-scheme: dark)"
+      href="src/img/assets/favicon-dark.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="src/css/output.css" />
+    <script src="src/js/script.js" defer></script>
+    <title>Jeremy Santoso</title>
+  </head>
+  <body class="font-inter dark:bg-dark bg-white">
+    <!-- Header Start -->
+    <header
+      class="backdrop-blur-sm bg-white/50 dark:bg-dark/50 dark:shadow-md sticky top-0 left-0 z-10 flex items-center shadow-md"
+    >
+      <div
+        class="lg:gap-100 lg:justify-around relative flex items-center justify-between w-full px-5"
+      >
+        <div class="px-4">
+          <a
+            href="#"
+            class="font-play text-primary whitespace-nowrap hover:text-primary-light block py-6 text-lg font-bold transition duration-300 ease-in-out"
+            >jeromedesantos ☕︎</a
+          >
+        </div>
+        <div class="flex items-center px-4">
+          <button
+            id="hamburger"
+            name="hamburger"
+            type="button"
+            class="right-10 lg:hidden lg:pointer-cursor absolute block w-10 h-10 px-1"
+          >
+            <span
+              class="hamburger-line transition duration-300 origin-top-left pointer-events-none"
+            ></span>
+            <span
+              class="hamburger-line transition duration-300 pointer-events-none"
+            ></span>
+            <span
+              class="hamburger-line transition duration-300 origin-bottom-left pointer-events-none"
+            ></span>
+          </button>
+
+          <nav
+            id="nav-menu"
+            class="hidden absolute py-5 bg-white shadow-lg rounded-lg max-w-[250px] w-full right-4 top-full lg:block lg:static lg:bg-transparent lg:max-w-full lg:shadow-none lg:rounded-none transition duration-300 ease-in-out lg:dark:bg-transparent dark:bg-dark"
+          >
+            <ul class="lg:flex w-fit block">
+              <li class="group">
+                <a
+                  href="#"
+                  class="text-dark group-hover:text-primary dark:text-white flex py-2 mx-6 text-base transition duration-300 ease-in-out"
+                  >Home</a
+                >
+              </li>
+              <li class="group">
+                <a
+                  href="#about"
+                  class="text-dark group-hover:text-primary dark:text-white flex py-2 mx-6 text-base transition duration-300 ease-in-out"
+                  >About</a
+                >
+              </li>
+              <li class="group">
+                <a
+                  href="#portfolio"
+                  class="text-dark group-hover:text-primary dark:text-white flex py-2 mx-6 text-base transition duration-300 ease-in-out"
+                  >Portfolio</a
+                >
+              </li>
+              <li class="lg:py-0 flex items-center pt-5 pb-1 mx-6">
+                <div class="flex">
+                  <input type="checkbox" class="hidden" id="dark-toggle" />
+                  <label for="dark-toggle">
+                    <div
+                      class="w-9 bg-secondary flex items-center h-5 p-1 rounded-full cursor-pointer"
+                    >
+                      <div
+                        class="toggle-circle w-4 h-4 transition duration-300 ease-in-out bg-white rounded-full"
+                      ></div>
+                    </div>
+                  </label>
+                </div>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Hero Section Start -->
+    <section id="home" class="my-20">
+      <div class="max-w-7xl lg:flex-row flex flex-col gap-10 mx-auto">
+        <div class="self-center flex-1 px-10">
+          <h1 class="text-primary text-base font-semibold">
+            Hallo Welt 👋, Ich bin
+            <span
+              class="text-dark dark:text-white block mt-1 text-4xl font-bold"
+              >Jeremy Santoso</span
+            >
+          </h1>
+          <h2
+            class="text-secondary dark:text-secondary-light mb-5 text-lg font-medium"
+          >
+            Web Programming &
+            <span class="text-dark dark:text-white">Content Creator</span>
+          </h2>
+          <p
+            class="text-secondary-light dark:text-secondary mb-10 font-medium leading-relaxed"
+          >
+            A passionate Web Programmer who enjoys building applications using
+            the
+            <span class="text-dark dark:text-white">MERN stack</span> (MongoDB,
+            Express.js, React, Node.js).
+          </p>
+          <div class="sm:gap-2 sm:flex-row flex flex-col gap-5">
+            <a
+              href="https://wa.me/0895704298578"
+              target="_blank"
+              class="w-fit bg-primary hover:shadow-lg hover:bg-primary-light px-8 py-2 text-base font-semibold text-white transition duration-300 ease-in-out rounded-full"
+            >
+              WhatsApp</a
+            >
+            <a
+              href="https://drive.google.com/file/d/1ZrViLFr-ZXWlmbWhn36GbG2HYbORRe1f/view?usp=sharing"
+              target="_blank"
+              class="w-fit hover:text-secondary dark:text-white flex items-center justify-center gap-2 px-4 text-base font-semibold transition duration-300 ease-in-out"
+            >
+              <span>download CV</span>
+              <i class="fa-solid fa-download"></i
+            ></a>
+          </div>
+        </div>
+        <div class="flex-1 px-10">
+          <img
+            src="src/img/assets/jeremy.png"
+            alt="Jeremy Santoso"
+            class="mx-auto"
+          />
+        </div>
+      </div>
+    </section>
+    <!-- Hero Section End -->
+
+    <!-- About Section Start -->
+    <section id="about" class="py-40">
+      <div class="max-w-7xl lg:flex-row flex flex-col gap-10 mx-auto">
+        <div class="flex-2 px-10">
+          <h4 class="text-primary mb-3 text-lg font-bold uppercase">
+            About Me
+          </h4>
+          <h2
+            class="dark:text-white text-dark max-w-md mb-5 text-3xl font-bold"
+          >
+            I’m a web enthusiast who’s in a committed relationship with the MERN
+            stack
+          </h2>
+          <p
+            class="text-secondary-light dark:text-secondary text-base font-medium"
+          >
+            MongoDB, Express.js, React, and Node.js. I love turning ideas into
+            web applications that are fast, fun, and functional. When I’m not
+            wrangling APIs or battling bugs, you’ll find me geeking out over UI
+            details, optimizing backend flows, or discovering quirky new
+            libraries just for fun. I believe in writing clean code, asking
+            better questions, and occasionally using memes as motivation. If you
+            need a developer who can build scalable apps and still crack a good
+            tech —I'm your person. Let's create something cool!
+          </p>
+        </div>
+        <div class="flex-1 px-10">
+          <h3 class="text-dark dark:text-white text-2xl font-semibold">
+            Follow for more!
+          </h3>
+          <p
+            class="text-secondary dark:text-secondary-light mb-6 text-base font-medium"
+          >
+            To see more interesting content..
+          </p>
+          <div class="flex flex-wrap justify-start gap-2">
+            <!-- YouTube -->
+            <a
+              href="https://youtube.com/@kursusTUTOR"
+              target="_blank"
+              class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+            >
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+            <!-- Facebook -->
+            <a
+              href="https://facebook.com/jeromedesantos12"
+              target="_blank"
+              class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+            >
+              <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <!-- Instagram -->
+            <a
+              href="https://instagram.com/jeremy001_"
+              target="_blank"
+              class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+            >
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <!-- X -->
+            <a
+              href="https://x.com/jeremy001_"
+              target="_blank"
+              class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+            >
+              <i class="fa-brands fa-x-twitter"></i>
+            </a>
+            <!-- LinkedIn -->
+            <a
+              href="https://linkedin.com/in/jeromedesantos12"
+              target="_blank"
+              class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+            >
+              <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+            <!-- GitHub -->
+            <a
+              href="https://github.com/jeromedesantos12"
+              target="_blank"
+              class="w-9 h-9 text-secondary-light dark:text-secondary border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center border rounded-full"
+            >
+              <i class="fa-brands fa-github"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- About Section End -->
+
+    <!-- Portfolio Section Start -->
+    <section id="portfolio" class="pt-36 bg-slate-100 dark:bg-slate-800 pb-16">
+      <div class="px-4 mx-auto">
+        <div class="max-w-xl mx-auto mb-16 text-center">
+          <h4 class="text-primary mb-2 text-lg font-bold uppercase">
+            Portfolio
+          </h4>
+          <h2 class="text-dark dark:text-white mb-4 text-3xl font-bold">
+            Newest Project
+          </h2>
+          <p
+            class="text-md text-secondary dark:text-secondary-light font-medium"
+          >
+            Fresh out of the code oven! This project blends speed, security, and
+            a dash of creativity. Built with Express and Tailwind, it's where
+            form meets function in the slickest way possible.
+          </p>
+        </div>
+      </div>
+      <div class="xl:px-20 flex flex-wrap justify-center gap-10">
+        <a
+          href="https://github.com/jeromedesantos12/responsive-design/tree/main/latihan-css3"
+          target="_blank"
+          class="hover:shadow-lg hover:scale-105 dark:bg-dark block max-w-md pb-10 overflow-hidden transition duration-300 ease-in-out bg-white rounded-md shadow-md cursor-pointer"
+        >
+          <img src="src/img/project/project1.gif" alt="Gallery Img" />
+          <h3
+            class="text-dark dark:text-white px-5 mt-5 mb-3 text-xl font-semibold"
+          >
+            CSS3
+          </h3>
+          <p
+            class="text-secondary-light dark:text-secondary px-5 text-base font-medium text-justify"
+          >
+            Cascading Style Sheets (CSS) is a style sheet language used for
+            specifying the presentation and styling of a document written in a
+            markup language such as HTML or XML (including XML dialects such as
+            SVG, MathML or XHTML).
+          </p>
+        </a>
+        <a
+          href="https://github.com/jeromedesantos12/responsive-design/tree/main/latihan-css-grid"
+          target="_blank"
+          class="dark:bg-dark hover:shadow-lg hover:scale-105 block max-w-md pb-10 overflow-hidden transition duration-300 ease-in-out bg-white rounded-md shadow-md cursor-pointer"
+        >
+          <img src="src/img/project/project2.gif" alt="Gallery Img" />
+          <h3
+            class="text-dark dark:text-white px-5 mt-5 mb-3 text-xl font-semibold"
+          >
+            CSS GRID
+          </h3>
+          <p
+            class="text-secondary-light dark:text-secondary px-5 text-base font-medium text-justify"
+          >
+            In Cascading Style Sheets, CSS grid layout or CSS grid creates
+            complex responsive web design grid layouts more easily and
+            consistently across browsers.
+          </p>
+        </a>
+        <a
+          href="https://github.com/jeromedesantos12/responsive-design/tree/main/latihan-mediaquery-dumb"
+          target="_blank"
+          class="hover:shadow-lg hover:scale-105 dark:bg-dark block max-w-md pb-10 overflow-hidden transition duration-300 ease-in-out bg-white rounded-md shadow-md cursor-pointer"
+        >
+          <img src="src/img/project/project3.gif" alt="Gallery Img" />
+          <h3
+            class="text-dark dark:text-white px-5 mt-5 mb-3 text-xl font-semibold"
+          >
+            Media Query
+          </h3>
+          <p
+            class="text-secondary-light text- dark:text-secondary px-5 text-base font-medium"
+          >
+            Media queries is a feature of CSS 3 allowing content rendering to
+            adapt to different conditions such as screen resolution (e.g. mobile
+            and desktop screen size)
+          </p>
+        </a>
+        <a
+          href="https://github.com/jeromedesantos12/batch62/tree/master/task2"
+          target="_blank"
+          class="hover:shadow-lg hover:scale-105 dark:bg-dark block max-w-md pb-10 overflow-hidden transition duration-300 ease-in-out bg-white rounded-md shadow-md cursor-pointer"
+        >
+          <img src="src/img/project/project4.gif" alt="Gallery Img" />
+          <h3
+            class="text-dark dark:text-white px-5 mt-5 mb-3 text-xl font-semibold"
+          >
+            Responsive
+          </h3>
+          <p
+            class="text-secondary-light dark:text-secondary px-5 text-base font-medium text-justify"
+          >
+            Responsive web design (RWD) or responsive design is an approach to
+            web design that aims to make web pages render well on a variety of
+            devices and window or screen sizes from minimum to maximum display
+            size to ensure usability and satisfaction.
+          </p>
+        </a>
+        <a
+          href="https://github.com/jeromedesantos12/batch62/tree/master/task4"
+          target="_blank"
+          class="hover:shadow-lg hover:scale-105 dark:bg-dark block max-w-md pb-10 overflow-hidden transition duration-300 ease-in-out bg-white rounded-md shadow-md cursor-pointer"
+        >
+          <img src="src/img/project/project5.gif" alt="Gallery Img" />
+          <h3
+            class="text-dark dark:text-white px-5 mt-5 mb-3 text-xl font-semibold"
+          >
+            Form
+          </h3>
+          <p
+            class="text-secondary-light dark:text-secondary px-5 text-base font-medium text-justify"
+          >
+            A webform, web form or HTML form on a web page allows a user to
+            enter data that is sent to a server for processing. Forms can
+            resemble paper or database forms because web users fill out the
+            forms using checkboxes, radio buttons, or text fields.
+          </p>
+        </a>
+      </div>
+    </section>
+    <!-- Portfolio Section End -->
+
+    <!-- Footer Start -->
+    <footer class="bg-dark pt-10 pb-10">
+      <div class="flex flex-wrap justify-center gap-2 mb-5">
+        <!-- YouTube -->
+        <a
+          href="https://youtube.com/@kursusTUTOR"
+          target="_blank"
+          class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+        >
+          <i class="fa-brands fa-youtube"></i>
+        </a>
+        <!-- Facebook -->
+        <a
+          href="https://facebook.com/jeromedesantos12"
+          target="_blank"
+          class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+        >
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+        <!-- Instagram -->
+        <a
+          href="https://instagram.com/jeremy001_"
+          target="_blank"
+          class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+        >
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+        <!-- X -->
+        <a
+          href="https://x.com/jeremy001_"
+          target="_blank"
+          class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+        >
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+        <!-- LinkedIn -->
+        <a
+          href="https://linkedin.com/in/jeromedesantos12"
+          target="_blank"
+          class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+        >
+          <i class="fa-brands fa-linkedin-in"></i>
+        </a>
+        <!-- GitHub -->
+        <a
+          href="https://github.com/jeromedesantos12"
+          target="_blank"
+          class="w-9 h-9 text-secondary-light border-secondary-light hover:border-primary hover:bg-primary hover:text-white flex items-center justify-center transition duration-300 ease-in-out border rounded-full"
+        >
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+      <p
+        class="text-secondary hover:text-secondary-light text-sm font-medium text-center transition duration-300 ease-in-out"
+      >
+        Made with &#9829; by
+        <a href="https://github.com/jeromedesantos12" target="_blank"
+          >Jeremy Santoso</a
+        >
+      </p>
+    </footer>
+    <!-- Footer End -->
+
+    <!-- Back to top Start --->
+    <a
+      href="#"
+      class="bottom-10 right-10 size-14 bg-primary hover:animate-pulse fixed z-10 flex items-center justify-center invisible p-4 text-xl text-white transition duration-300 ease-in-out rounded-full opacity-0"
+      id="to-top"
+    >
+      <i class="bi bi-chevron-up"></i>
+    </a>
+    <!-- Back to top End --->
+  </body>
+</html>

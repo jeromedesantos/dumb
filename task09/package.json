@@ -1,0 +1,25 @@
+{
+  "name": "belajar-express",
+  "version": "1.0.0",
+  "description": "pengenalan express",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index"
+  },
+  "author": "jeremy",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "express": "^5.1.0",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.18.2",
+    "hbs": "^4.2.0",
+    "mime-types": "^3.0.1",
+    "multer": "^2.0.2",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
