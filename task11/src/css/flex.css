@@ -1,0 +1,297 @@
+/* CSS RESET */
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* RESET ALA SAYA */
+body {
+  font-family: "Space-Grotesk", sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  word-wrap: break-word;
+}
+/* Agar area klik lebar */
+a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: black;
+  text-decoration: none;
+}
+/* Box-sizing otomatis */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+/* heading tebal */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+
+/* CODING MULAI DARI SINI */
+.container {
+  width: 100%;
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 50px 20px;
+  display: flex;
+  flex-direction: column;
+}
+.profile {
+  text-align: center;
+}
+.profile img {
+  border: 2px solid black;
+  border-radius: 50%;
+  width: 100%;
+  max-width: 100px;
+}
+.profile h1 {
+  font-size: 1.6em;
+  margin: 10px auto;
+}
+.profile p {
+  font-size: 0.8em;
+}
+.socials {
+  margin: 10px auto 30px;
+  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.socials a {
+  color: white;
+  background-color: black;
+  font-size: 0.8em;
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+.socials a:hover {
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+}
+.links li {
+  margin: 5px 0;
+  font-size: 0.8em;
+}
+.links li a {
+  border: 1px solid rgb(17, 15, 15);
+  border-radius: 25px;
+  padding: 5px 2%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  word-break: break-word;
+}
+
+.links li a:hover {
+  color: white;
+  background-color: black;
+}
+.contact-form {
+  margin: 50px 0;
+  padding: 2%;
+}
+.contact-form label {
+  font-weight: 500;
+  font-size: 0.8em;
+}
+.contact-form input {
+  display: block;
+  width: 100%;
+  font-size: 0.7em;
+  color: #666;
+  padding: 5px;
+  border: 0;
+  border-bottom: 2px solid black;
+  margin: 10px 0 25px;
+}
+.contact-form textarea {
+  display: block;
+  padding: 5px;
+  font-size: 0.8em;
+  width: 100%;
+  height: 100px;
+  margin: 10px 0 25px;
+}
+.contact-form button {
+  width: 100%;
+  font-size: 0.8em;
+  padding: 8px;
+  border-radius: 25px;
+  background-color: black;
+  color: white;
+  border-radius: 20px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+.contact-form button:hover {
+  background-color: white;
+  color: black;
+}
+footer {
+  font-size: 0.7em;
+  text-align: center;
+  padding: 50px 20px;
+  width: 100%;
+  margin: 50px auto;
+  padding: 50px 20px;
+}
+footer a {
+  display: inline;
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+    flex-direction: row;
+    justify-content: center;
+    border: 2px solid black;
+    box-shadow: 5px 10px;
+    gap: 10%;
+  }
+  .container .profile,
+  .container .contact-form {
+    margin: 0;
+    flex: 1;
+  }
+}
